@@ -34,7 +34,7 @@ npm i ngx-view360 --save
 Import NgxView360Module on AppModule.
 
 ```typescript
-import { NgxView360Module } from '../ngx-view360';
+import { NgxView360Module } from 'ngx-view360';
 
 @NgModule({...
   imports: [...,
