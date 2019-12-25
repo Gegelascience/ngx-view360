@@ -1,0 +1,22 @@
+
+.canvasContainer{
+    width: 100vw;
+    height: 80vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.vrButton{
+  position: relative;
+  z-index: 2;
+  float: right;
+  right: 10%;
+  bottom: 15vh;
+  text-align: left;
+  max-width: 420px;
+  padding: 0.5em;
+  background-color: white;
+  margin-bottom: 0.5em;
+  border-radius: 2px;
+}
