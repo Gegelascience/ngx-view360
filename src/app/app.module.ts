@@ -2,7 +2,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 
 import { AppComponent } from './app.component';
-import { NgxPhoto360Module } from './module/ngx-photo360/ngx-photo360.module';
+import { NgxView360Module } from '../../projects/ngx-view360/src/lib/ngx-view360.module';
 
 @NgModule({
   declarations: [
@@ -10,7 +10,7 @@ import { NgxPhoto360Module } from './module/ngx-photo360/ngx-photo360.module';
   ],
   imports: [
     BrowserModule,
-    NgxPhoto360Module
+    NgxView360Module
   ],
   providers: [],
   bootstrap: [AppComponent]
