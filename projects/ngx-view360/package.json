@@ -1,6 +1,24 @@
 {
   "name": "ngx-view360",
   "version": "0.0.1",
+  "description": "A lib to use 360 view in VR with Angular framework ",
+  "author": "VERCHERE Rémi",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Gegelascience/ngx-view360.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Gegelascience/ngx-view360/issues"
+  },
+  "homepage": "https://github.com/Gegelascience/ngx-view360",
+  "keywords": [
+    "angular",
+    "typescript",
+    "webxr",
+    "VR",
+    "360"
+  ],
+  "license": "MIT",
   "peerDependencies": {
     "@angular/common": "^8.2.14",
     "@angular/core": "^8.2.14",

@@ -2,23 +2,68 @@
 
 This library was generated with [Angular CLI](https://github.com/angular/angular-cli) version 8.2.14.
 
-## Code scaffolding
+NgxView360 let you use 360 photo viewer in VR using Angular technology.
+This library adapt one of the samples from [WebXR Sample](https://github.com/immersive-web/webxr-samples).
+A great thanks to *The Immersive Web Community Group*.
 
-Run `ng generate component component-name --project NgxView360` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module --project NgxView360`.
-> Note: Don't forget to add `--project NgxView360` or else it will be added to the default project in your `angular.json` file. 
+## Setup
 
-## Build
+### Installing
 
-Run `ng build NgxView360` to build the project. The build artifacts will be stored in the `dist/` directory.
+First, you will need to add the webxr polyfill. Some browsers don't have develop in production the WEBXR API.
 
-## Publishing
+````
+npm i webxr-polyfill --save
+````
 
-After building your library with `ng build NgxView360`, go to the dist folder `cd dist/ngx-view360` and run `npm publish`.
+Then append these lines on polyfills.ts:
 
-## Running unit tests
+```typescript
+import WebXRPolyfill from 'webxr-polyfill/build/webxr-polyfill.module.js';
+let polyfill = new WebXRPolyfill();
+```
 
-Run `ng test NgxView360` to execute the unit tests via [Karma](https://karma-runner.github.io).
+Now, you can add the library:
 
-## Further help
+````
+npm i ngx-view360 --save
+````
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+## Using
+
+Import NgxView360Module on AppModule.
+
+```typescript
+import { NgxView360Module } from '../ngx-view360';
+
+@NgModule({...
+  imports: [...,
+    NgxView360Module
+  ...],
+})
+```
+
+Then, you can use the component in template:
+
+```html
+<ngx-view360 imageSrc="path/to/image"
+    rightController="path/to/3Dmodel"
+    leftController="path/to/3DModel"></ngx-view360>
+```
+
+## Library
+
+The **NgxView360Component** has some attributes to display the view
+
+Attributes | description
+------------ | -------------
+imageSrc | source of the image to display
+displayMode(optional) | Mode to display image ('mono', 'stereoTopBottom','stereoLeftRight'). 'mono' is the default mode.
+rightController | gltf file containing right controller 3D model
+leftController | gltf file containing left controller 3D model
+
+
+## LICENSE
+
+MIT
+
