@@ -11,9 +11,11 @@ A great thanks to *The Immersive Web Community Group*.
 ### Installing
 
 First, you will need to add the webxr polyfill. Some browsers don't have develop in production the WEBXR API.
+You will need also to install gl-matrix package to calculate webgl matrix.
 
 ````
 npm i webxr-polyfill --save
+npm i gl-matrix --save
 ````
 
 Then append these lines on polyfills.ts:

@@ -1,5 +1,5 @@
-import { Ray } from '../math/ray.js';
-import { mat4, vec3, quat } from '../math/gl-matrix.js';
+import { Ray } from '../math/ray';
+import { mat4, vec3, quat } from '../math/gl-matrix';
 
 const DEFAULT_TRANSLATION = new Float32Array([0, 0, 0]);
 const DEFAULT_ROTATION = new Float32Array([0, 0, 0, 1]);

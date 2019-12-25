@@ -1,4 +1,4 @@
-import { quat } from '../render/math/gl-matrix.js';
+import { quat } from '../render/math/gl-matrix';
 
 const LOOK_SPEED = 0.0025;
 

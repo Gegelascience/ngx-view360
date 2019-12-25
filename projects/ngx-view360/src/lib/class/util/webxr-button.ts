@@ -23,14 +23,7 @@ const ERROR_UNKOWN = 'error-unkown';
 const _LOGO_SCALE = 0.8;
 let _WEBXR_UI_CSS_INJECTED = {};
 
-/**
- * Generate the innerHTML for the button
- *
- * @return {string} html of the button as string
- * @param {string} cssPrefix
- * @param {Number} height
- * @private
- */
+
 const generateInnerHTML = (cssPrefix, height) => {
     const logoHeight = height * _LOGO_SCALE;
     const svgString = generateXRIconString(cssPrefix, logoHeight) + generateNoXRIconString(cssPrefix, logoHeight);
@@ -41,11 +34,7 @@ const generateInnerHTML = (cssPrefix, height) => {
         </button>`;
 };
 
-/**
- * Inject the CSS string to the head of the document
- *
- * @param {string} cssText the css to inject
- */
+
 const injectCSS = (cssText) => {
     // Create the css
     const style = document.createElement('style');
@@ -55,12 +44,7 @@ const injectCSS = (cssText) => {
     head.insertBefore(style, head.firstChild);
 };
 
-/**
- * Generate DOM element view for button
- *
- * @return {HTMLElement}
- * @param {Object} options
- */
+
 const createDefaultView = (options) => {
     const fontSize = options.height / 3;
     if (options.injectCSS) {
@@ -119,13 +103,7 @@ const generateNoXRIconString = (cssPrefix, height) => {
     </svg>`;
 };
 
-/**
- * Generate the CSS string to inject
- *
- * @param {Object} options
- * @param {Number} [fontSize=18]
- * @return {string}
- */
+
 const generateCSS = (options, fontSize = 18) => {
     const height = options.height;
     const borderWidth = 2;
@@ -265,25 +243,7 @@ const generateCSS = (options, fontSize = 18) => {
 //
 
 export class WebXRButton {
-    /**
-     * Construct a new Enter XR Button
-     * @constructor
-     * @param {HTMLCanvasElement} sourceCanvas the canvas that you want to present with WebXR
-     * @param {Object} [options] optional parameters
-     * @param {HTMLElement} [options.domElement] provide your own domElement to bind to
-     * @param {Boolean} [options.injectCSS=true] set to false if you want to write your own styles
-     * @param {Function} [options.beforeEnter] should return a promise, opportunity to intercept request to enter
-     * @param {Function} [options.beforeExit] should return a promise, opportunity to intercept request to exit
-     * @param {Function} [options.onRequestStateChange] set to a function returning false to prevent default state changes
-     * @param {string} [options.textEnterXRTitle] set the text for Enter XR
-     * @param {string} [options.textXRNotFoundTitle] set the text for when a XR display is not found
-     * @param {string} [options.textExitXRTitle] set the text for exiting XR
-     * @param {string} [options.color] text and icon color
-     * @param {string} [options.background] set to false for no brackground or a color
-     * @param {string} [options.corners] set to 'round', 'square' or pixel value representing the corner radius
-     * @param {string} [options.disabledOpacity] set opacity of button dom when disabled
-     * @param {string} [options.cssprefix] set to change the css prefix from default 'webvr-ui'
-     */
+
     options;
     _enabled;
     session;
@@ -328,41 +288,26 @@ export class WebXRButton {
         this.setTitle(this.options.textXRNotFoundTitle);
     }
 
-    /**
-     * Sets the enabled state of this button.
-     * @param {boolean} enabled
-     */
+
     set enabled(enabled) {
         this._enabled = enabled;
         this.__updateButtonState();
         // return this;
     }
 
-    /**
-     * Gets the enabled state of this button.
-     * @return {boolean}
-     */
+
     get enabled() {
         return this._enabled;
     }
 
-    /**
-     * Indicate that there's an active XRSession. Switches the button to "Exit XR"
-     * state if not null, or "Enter XR" state if null.
-     * @param {XRSession} session
-     * @return {EnterXRButton}
-     */
+
     setSession(session) {
         this.session = session;
         this.__updateButtonState();
         return this;
     }
 
-    /**
-     * Set the title of the button
-     * @param {string} text
-     * @return {EnterXRButton}
-     */
+
     setTitle(text) {
         this.domElement.title = text;
         ifChild(this.domElement, this.options.cssprefix, 'title', (title) => {
@@ -377,48 +322,32 @@ export class WebXRButton {
         return this;
     }
 
-    /**
-     * Set the tooltip of the button
-     * @param {string} tooltip
-     * @return {EnterXRButton}
-     */
+
     setTooltip(tooltip) {
         this.domElement.title = tooltip;
         return this;
     }
 
-    /**
-     * Show the button
-     * @return {EnterXRButton}
-     */
+
     show() {
         this.domElement.style.display = this.__defaultDisplayStyle;
         return this;
     }
 
-    /**
-     * Hide the button
-     * @return {EnterXRButton}
-     */
+
     hide() {
         this.domElement.style.display = 'none';
         return this;
     }
 
-    /**
-     * Enable the button
-     * @return {EnterXRButton}
-     */
+
     enable() {
         this.__setDisabledAttribute(false);
         this.__forceDisabled = false;
         return this;
     }
 
-    /**
-     * Disable the button from being clicked
-     * @return {EnterXRButton}
-     */
+
     disable() {
         this.__setDisabledAttribute(true);
         this.__forceDisabled = true;
@@ -434,11 +363,6 @@ export class WebXRButton {
         }
     }
 
-    /**
-     * Set the disabled attribute
-     * @param {boolean} disabled
-     * @private
-     */
     __setDisabledAttribute(disabled) {
         if (disabled || this.__forceDisabled) {
             this.domElement.setAttribute('disabled', 'true');
@@ -447,10 +371,6 @@ export class WebXRButton {
         }
     }
 
-    /**
-     * Handling click event from button
-     * @private
-     */
     __onXRButtonClick() {
         if (this.session) {
             this.options.onEndSession(this.session);
@@ -476,10 +396,6 @@ export class WebXRButton {
         }
     }
 
-    /**
-     * Updates the display of the button based on it's current state
-     * @private
-     */
     __updateButtonState() {
         if (this.session) {
             this.setTitle(this.options.textExitXRTitle);
@@ -497,15 +413,6 @@ export class WebXRButton {
     }
 }
 
-/**
- * Function checking if a specific css class exists as child of element.
- *
- * @param {HTMLElement} el element to find child in
- * @param {string} cssPrefix css prefix of button
- * @param {string} suffix class name
- * @param {function} fn function to call if child is found
- * @private
- */
 const ifChild = (el, cssPrefix, suffix, fn) => {
     const c = el.querySelector('.' + cssPrefix + '-' + suffix);
     c && fn(c);

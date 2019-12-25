@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, HostListener, AfterViewInit, ViewChild, ElementRef, Renderer2 } from '@angular/core';
+import { Component, OnInit, Input, HostListener, AfterViewInit, ViewChild, Renderer2 } from '@angular/core';
 import { Scene, WebXRView } from './class/render/scenes/scene';
 import { WebXRButton } from './class/util/webxr-button';
 import { Renderer, createWebGLContext } from './class/render/core/renderer';
@@ -33,8 +33,8 @@ export class NgxView360Component implements OnInit, AfterViewInit {
    */
   @Input() leftController: string;
 
-  @ViewChild('buttonVr', { static: true }) buttonVr: ElementRef;
-  @ViewChild('webxrContainer', { static: true }) webxrContainer: ElementRef;
+  @ViewChild('buttonVr', { static: true }) buttonVr;
+  @ViewChild('webxrContainer', { static: true }) webxrContainer;
   xrButton = null;
   xrImmersiveRefSpace = null;
   inlineViewerHelper = null;

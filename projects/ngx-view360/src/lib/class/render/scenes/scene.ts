@@ -1,7 +1,7 @@
 import { RenderView } from '../core/renderer';
 import { InputRenderer } from '../nodes/input-renderer';
 import { Node } from '../core/node';
-import { vec3, quat } from '../math/gl-matrix.js';
+import { vec3, quat } from '../math/gl-matrix';
 import { Ray } from '../math/ray';
 
 export class WebXRView extends RenderView {

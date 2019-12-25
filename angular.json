@@ -125,7 +125,7 @@
       "projectType": "library",
       "root": "projects/ngx-view360",
       "sourceRoot": "projects/ngx-view360/src",
-      "prefix": "lib",
+      "prefix": "ngx",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-ng-packagr:build",

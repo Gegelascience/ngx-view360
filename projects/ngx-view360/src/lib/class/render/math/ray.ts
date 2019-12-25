@@ -1,5 +1,6 @@
 import { mat3, vec3 } from './gl-matrix';
 
+
 const normalMat = mat3.create();
 
 const RAY_INTERSECTION_OFFSET = 0.02;
