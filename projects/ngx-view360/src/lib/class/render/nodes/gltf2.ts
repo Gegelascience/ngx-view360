@@ -6,7 +6,7 @@ import { Gltf2Loader } from '../loader/gltf2';
 let gltfLoaderMap = new WeakMap();
 
 export class Gltf2Node extends Node {
-    _url;
+    _url: string;
     _promise;
     _resolver;
     _rejecter;

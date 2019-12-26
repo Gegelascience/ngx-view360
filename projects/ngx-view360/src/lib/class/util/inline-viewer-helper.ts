@@ -39,17 +39,17 @@ export class InlineViewerHelper {
         let prevTouchX = undefined;
         let prevTouchY = undefined;
 
-        canvas.addEventListener("touchstart", (event) => {
+        canvas.addEventListener('touchstart', (event) => {
             if (primaryTouch == undefined) {
-                let touch = event.changedTouches[0];
+                const touch = event.changedTouches[0];
                 primaryTouch = touch.identifier;
                 prevTouchX = touch.pageX;
                 prevTouchY = touch.pageY;
             }
         });
 
-        canvas.addEventListener("touchend", (event) => {
-            for (let touch of event.changedTouches) {
+        canvas.addEventListener('touchend', (event) => {
+            for (const touch of event.changedTouches) {
                 if (primaryTouch == touch.identifier) {
                     primaryTouch = undefined;
                     this.rotateView(touch.pageX - prevTouchX, touch.pageY - prevTouchY);
@@ -57,16 +57,16 @@ export class InlineViewerHelper {
             }
         });
 
-        canvas.addEventListener("touchcancel", (event) => {
-            for (let touch of event.changedTouches) {
+        canvas.addEventListener('touchcancel', (event) => {
+            for (const touch of event.changedTouches) {
                 if (primaryTouch == touch.identifier) {
                     primaryTouch = undefined;
                 }
             }
         });
 
-        canvas.addEventListener("touchmove", (event) => {
-            for (let touch of event.changedTouches) {
+        canvas.addEventListener('touchmove', (event) => {
+            for (const touch of event.changedTouches) {
                 if (primaryTouch == touch.identifier) {
                     this.rotateView(touch.pageX - prevTouchX, touch.pageY - prevTouchY);
                     prevTouchX = touch.pageX;
@@ -108,7 +108,7 @@ export class InlineViewerHelper {
         if (this.dirty) {
             // Represent the rotational component of the reference space as a
             // quaternion.
-            let invOrient = quat.create();
+            const invOrient = quat.create();
             quat.rotateX(invOrient, invOrient, -this.lookPitch);
             quat.rotateY(invOrient, invOrient, -this.lookYaw);
             let xform = new XRRigidTransform(

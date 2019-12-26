@@ -22,7 +22,7 @@ export class Scene extends Node {
     _statsStanding = false;
     _stats = null;
     _statsEnabled = false;
-    _inputRenderer = null;
+    _inputRenderer: InputRenderer = null;
     _resetInputEndFrame = true;
 
     _lastTimestamp = 0;
@@ -99,9 +99,9 @@ export class Scene extends Node {
                 const targetRay = new Ray(targetRayPose.transform.matrix);
                 const cursorDistance = 1.0;
                 const cursorPos = vec3.fromValues(
-                    targetRay.origin[0], //x
-                    targetRay.origin[1], //y
-                    targetRay.origin[2]  //z
+                    targetRay.origin[0], // x
+                    targetRay.origin[1], // y
+                    targetRay.origin[2]  // z
                 );
                 vec3.add(cursorPos, cursorPos, [
                     targetRay.direction[0] * cursorDistance,
@@ -235,7 +235,7 @@ export class Scene extends Node {
 
     endFrame() {
         if (this._inputRenderer && this._resetInputEndFrame) {
-            this._inputRenderer.reset();
+            this._inputRenderer.reset(undefined);
         }
 
         if (this._stats) {

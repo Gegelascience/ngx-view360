@@ -884,7 +884,7 @@ export class Renderer {
     _getProgramKey(name, defines) {
         let key = `${name}:`;
 
-        for (let define in defines) {
+        for (const define in defines) {
             key += `${define}=${defines[define]},`;
         }
 

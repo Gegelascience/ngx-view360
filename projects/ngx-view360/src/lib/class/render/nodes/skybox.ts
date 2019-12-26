@@ -60,9 +60,9 @@ class SkyboxMaterial extends Material {
 }
 
 export class SkyboxNode extends Node {
-    _url;
-    _displayMode;
-    _rotationY;
+    _url: string;
+    _displayMode: string;
+    _rotationY: number;
 
     constructor(options) {
         super();
@@ -73,36 +73,36 @@ export class SkyboxNode extends Node {
     }
 
     onRendererChanged(renderer) {
-        let vertices = [];
-        let indices = [];
+        const vertices = [];
+        const indices = [];
 
-        let latSegments = 40;
-        let lonSegments = 40;
+        const latSegments = 40;
+        const lonSegments = 40;
 
         // Create the vertices/indices
         for (let i = 0; i <= latSegments; ++i) {
-            let theta = i * Math.PI / latSegments;
-            let sinTheta = Math.sin(theta);
-            let cosTheta = Math.cos(theta);
+            const theta = i * Math.PI / latSegments;
+            const sinTheta = Math.sin(theta);
+            const cosTheta = Math.cos(theta);
 
-            let idxOffsetA = i * (lonSegments + 1);
-            let idxOffsetB = (i + 1) * (lonSegments + 1);
+            const idxOffsetA = i * (lonSegments + 1);
+            const idxOffsetB = (i + 1) * (lonSegments + 1);
 
             for (let j = 0; j <= lonSegments; ++j) {
-                let phi = (j * 2 * Math.PI / lonSegments) + this._rotationY;
-                let x = Math.sin(phi) * sinTheta;
-                let y = cosTheta;
-                let z = -Math.cos(phi) * sinTheta;
-                let u = (j / lonSegments);
-                let v = (i / latSegments);
+                const phi = (j * 2 * Math.PI / lonSegments) + this._rotationY;
+                const x = Math.sin(phi) * sinTheta;
+                const y = cosTheta;
+                const z = -Math.cos(phi) * sinTheta;
+                const u = (j / lonSegments);
+                const v = (i / latSegments);
 
                 // Vertex shader will force the geometry to the far plane, so the
                 // radius of the sphere is immaterial.
                 vertices.push(x, y, z, u, v);
 
                 if (i < latSegments && j < lonSegments) {
-                    let idxA = idxOffsetA + j;
-                    let idxB = idxOffsetB + j;
+                    const idxA = idxOffsetA + j;
+                    const idxB = idxOffsetB + j;
 
                     indices.push(idxA, idxB, idxA + 1,
                         idxB, idxB + 1, idxA + 1);
@@ -110,18 +110,18 @@ export class SkyboxNode extends Node {
             }
         }
 
-        let vertexBuffer = renderer.createRenderBuffer(GL.ARRAY_BUFFER, new Float32Array(vertices));
-        let indexBuffer = renderer.createRenderBuffer(GL.ELEMENT_ARRAY_BUFFER, new Uint16Array(indices));
+        const vertexBuffer = renderer.createRenderBuffer(GL.ARRAY_BUFFER, new Float32Array(vertices));
+        const indexBuffer = renderer.createRenderBuffer(GL.ELEMENT_ARRAY_BUFFER, new Uint16Array(indices));
 
-        let attribs = [
+        const attribs = [
             new PrimitiveAttribute('POSITION', vertexBuffer, 3, GL.FLOAT, 20, 0),
             new PrimitiveAttribute('TEXCOORD_0', vertexBuffer, 2, GL.FLOAT, 20, 12),
         ];
 
-        let primitive = new Primitive(attribs, indices.length, 4);
+        const primitive = new Primitive(attribs, indices.length, 4);
         primitive.setIndexBuffer(indexBuffer, 0, 5123);
 
-        let material = new SkyboxMaterial();
+        const material = new SkyboxMaterial();
         material.image.texture = new UrlTexture(this._url);
 
         switch (this._displayMode) {
@@ -143,7 +143,7 @@ export class SkyboxNode extends Node {
                 break;
         }
 
-        let renderPrimitive = renderer.createRenderPrimitive(primitive, material);
+        const renderPrimitive = renderer.createRenderPrimitive(primitive, material);
         this.addRenderPrimitive(renderPrimitive);
     }
 }

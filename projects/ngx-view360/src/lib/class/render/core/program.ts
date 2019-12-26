@@ -39,7 +39,7 @@ export class Program {
 
         if (attribMap) {
             this.attrib = {};
-            for (let attribName in attribMap) {
+            for (const attribName in attribMap) {
                 gl.bindAttribLocation(this.program, attribMap[attribName], attribName);
                 this.attrib[attribName] = attribMap[attribName];
             }

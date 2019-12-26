@@ -21,7 +21,7 @@ const ERROR_UNKOWN = 'error-unkown';
 //
 
 const _LOGO_SCALE = 0.8;
-let _WEBXR_UI_CSS_INJECTED = {};
+const _WEBXR_UI_CSS_INJECTED = {};
 
 
 const generateInnerHTML = (cssPrefix, height) => {
@@ -74,7 +74,7 @@ const createNoXRIcon = (cssPrefix, height) => {
 };
 
 const generateXRIconString = (cssPrefix, height) => {
-    let aspect = 28 / 18;
+    const aspect = 28 / 18;
     return `<svg class="${cssPrefix}-svg" version="1.1" x="0px" y="0px"
         width="${aspect * height}px" height="${height}px" viewBox="0 0 28 18" xml:space="preserve">
         <path d="M26.8,1.1C26.1,0.4,25.1,0,24.2,0H3.4c-1,0-1.7,0.4-2.4,1.1C0.3,1.7,0,2.7,0,3.6v10.7
@@ -88,7 +88,7 @@ const generateXRIconString = (cssPrefix, height) => {
 };
 
 const generateNoXRIconString = (cssPrefix, height) => {
-    let aspect = 28 / 18;
+    const aspect = 28 / 18;
     return `<svg class="${cssPrefix}-svg-error" x="0px" y="0px"
         width="${aspect * height}px" height="${aspect * height}px" viewBox="0 0 28 28" xml:space="preserve">
         <path d="M17.6,13.4c0-0.2-0.1-0.4-0.1-0.6c0-1.6,1.3-2.8,2.8-2.8s2.8,1.3,2.8,2.8s-1.3,2.8-2.8,2.8
@@ -375,12 +375,12 @@ export class WebXRButton {
         if (this.session) {
             this.options.onEndSession(this.session);
         } else if (this._enabled) {
-            let requestPromise = this.options.onRequestSession();
+            const requestPromise = this.options.onRequestSession();
             if (requestPromise) {
                 requestPromise.catch((err) => {
                     // Reaching this point indicates that the session request has failed
                     // and we should communicate that to the user somehow.
-                    let errorMsg = `XRSession creation failed: ${err.message}`;
+                    const errorMsg = `XRSession creation failed: ${err.message}`;
                     this.setTooltip(errorMsg);
                     console.error(errorMsg);
 

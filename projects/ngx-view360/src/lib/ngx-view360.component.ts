@@ -35,27 +35,40 @@ export class NgxView360Component implements OnInit, AfterViewInit {
 
   @ViewChild('buttonVr', { static: true }) buttonVr;
   @ViewChild('webxrContainer', { static: true }) webxrContainer;
-  xrButton = null;
+  xrButton: WebXRButton = null;
   xrImmersiveRefSpace = null;
-  inlineViewerHelper = null;
+  inlineViewerHelper: InlineViewerHelper = null;
   gl = null;
-  renderer = null;
+  renderer: Renderer = null;
   scene = new Scene();
 
 
   constructor(private rendererAngular: Renderer2) { }
 
   ngOnInit() {
-
-    this.scene.addNode(new SkyboxNode({
-      url: this.imageSrc,
-      displayMode: this.displayMode
-    }));
+    if (this.imageSrc !== null && this.imageSrc !== undefined) {
+      this.scene.addNode(new SkyboxNode({
+        url: this.imageSrc,
+        displayMode: this.displayMode
+      }));
+    } else {
+      console.error('path to image invalid');
+    }
   }
 
   ngAfterViewInit() {
     // Start the XR application.
-    this.initXR();
+    if (this.imageSrc !== null && this.imageSrc !== undefined) {
+      if (this.leftController !== null && this.leftController !== undefined) {
+        if (this.rightController !== null && this.rightController !== undefined) {
+          this.initXR();
+        } else {
+          console.error('path to 3D model of right controller invalid');
+        }
+      } else {
+        console.error('path to 3D model of left controller invalid');
+      }
+    }
   }
 
   initXR() {

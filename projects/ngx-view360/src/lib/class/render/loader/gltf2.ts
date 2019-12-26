@@ -249,7 +249,7 @@ export class Gltf2Loader {
                     attributes.push(glAttribute);
                 }
 
-                let glPrimitive = new Primitive(attributes, elementCount, primitive.mode);
+                const glPrimitive = new Primitive(attributes, elementCount, primitive.mode);
 
                 if ('indices' in primitive) {
                     const accessor = accessors[primitive.indices];
@@ -279,7 +279,7 @@ export class Gltf2Loader {
         const sceneNode = new Node();
         const scene = json.scenes[json.scene];
         for (const nodeId of scene.nodes) {
-            let node = json.nodes[nodeId];
+            const node = json.nodes[nodeId];
             sceneNode.addNode(
                 this.processNodes(node, json.nodes, meshes));
         }
@@ -316,7 +316,7 @@ export class Gltf2Loader {
 
         if (node.children) {
             for (const nodeId of node.children) {
-                let node = nodes[nodeId];
+                const node = nodes[nodeId];
                 glNode.addNode(this.processNodes(node, nodes, meshes));
             }
         }
