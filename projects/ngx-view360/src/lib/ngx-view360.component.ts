@@ -96,7 +96,7 @@ export class NgxView360Component implements OnInit, AfterViewInit {
     this.rendererAngular.appendChild(this.webxrContainer.nativeElement, this.gl.canvas);
     this.rendererAngular.setStyle(this.webxrContainer.nativeElement.firstChild, 'position', 'relative');
     this.rendererAngular.setStyle(this.webxrContainer.nativeElement.firstChild, 'z-index', '0');
-    this.rendererAngular.setStyle(this.webxrContainer.nativeElement.firstChild, 'width', '80%');
+    this.rendererAngular.setStyle(this.webxrContainer.nativeElement.firstChild, 'width', '100%');
     this.rendererAngular.setStyle(this.webxrContainer.nativeElement.firstChild, 'height', 'inherit');
     this.rendererAngular.setStyle(this.webxrContainer.nativeElement.firstChild, 'touch-action', 'none');
 
