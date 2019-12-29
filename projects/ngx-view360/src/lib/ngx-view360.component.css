@@ -1,16 +1,12 @@
 
 .componentContainer{
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  width:80vw;
 }
 
 .canvasContainer{
     width: 100vw;
     height: 80vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    
 }
 
 .vrButton{
@@ -19,6 +15,8 @@
   max-width: 420px;
   padding: 0.5em;
   background-color: white;
-  margin-bottom: 0.5em;
   border-radius: 2px;
+  position: relative;
+  margin-top: -70px;
+  float: right;
 }
