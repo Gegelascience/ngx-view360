@@ -2,6 +2,8 @@ import { Material, RENDER_ORDER } from '../core/material';
 import { Node } from '../core/node';
 import { Primitive, PrimitiveAttribute } from '../core/primitives';
 import { DataTexture } from '../core/texture';
+import { Renderer } from '../core/renderer';
+import { Gltf2Node } from './gltf2';
 
 const GL = WebGLRenderingContext; // For enums
 
@@ -189,14 +191,14 @@ class CursorHiddenMaterial extends Material {
 }
 
 export class InputRenderer extends Node {
-    _maxInputElements;
+    _maxInputElements: number;
     _controllers;
     _controllerNodes;
     _lasers;
     _cursors;
-    _activeControllers;
-    _activeLasers;
-    _activeCursors;
+    _activeControllers: number;
+    _activeLasers: number;
+    _activeCursors: number;
 
     constructor() {
         super();
@@ -213,7 +215,7 @@ export class InputRenderer extends Node {
         this._activeCursors = 0;
     }
 
-    onRendererChanged(renderer) {
+    onRendererChanged(renderer: Renderer) {
         this._controllers = [];
         this._controllerNodes = null;
         this._lasers = null;
@@ -224,7 +226,7 @@ export class InputRenderer extends Node {
         this._activeCursors = 0;
     }
 
-    setControllerMesh(controllerNode, handedness = 'right') {
+    setControllerMesh(controllerNode: Gltf2Node, handedness = 'right') {
         if (!this._controllerNodes) {
             this._controllerNodes = {};
         }

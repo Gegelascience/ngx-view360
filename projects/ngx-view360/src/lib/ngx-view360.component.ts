@@ -40,7 +40,7 @@ export class NgxView360Component implements OnInit, AfterViewInit {
   inlineViewerHelper: InlineViewerHelper = null;
   gl = null;
   renderer: Renderer = null;
-  scene = new Scene();
+  scene: Scene = new Scene();
 
 
   constructor(private rendererAngular: Renderer2) { }

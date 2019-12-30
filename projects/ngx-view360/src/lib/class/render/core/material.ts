@@ -184,7 +184,7 @@ export class MaterialState {
 }
 
 class MaterialSampler {
-    _uniformName;
+    _uniformName: string;
     _texture;
     constructor(uniformName) {
         this._uniformName = uniformName;
@@ -201,9 +201,9 @@ class MaterialSampler {
 }
 
 class MaterialUniform {
-    _uniformName;
+    _uniformName: string;
     _value;
-    _length;
+    _length: number;
 
     constructor(uniformName, defaultValue, length) {
         this._uniformName = uniformName;

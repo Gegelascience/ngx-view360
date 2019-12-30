@@ -1,5 +1,6 @@
 import { Ray } from '../math/ray';
 import { mat4, vec3, quat } from '../math/gl-matrix';
+import { Renderer } from './renderer';
 
 const DEFAULT_TRANSLATION = new Float32Array([0, 0, 0]);
 const DEFAULT_ROTATION = new Float32Array([0, 0, 0, 1]);
@@ -8,22 +9,22 @@ const DEFAULT_SCALE = new Float32Array([1, 1, 1]);
 const tmpRayMatrix = mat4.create();
 
 export class Node {
-    name;
+    name: string;
     children;
     parent;
-    visible;
-    selectable;
+    visible: boolean;
+    selectable: boolean;
     _matrix;
-    _dirtyTRS;
+    _dirtyTRS: boolean;
     _translation;
     _rotation;
     _scale;
-    _dirtyWorldMatrix;
+    _dirtyWorldMatrix: boolean;
     _worldMatrix;
-    _activeFrameId;
-    _hoverFrameId;
+    _activeFrameId: number;
+    _hoverFrameId: number;
     _renderPrimitives;
-    _renderer;
+    _renderer: Renderer;
     _selectHandler;
 
     constructor() {
@@ -51,8 +52,8 @@ export class Node {
         this._selectHandler = null;
     }
 
-    _setRenderer(renderer) {
-        if (this._renderer == renderer) {
+    _setRenderer(renderer: Renderer) {
+        if (this._renderer === renderer) {
             return;
         }
 
@@ -145,7 +146,7 @@ export class Node {
     }
 
     addNode(value) {
-        if (!value || value.parent == this) {
+        if (!value || value.parent === this) {
             return;
         }
 
@@ -383,15 +384,15 @@ export class Node {
 
     hitTest(rigidTransform) {
         if (this.selectable && this.visible) {
-            const intersection = this._hitTestSelectableNode(rigidTransform);
+            const intersect = this._hitTestSelectableNode(rigidTransform);
 
-            if (intersection) {
+            if (intersect) {
                 const ray = new Ray(rigidTransform.matrix);
                 const origin = vec3.fromValues(ray.origin.x, ray.origin.y, ray.origin.z);
                 return {
                     node: this,
-                    intersection: intersection,
-                    distance: vec3.distance(origin, intersection),
+                    intersection: intersect,
+                    distance: vec3.distance(origin, intersect),
                 };
             }
             return null;

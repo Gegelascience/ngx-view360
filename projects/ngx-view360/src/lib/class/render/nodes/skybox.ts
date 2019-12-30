@@ -2,6 +2,7 @@ import { Material, RENDER_ORDER } from '../core/material';
 import { Primitive, PrimitiveAttribute } from '../core/primitives';
 import { Node } from '../core/node';
 import { UrlTexture } from '../core/texture';
+import { Renderer } from '../core/renderer';
 
 const GL = WebGLRenderingContext; // For enums
 
@@ -72,7 +73,7 @@ export class SkyboxNode extends Node {
         this._rotationY = options.rotationY || 0;
     }
 
-    onRendererChanged(renderer) {
+    onRendererChanged(renderer: Renderer) {
         const vertices = [];
         const indices = [];
 

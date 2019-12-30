@@ -1,15 +1,15 @@
 import { vec3 } from '../math/gl-matrix';
 
 export class PrimitiveAttribute {
-    name;
+    name: string;
     buffer;
-    componentCount;
-    componentType;
-    stride;
-    byteOffset;
-    normalized;
+    componentCount: number;
+    componentType: number;
+    stride: number;
+    byteOffset: number;
+    normalized: boolean;
 
-    constructor(name, buffer, componentCount, componentType, stride, byteOffset) {
+    constructor(name: string, buffer, componentCount: number, componentType: number, stride: number, byteOffset: number) {
         this.name = name;
         this.buffer = buffer;
         this.componentCount = componentCount || 3;
@@ -22,15 +22,15 @@ export class PrimitiveAttribute {
 
 export class Primitive {
     attributes;
-    elementCount;
-    mode;
+    elementCount: number;
+    mode: number;
     indexBuffer;
-    indexByteOffset;
-    indexType;
+    indexByteOffset: number;
+    indexType: number;
     _min;
     _max;
 
-    constructor(attributes, elementCount, mode) {
+    constructor(attributes, elementCount: number, mode: number) {
         this.attributes = attributes || [];
         this.elementCount = elementCount || 0;
         this.mode = mode || 4; // gl.TRIANGLES;
@@ -41,7 +41,7 @@ export class Primitive {
         this._max = null;
     }
 
-    setIndexBuffer(indexBuffer, byteOffset, indexType) {
+    setIndexBuffer(indexBuffer, byteOffset: number, indexType: number) {
         this.indexBuffer = indexBuffer;
         this.indexByteOffset = byteOffset || 0;
         this.indexType = indexType || 5123; // gl.UNSIGNED_SHORT;

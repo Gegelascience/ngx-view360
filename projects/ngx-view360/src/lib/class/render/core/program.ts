@@ -4,7 +4,7 @@ export class Program {
     attrib;
     uniform;
     defines;
-    _firstUse;
+    _firstUse: boolean;
     _nextUseCallbacks;
     _vertShader;
     _fragShader;

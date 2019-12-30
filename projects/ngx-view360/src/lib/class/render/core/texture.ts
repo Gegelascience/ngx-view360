@@ -167,8 +167,8 @@ let nextDataTextureIndex = 0;
 
 export class DataTexture extends Texture {
     _data;
-    _width;
-    _height;
+    _width: number;
+    _height: number;
     _format;
     _type;
     _key;

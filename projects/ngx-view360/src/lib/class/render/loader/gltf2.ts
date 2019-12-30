@@ -2,6 +2,7 @@ import { PbrMaterial } from '../materials/pbr.js';
 import { Node } from '../core/node';
 import { Primitive, PrimitiveAttribute } from '../core/primitives';
 import { ImageTexture, ColorTexture } from '../core/texture';
+import { Renderer } from '../core/renderer.js';
 
 const GL = WebGLRenderingContext; // For enums
 
@@ -11,17 +12,17 @@ const CHUNK_TYPE = {
     BIN: 0x004E4942,
 };
 
-function isAbsoluteUri(uri) {
+function isAbsoluteUri(uri: string) {
     const absRegEx = new RegExp('^' + window.location.protocol, 'i');
     return !!uri.match(absRegEx);
 }
 
-function isDataUri(uri) {
+function isDataUri(uri: string) {
     const dataRegEx = /^data:/;
     return !!uri.match(dataRegEx);
 }
 
-function resolveUri(uri, baseUrl) {
+function resolveUri(uri: string, baseUrl: string) {
     if (isAbsoluteUri(uri) || isDataUri(uri)) {
         return uri;
     }
@@ -44,15 +45,15 @@ function getComponentCount(type) {
  */
 
 export class Gltf2Loader {
-    renderer;
+    renderer: Renderer;
     _gl;
 
-    constructor(renderer) {
+    constructor(renderer: Renderer) {
         this.renderer = renderer;
         this._gl = renderer._gl;
     }
 
-    loadFromUrl(url) {
+    loadFromUrl(url: string) {
         return fetch(url)
             .then((response) => {
                 const i = url.lastIndexOf('/');
@@ -72,17 +73,17 @@ export class Gltf2Loader {
             });
     }
 
-    loadFromBinary(arrayBuffer, baseUrl) {
+    loadFromBinary(arrayBuffer, baseUrl: string) {
         const headerView = new DataView(arrayBuffer, 0, 12);
         const magic = headerView.getUint32(0, true);
         const version = headerView.getUint32(4, true);
         const length = headerView.getUint32(8, true);
 
-        if (magic != GLB_MAGIC) {
+        if (magic !== GLB_MAGIC) {
             throw new Error('Invalid magic string in binary header.');
         }
 
-        if (version != 2) {
+        if (version !== 2) {
             throw new Error('Incompatible version in binary header.');
         }
 
@@ -106,12 +107,12 @@ export class Gltf2Loader {
         return this.loadFromJson(json, baseUrl, chunks[CHUNK_TYPE.BIN]);
     }
 
-    loadFromJson(json, baseUrl, binaryChunk) {
+    loadFromJson(json, baseUrl: string, binaryChunk) {
         if (!json.asset) {
             throw new Error('Missing asset description.');
         }
 
-        if (json.asset.minVersion != '2.0' && json.asset.version != '2.0') {
+        if (json.asset.minVersion !== '2.0' && json.asset.version !== '2.0') {
             throw new Error('Incompatible asset version.');
         }
 
@@ -368,10 +369,10 @@ class Gltf2BufferView {
 
 class Gltf2Resource {
     json;
-    baseUrl;
+    baseUrl: string;
     _dataPromise;
     _texture;
-    constructor(json, baseUrl, arrayBuffer) {
+    constructor(json, baseUrl: string, arrayBuffer) {
         this.json = json;
         this.baseUrl = baseUrl;
 

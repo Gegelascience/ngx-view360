@@ -5,13 +5,13 @@ const LOOK_SPEED = 0.0025;
 declare var XRRigidTransform: any;
 
 export class InlineViewerHelper {
-    lookYaw;
-    lookPitch;
-    viewerHeight;
+    lookYaw: number;
+    lookPitch: number;
+    viewerHeight: number;
     canvas;
     baseRefSpace;
     refSpace;
-    dirty;
+    dirty: boolean;
 
     constructor(canvas, referenceSpace) {
         this.lookYaw = 0;
@@ -35,12 +35,12 @@ export class InlineViewerHelper {
 
         // Keep track of touch-related state so that users can touch and drag on
         // the canvas to adjust the viewer pose in an inline session.
-        let primaryTouch = undefined;
-        let prevTouchX = undefined;
-        let prevTouchY = undefined;
+        let primaryTouch;
+        let prevTouchX;
+        let prevTouchY;
 
         canvas.addEventListener('touchstart', (event) => {
-            if (primaryTouch == undefined) {
+            if (primaryTouch === undefined) {
                 const touch = event.changedTouches[0];
                 primaryTouch = touch.identifier;
                 prevTouchX = touch.pageX;
@@ -50,7 +50,7 @@ export class InlineViewerHelper {
 
         canvas.addEventListener('touchend', (event) => {
             for (const touch of event.changedTouches) {
-                if (primaryTouch == touch.identifier) {
+                if (primaryTouch === touch.identifier) {
                     primaryTouch = undefined;
                     this.rotateView(touch.pageX - prevTouchX, touch.pageY - prevTouchY);
                 }
@@ -59,7 +59,7 @@ export class InlineViewerHelper {
 
         canvas.addEventListener('touchcancel', (event) => {
             for (const touch of event.changedTouches) {
-                if (primaryTouch == touch.identifier) {
+                if (primaryTouch === touch.identifier) {
                     primaryTouch = undefined;
                 }
             }
@@ -67,7 +67,7 @@ export class InlineViewerHelper {
 
         canvas.addEventListener('touchmove', (event) => {
             for (const touch of event.changedTouches) {
-                if (primaryTouch == touch.identifier) {
+                if (primaryTouch === touch.identifier) {
                     this.rotateView(touch.pageX - prevTouchX, touch.pageY - prevTouchY);
                     prevTouchX = touch.pageX;
                     prevTouchY = touch.pageY;
@@ -77,7 +77,7 @@ export class InlineViewerHelper {
     }
 
     setHeight(value) {
-        if (this.viewerHeight != value) {
+        if (this.viewerHeight !== value) {
             this.viewerHeight = value;
         }
         this.dirty = true;

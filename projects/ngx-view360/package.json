@@ -1,6 +1,6 @@
 {
   "name": "ngx-view360",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "A lib to use 360 view in VR with Angular framework ",
   "author": "VERCHERE Rémi",
   "repository": {

@@ -1,5 +1,6 @@
 import { Node } from '../core/node';
 import { Gltf2Loader } from '../loader/gltf2';
+import { Renderer } from '../core/renderer';
 
 // Using a weak map here allows us to cache a loader per-renderer without
 // modifying the renderer object or leaking memory when it's garbage collected.
@@ -20,7 +21,7 @@ export class Gltf2Node extends Node {
         this._rejecter = null;
     }
 
-    onRendererChanged(renderer) {
+    onRendererChanged(renderer: Renderer) {
         let loader = gltfLoaderMap.get(renderer);
         if (!loader) {
             loader = new Gltf2Loader(renderer);

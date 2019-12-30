@@ -111,9 +111,9 @@ const generateCSS = (options, fontSize = 18) => {
     const cssPrefix = options.cssprefix;
 
     let borderRadius;
-    if (options.corners == 'round') {
+    if (options.corners === 'round') {
         borderRadius = options.height / 2;
-    } else if (options.corners == 'square') {
+    } else if (options.corners === 'square') {
         borderRadius = 2;
     } else {
         borderRadius = options.corners;
@@ -245,11 +245,11 @@ const generateCSS = (options, fontSize = 18) => {
 export class WebXRButton {
 
     options;
-    _enabled;
+    _enabled: boolean;
     session;
     domElement;
-    __defaultDisplayStyle;
-    __forceDisabled;
+    __defaultDisplayStyle: string;
+    __forceDisabled: boolean;
 
     constructor(options) {
         options = options || {};
@@ -266,8 +266,8 @@ export class WebXRButton {
         options.textXRNotFoundTitle = options.textXRNotFoundTitle || 'VR NOT FOUND';
         options.textExitXRTitle = options.textExitXRTitle || 'EXIT VR';
 
-        options.onRequestSession = options.onRequestSession || (function () { });
-        options.onEndSession = options.onEndSession || (function () { });
+        options.onRequestSession = options.onRequestSession;
+        options.onEndSession = options.onEndSession;
 
         options.injectCSS = options.injectCSS !== false;
 

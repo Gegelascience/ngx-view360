@@ -84,7 +84,7 @@ export class RenderView {
     projectionMatrix;
     viewport;
     _eye;
-    _eyeIndex;
+    _eyeIndex: number;
     _viewMatrix;
     viewTransform;
 
@@ -93,7 +93,7 @@ export class RenderView {
         this.viewport = viewport;
         // If an eye isn't given the left eye is assumed.
         this._eye = eye;
-        this._eyeIndex = (eye == 'left' ? 0 : 1);
+        this._eyeIndex = (eye === 'left' ? 0 : 1);
 
         // Compute the view matrix
         if (viewTransform instanceof Float32Array) {
@@ -126,7 +126,7 @@ export class RenderView {
 
     set eye(value) {
         this._eye = value;
-        this._eyeIndex = (value == 'left' ? 0 : 1);
+        this._eyeIndex = (value === 'left' ? 0 : 1);
     }
 
     get eyeIndex() {
@@ -137,7 +137,7 @@ export class RenderView {
 class RenderBuffer {
     _target;
     _usage;
-    _length;
+    _length: number;
     _buffer;
     _promise;
     constructor(target, usage, buffer, length = 0) {
@@ -202,8 +202,8 @@ class RenderPrimitive {
     _indexBuffer;
     _indexByteOffset;
     _indexType;
-    _min;
-    _max;
+    _min: number;
+    _max: number;
 
     constructor(primitive) {
         this._activeFrameId = 0;
@@ -274,7 +274,7 @@ class RenderPrimitive {
     }
 
     markActive(frameId) {
-        if (this._complete && this._activeFrameId != frameId) {
+        if (this._complete && this._activeFrameId !== frameId) {
             if (this._material) {
                 if (!this._material.markActive(frameId)) {
                     return;
@@ -321,7 +321,7 @@ class RenderPrimitive {
 
 export class RenderTexture {
     _texture;
-    _complete;
+    _complete: boolean;
     _activeFrameId;
     _activeCallback;
 
@@ -333,7 +333,7 @@ export class RenderTexture {
     }
 
     markActive(frameId) {
-        if (this._activeCallback && this._activeFrameId != frameId) {
+        if (this._activeCallback && this._activeFrameId !== frameId) {
             this._activeFrameId = frameId;
             this._activeCallback(this);
         }
@@ -357,7 +357,7 @@ function setCap(gl, glEnum, cap, prevState, state) {
 
 class RenderMaterialSampler {
     _renderer;
-    _uniformName;
+    _uniformName: string;
     _renderTexture;
     _index;
 
@@ -374,9 +374,9 @@ class RenderMaterialSampler {
 }
 
 class RenderMaterialUniform {
-    _uniformName;
+    _uniformName: string;
     _uniform;
-    _length;
+    _length: number;
     _value;
 
     constructor(materialUniform) {
@@ -391,7 +391,7 @@ class RenderMaterialUniform {
     }
 
     set value(value) {
-        if (this._value.length == 1) {
+        if (this._value.length === 1) {
             this._value[0] = value;
         } else {
             for (let i = 0; i < this._value.length; ++i) {
@@ -402,18 +402,18 @@ class RenderMaterialUniform {
 }
 
 class RenderMaterial {
-    _program;
+    _program: Program;
     _state;
-    _activeFrameId;
-    _completeForActiveFrame;
+    _activeFrameId: number;
+    _completeForActiveFrame: boolean;
     _samplerDictionary;
     _samplers;
     _uniform_dictionary;
     _uniforms;
-    _firstBind;
+    _firstBind: boolean;
     _renderOrder;
 
-    constructor(renderer, material, program) {
+    constructor(renderer, material, program: Program) {
         this._program = program;
         this._state = material.state._state;
         this._activeFrameId = 0;
@@ -438,7 +438,7 @@ class RenderMaterial {
         this._firstBind = true;
 
         this._renderOrder = material.renderOrder;
-        if (this._renderOrder == RENDER_ORDER.DEFAULT) {
+        if (this._renderOrder === RENDER_ORDER.DEFAULT) {
             if (this._state & CAP.BLEND) {
                 this._renderOrder = RENDER_ORDER.TRANSPARENT;
             } else {
@@ -492,7 +492,7 @@ class RenderMaterial {
     }
 
     markActive(frameId) {
-        if (this._activeFrameId != frameId) {
+        if (this._activeFrameId !== frameId) {
             this._activeFrameId = frameId;
             this._completeForActiveFrame = true;
             for (let i = 0; i < this._samplers.length; ++i) {
@@ -563,15 +563,15 @@ class RenderMaterial {
 
 export class Renderer {
     _gl;
-    _frameId;
+    _frameId: number;
     _programCache;
     _textureCache;
     _renderPrimitives;
     _cameraPositions;
     _vaoExt;
     _defaultFragPrecision;
-    _depthMaskNeedsReset;
-    _colorMaskNeedsReset;
+    _depthMaskNeedsReset: boolean;
+    _colorMaskNeedsReset: boolean;
     _globalLightColor;
     _globalLightDir;
 
@@ -684,7 +684,7 @@ export class Renderer {
 
         // If there's only one view then flip the algorithm a bit so that we're only
         // setting the viewport once.
-        if (views.length == 1 && views[0].viewport) {
+        if (views.length === 1 && views[0].viewport) {
             const vp = views[0].viewport;
             this._gl.viewport(vp.x, vp.y, vp.width, vp.height);
         }
@@ -733,14 +733,14 @@ export class Renderer {
         // Loop through every primitive known to the renderer.
         for (const primitive of renderPrimitives) {
             // Skip over those that haven't been marked as active for this frame.
-            if (primitive._activeFrameId != this._frameId) {
+            if (primitive._activeFrameId !== this._frameId) {
                 continue;
             }
 
             // Bind the primitive material's program if it's different than the one we
             // were using for the previous primitive.
             // TODO: The ording of this could be more efficient.
-            if (program != primitive._material._program) {
+            if (program !== primitive._material._program) {
                 program = primitive._material._program;
                 program.use();
 
@@ -752,7 +752,7 @@ export class Renderer {
                     gl.uniform3fv(program.uniform.LIGHT_COLOR, this._globalLightColor);
                 }
 
-                if (views.length == 1) {
+                if (views.length === 1) {
                     gl.uniformMatrix4fv(program.uniform.PROJECTION_MATRIX, false, views[0].projectionMatrix);
                     gl.uniformMatrix4fv(program.uniform.VIEW_MATRIX, false, views[0].viewMatrix);
                     gl.uniform3fv(program.uniform.CAMERA_POSITION, this._cameraPositions[0]);
@@ -760,7 +760,7 @@ export class Renderer {
                 }
             }
 
-            if (material != primitive._material) {
+            if (material !== primitive._material) {
                 this._bindMaterialState(primitive._material, material);
                 primitive._material.bind(gl, program, material);
                 material = primitive._material;
@@ -793,7 +793,7 @@ export class Renderer {
                 }
 
                 for (const instance of primitive._instances) {
-                    if (instance._activeFrameId != this._frameId) {
+                    if (instance._activeFrameId !== this._frameId) {
                         continue;
                     }
 
@@ -947,8 +947,8 @@ export class Renderer {
         const gl = this._gl;
 
         // If the active attributes have changed then update the active set.
-        if (attribMask != primitive._attributeMask) {
-            for (let attrib in ATTRIB) {
+        if (attribMask !== primitive._attributeMask) {
+            for (const attrib in ATTRIB) {
                 if (primitive._attributeMask & ATTRIB_MASK[attrib]) {
                     gl.enableVertexAttribArray(ATTRIB[attrib]);
                 } else {
@@ -981,7 +981,7 @@ export class Renderer {
         const prevState = prevMaterial ? prevMaterial._state : ~state;
 
         // Return early if both materials use identical state
-        if (state == prevState) {
+        if (state === prevState) {
             return;
         }
 
