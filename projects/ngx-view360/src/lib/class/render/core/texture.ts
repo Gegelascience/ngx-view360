@@ -15,7 +15,7 @@ export class TextureSampler {
 
 export class Texture {
     sampler;
-    mipmap;
+    mipmap: boolean;
     constructor() {
         this.sampler = new TextureSampler();
         this.mipmap = true;
@@ -101,65 +101,10 @@ export class ImageTexture extends Texture {
 }
 
 export class UrlTexture extends ImageTexture {
-    constructor(url) {
+    constructor(url: string) {
         const img = new Image();
         super(img);
         img.src = url;
-    }
-}
-
-export class BlobTexture extends ImageTexture {
-    constructor(blob) {
-        const img = new Image();
-        super(img);
-        img.src = window.URL.createObjectURL(blob);
-    }
-}
-
-export class VideoTexture extends Texture {
-    _video;
-    _promise;
-
-    constructor(video) {
-        super();
-
-        this._video = video;
-
-        if (video.readyState >= 2) {
-            this._promise = Promise.resolve(this);
-        } else if (video.error) {
-            this._promise = Promise.reject(video.error);
-        } else {
-            this._promise = new Promise((resolve, reject) => {
-                video.addEventListener('loadeddata', () => resolve(this));
-                video.addEventListener('error', reject);
-            });
-        }
-    }
-
-    get format() {
-        // TODO: Can be RGB in some cases.
-        return GL.RGBA;
-    }
-
-    get width() {
-        return this._video.videoWidth;
-    }
-
-    get height() {
-        return this._video.videoHeight;
-    }
-
-    waitForComplete() {
-        return this._promise;
-    }
-
-    get textureKey() {
-        return this._video.src;
-    }
-
-    get source() {
-        return this._video;
     }
 }
 
@@ -171,9 +116,9 @@ export class DataTexture extends Texture {
     _height: number;
     _format;
     _type;
-    _key;
+    _key: string;
 
-    constructor(data, width, height, format = GL.RGBA, type = GL.UNSIGNED_BYTE) {
+    constructor(data, width: number, height: number, format = GL.RGBA, type = GL.UNSIGNED_BYTE) {
         super();
 
         this._data = data;

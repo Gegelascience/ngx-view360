@@ -186,7 +186,7 @@ export class MaterialState {
 class MaterialSampler {
     _uniformName: string;
     _texture;
-    constructor(uniformName) {
+    constructor(uniformName: string) {
         this._uniformName = uniformName;
         this._texture = null;
     }
@@ -205,7 +205,7 @@ class MaterialUniform {
     _value;
     _length: number;
 
-    constructor(uniformName, defaultValue, length) {
+    constructor(uniformName: string, defaultValue, length: number) {
         this._uniformName = uniformName;
         this._value = defaultValue;
         this._length = length;
@@ -228,10 +228,10 @@ class MaterialUniform {
 }
 
 export class Material {
-    state;
-    renderOrder;
-    _samplers;
-    _uniforms;
+    state: MaterialState;
+    renderOrder: number;
+    _samplers: MaterialSampler[];
+    _uniforms: MaterialUniform[];
 
     constructor() {
         this.state = new MaterialState();
@@ -240,13 +240,13 @@ export class Material {
         this._uniforms = [];
     }
 
-    defineSampler(uniformName) {
+    defineSampler(uniformName: string) {
         const sampler = new MaterialSampler(uniformName);
         this._samplers.push(sampler);
         return sampler;
     }
 
-    defineUniform(uniformName, defaultValue = null, length = 0) {
+    defineUniform(uniformName: string, defaultValue = null, length = 0) {
         const uniform = new MaterialUniform(uniformName, defaultValue, length);
         this._uniforms.push(uniform);
         return uniform;

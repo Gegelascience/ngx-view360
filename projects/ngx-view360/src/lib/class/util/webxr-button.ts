@@ -1,21 +1,3 @@
-// Not yet presenting, but ready to present
-const READY_TO_PRESENT = 'ready';
-
-// In presentation mode
-const PRESENTING = 'presenting';
-const PRESENTING_FULLSCREEN = 'presenting-fullscreen';
-
-// Checking device availability
-const PREPARING = 'preparing';
-
-// Errors
-const ERROR_NO_PRESENTABLE_DISPLAYS = 'error-no-presentable-displays';
-const ERROR_BROWSER_NOT_SUPPORTED = 'error-browser-not-supported';
-const ERROR_REQUEST_TO_PRESENT_REJECTED = 'error-request-to-present-rejected';
-const ERROR_EXIT_PRESENT_REJECTED = 'error-exit-present-rejected';
-const ERROR_REQUEST_STATE_CHANGE_REJECTED = 'error-request-state-change-rejected';
-const ERROR_UNKOWN = 'error-unkown';
-
 //
 // DOM element
 //

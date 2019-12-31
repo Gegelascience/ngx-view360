@@ -1,7 +1,7 @@
 import { CAP, MAT_STATE, RENDER_ORDER, stateToBlendFunc } from './material';
 import { Node } from './node';
 import { Program } from './program';
-import { DataTexture, VideoTexture } from './texture';
+import { DataTexture } from './texture';
 import { mat4, vec3 } from '../math/gl-matrix';
 
 declare var XRRigidTransform: any;
@@ -841,19 +841,6 @@ export class Renderer {
                     gl.texImage2D(gl.TEXTURE_2D, 0, texture.format, texture.format, gl.UNSIGNED_BYTE, texture.source);
                     this._setSamplerParameters(texture);
                     renderTexture._complete = true;
-
-                    if (texture instanceof VideoTexture) {
-                        // Once the video starts playing, set a callback to update it's
-                        // contents each frame.
-                        texture._video.addEventListener('playing', () => {
-                            renderTexture._activeCallback = () => {
-                                if (!texture._video.paused && !texture._video.waiting) {
-                                    gl.bindTexture(gl.TEXTURE_2D, textureHandle);
-                                    gl.texImage2D(gl.TEXTURE_2D, 0, texture.format, texture.format, gl.UNSIGNED_BYTE, texture.source);
-                                }
-                            };
-                        });
-                    }
                 });
             }
 

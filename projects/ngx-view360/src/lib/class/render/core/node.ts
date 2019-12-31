@@ -10,8 +10,8 @@ const tmpRayMatrix = mat4.create();
 
 export class Node {
     name: string;
-    children;
-    parent;
+    children: Node[];
+    parent: Node;
     visible: boolean;
     selectable: boolean;
     _matrix;
