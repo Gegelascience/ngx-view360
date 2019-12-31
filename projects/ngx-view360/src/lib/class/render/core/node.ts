@@ -1,5 +1,7 @@
 import { Ray } from '../math/ray';
-import { mat4, vec3, quat } from '../math/gl-matrix';
+import * as vec3 from 'gl-matrix/cjs/vec3';
+import * as mat4 from 'gl-matrix/cjs/mat4';
+import * as quat from 'gl-matrix/cjs/quat';
 import { Renderer } from './renderer';
 
 const DEFAULT_TRANSLATION = new Float32Array([0, 0, 0]);

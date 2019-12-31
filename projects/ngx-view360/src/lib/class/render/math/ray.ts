@@ -1,4 +1,5 @@
-import { mat3, vec3 } from './gl-matrix';
+import * as vec3 from 'gl-matrix/cjs/vec3';
+import * as mat3 from 'gl-matrix/cjs/mat3';
 
 
 const normalMat = mat3.create();

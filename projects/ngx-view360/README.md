@@ -59,7 +59,7 @@ The **NgxView360Component** has some attributes to display the view
 
 Attributes | description
 ------------ | -------------
-imageSrc | source of the image to display
+imageSrc | source of the image to display, need to be a equirectangular image (jpg or png accepted)
 displayMode(optional) | Mode to display image ('mono', 'stereoTopBottom','stereoLeftRight'). 'mono' is the default mode.
 rightController | gltf file containing right controller 3D model
 leftController | gltf file containing left controller 3D model

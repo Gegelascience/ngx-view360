@@ -1,4 +1,4 @@
-import { vec3 } from '../math/gl-matrix';
+import * as vec3 from 'gl-matrix/cjs/vec3';
 
 export class PrimitiveAttribute {
     name: string;
