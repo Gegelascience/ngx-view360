@@ -48,9 +48,7 @@ import { NgxView360Module } from 'ngx-view360';
 Then, you can use the component in template:
 
 ```html
-<ngx-view360 imageSrc="path/to/image"
-    rightController="path/to/3Dmodel"
-    leftController="path/to/3DModel"></ngx-view360>
+<ngx-view360 imageSrc="path/to/image"></ngx-view360>
 ```
 
 ## Library
@@ -61,8 +59,15 @@ Attributes | description
 ------------ | -------------
 imageSrc | source of the image to display, need to be a equirectangular image (jpg or png accepted)
 displayMode(optional) | Mode to display image ('mono', 'stereoTopBottom','stereoLeftRight'). 'mono' is the default mode.
-rightController | gltf file containing right controller 3D model
-leftController | gltf file containing left controller 3D model
+rightController(optional) | gltf file containing right controller 3D model
+leftController(optional) | gltf file containing left controller 3D model
+
+To show controllers, you need to give the 3D model for each controller, you need to take in account handedness.
+
+
+# Work in progress
+
+* Working on firefox on desktop.
 
 
 ## LICENSE

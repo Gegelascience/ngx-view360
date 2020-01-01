@@ -33,6 +33,8 @@ export class Scene extends Node {
 
     clear = true;
 
+    ControllersMeshExist = false;
+
     constructor() {
         super();
     }
@@ -76,7 +78,9 @@ export class Scene extends Node {
                 // hand (as opposed to their head or the screen) use it to render
                 // a ray coming out of the input device to indicate the pointer
                 // direction.
-                this.inputRenderer.addLaserPointer(targetRayPose.transform);
+                if (this.ControllersMeshExist) {
+                    this.inputRenderer.addLaserPointer(targetRayPose.transform);
+                }
             }
 
             // If we have a pointer matrix we can also use it to render a cursor
@@ -87,7 +91,9 @@ export class Scene extends Node {
 
             if (hitResult) {
                 // Render a cursor at the intersection point.
-                this.inputRenderer.addCursor(hitResult.intersection);
+                if (this.ControllersMeshExist) {
+                    this.inputRenderer.addCursor(hitResult.intersection);
+                }
 
                 if (hitResult.node._hoverFrameId !== lastHoverFrame) {
                     hitResult.node.onHoverStart();
@@ -111,14 +117,16 @@ export class Scene extends Node {
                 ]);
                 // let cursorPos = vec3.fromValues(0, 0, -1.0);
                 // vec3.transformMat4(cursorPos, cursorPos, inputPose.targetRay);
-                this.inputRenderer.addCursor(cursorPos);
+                if (this.ControllersMeshExist) {
+                    this.inputRenderer.addCursor(cursorPos);
+                }
             }
 
             if (inputSource.gripSpace) {
                 const gripPose = frame.getPose(inputSource.gripSpace, refSpace);
 
                 // Any time that we have a grip matrix, we'll render a controller.
-                if (gripPose) {
+                if (gripPose && this.ControllersMeshExist) {
                     this.inputRenderer.addController(gripPose.transform.matrix, inputSource.handedness);
                 }
             }
@@ -133,16 +141,6 @@ export class Scene extends Node {
 
         this._hoveredNodes = newHoveredNodes;
     }
-
-    /*handleSelect(inputSource, frame, refSpace) {
-        const targetRayPose = frame.getPose(inputSource.targetRaySpace, refSpace);
-
-        if (!targetRayPose) {
-            return;
-        }
-
-        this.handleSelectPointer(targetRayPose.transform);
-    }*/
 
     handleSelectPointer(rigidTransform) {
         if (rigidTransform) {

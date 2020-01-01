@@ -240,7 +240,7 @@ export class InputRenderer extends Node {
         let controllerNode = this._controllerNodes[handedness];
         if (!controllerNode) {
             // in the case if we don't have a node for correct handedness - fall back to the 'right' one.
-            controllerNode = this._controllerNodes['right'];
+            controllerNode = this._controllerNodes.right;
             if (!controllerNode) {
                 return;
             }

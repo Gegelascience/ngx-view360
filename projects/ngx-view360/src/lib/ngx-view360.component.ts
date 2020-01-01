@@ -59,15 +59,7 @@ export class NgxView360Component implements OnInit, AfterViewInit {
   ngAfterViewInit() {
     // Start the XR application.
     if (this.imageSrc !== null && this.imageSrc !== undefined) {
-      if (this.leftController !== null && this.leftController !== undefined) {
-        if (this.rightController !== null && this.rightController !== undefined) {
-          this.initXR();
-        } else {
-          console.error('path to 3D model of right controller invalid');
-        }
-      } else {
-        console.error('path to 3D model of left controller invalid');
-      }
+      this.initXR();
     }
   }
 
@@ -103,8 +95,13 @@ export class NgxView360Component implements OnInit, AfterViewInit {
     this.onResize();
     this.renderer = new Renderer(this.gl);
     this.scene.setRenderer(this.renderer);
-    this.scene.inputRenderer.setControllerMesh(new Gltf2Node({ url: this.rightController }), 'right');
-    this.scene.inputRenderer.setControllerMesh(new Gltf2Node({ url: this.leftController }), 'left');
+    if (this.leftController !== null && this.leftController !== undefined) {
+      if (this.rightController !== null && this.rightController !== undefined) {
+        this.scene.inputRenderer.setControllerMesh(new Gltf2Node({ url: this.rightController }), 'right');
+        this.scene.inputRenderer.setControllerMesh(new Gltf2Node({ url: this.leftController }), 'left');
+        this.scene.ControllersMeshExist = true;
+      }
+    }
   }
 
 
