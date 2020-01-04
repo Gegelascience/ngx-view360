@@ -1,5 +1,4 @@
 <div class="componentContainer">
     <div #webxrContainer class="canvasContainer"></div>
-    <div #buttonVr class="vrButton"></div>
+    <ngx-vr-button class="vrButton" (RequestSession)='onRequestSession()' (EndSession)='onEndSession($event)'></ngx-vr-button>
 </div>
-<ngx-vr-button></ngx-vr-button>

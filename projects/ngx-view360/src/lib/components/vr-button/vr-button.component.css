@@ -1,0 +1,97 @@
+@font-face {
+    font-family: 'Karla';
+    font-style: normal;
+    font-weight: 400;
+    src: local('Karla'), local('Karla-Regular'),
+         url(https://fonts.gstatic.com/s/karla/v5/31P4mP32i98D9CEnGyeX9Q.woff2) format('woff2');
+    unicode-range: U+0100-024F, U+1E00-1EFF, U+20A0-20AB, U+20AD-20CF, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+    font-family: 'Karla';
+    font-style: normal;
+    font-weight: 400;
+    src: local('Karla'), local('Karla-Regular'),
+         url(https://fonts.gstatic.com/s/karla/v5/Zi_e6rBgGqv33BWF8WTq8g.woff2) format('woff2');
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074,
+                   U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
+}
+
+button.webvr-ui-button {
+    font-family: 'Karla', sans-serif;
+
+    border: rgb(80,168,252) 2px solid;
+    border-radius: 2px;
+    box-sizing: border-box;
+    background: 'none';
+
+    height: 55px;
+    min-width: calc(18px * 9.6);
+    display: inline-block;
+    position: relative;
+
+    cursor: pointer;
+    transition: border 0.5s;
+}
+
+button.webvr-ui-button:focus {
+  outline: none;
+}
+
+/*
+* Logo
+*/
+
+.webvr-ui-logo {
+    position: absolute;
+    top:0px;
+    left:0px;
+    width: calc(55px - 4px);
+    height: calc(55px - 4px);
+}
+.webvr-ui-svg {
+    fill: rgb(80,168,252);
+    margin-top: calc((55px - 18px * 0.8) / 2 - 2px);
+    margin-left: calc(55px/ 3);
+}
+.webvr-ui-svg-error {
+    fill: rgb(80,168,252);
+    display:initial;
+    margin-top: calc((55px - 28px / 18 * 18 * 0.8) / 2 - 2px);
+    margin-left: calc(55px/ 3);
+}
+
+
+/*
+* Title
+*/
+
+.webvr-ui-title {
+    color: rgb(80,168,252);
+    position: relative;
+    font-size: 18px;
+    padding-left: calc(55px * 1.05);
+    padding-right: calc(55px/ 3);
+    transition: color 0.5s;
+}
+
+/*
+* error
+*/
+
+button.webvr-ui-button[error=true] {
+    animation: errorShake 0.4s;
+}
+
+@keyframes errorShake {
+  0% { transform: translate(1px, 0) }
+  10% { transform: translate(-2px, 0) }
+  20% { transform: translate(2px, 0) }
+  30% { transform: translate(-2px, 0) }
+  40% { transform: translate(2px, 0) }
+  50% { transform: translate(-2px, 0) }
+  60% { transform: translate(2px, 0) }
+  70% { transform: translate(-2px, 0) }
+  80% { transform: translate(2px, 0) }
+  90% { transform: translate(-1px, 0) }
+  100% { transform: translate(0px, 0) }
+}
