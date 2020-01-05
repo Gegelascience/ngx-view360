@@ -1,4 +1,5 @@
-import { Component, OnInit, EventEmitter, Output, ViewChild, ElementRef, Renderer2 } from '@angular/core';
+import { Component, OnInit, EventEmitter, Output, ViewChild, ElementRef, Renderer2, Input } from '@angular/core';
+import { OptionStyle } from '../../models/option-style';
 
 @Component({
   selector: 'ngx-vr-button',
@@ -7,10 +8,9 @@ import { Component, OnInit, EventEmitter, Output, ViewChild, ElementRef, Rendere
 })
 export class VrButtonComponent implements OnInit {
 
-  optionsStyle = {
+
+  defaultOptionsStyle: OptionStyle = {
     color: 'rgb(80,168,252)',
-    background: false,
-    disabledOpacity: 0.5,
     height: 55,
     corners: 'square',
     textEnterXRTitle: 'ENTER VR',
@@ -19,11 +19,13 @@ export class VrButtonComponent implements OnInit {
 
   };
 
-  titleButton = this.optionsStyle.textXRNotFoundTitle;
+  titleButton: string;
 
   enabled = false;
   session = null;
   forceDisabled = false;
+
+  @Input() optionsStyle: OptionStyle;
 
   @Output() RequestSession = new EventEmitter();
   @Output() EndSession = new EventEmitter<any>();
@@ -42,50 +44,55 @@ export class VrButtonComponent implements OnInit {
 
   customLogoNotOKUIStyle = {};
 
-  constructor(private renderer: Renderer2) {
-
-    const _LOGO_SCALE = 0.8;
-    const borderRadius = this.getBorderRadius();
-    const fontSize = this.optionsStyle.height / 3;
-
-    this.logoHeight = this.optionsStyle.height * _LOGO_SCALE / 3;
-
-    this.aspectDim = this.optionsStyle.height * _LOGO_SCALE * 14 / 27;
-
-    this.customButtonUIStyle['border-color'] = this.optionsStyle.color;
-    this.customButtonUIStyle['border-radius.px'] = borderRadius;
-    this.customButtonUIStyle['height.px'] = this.optionsStyle.height;
-    this.customButtonUIStyle['min-width.px'] = fontSize;
-
-    this.customTitleUIStyle['color'] = this.optionsStyle.color;
-    this.customTitleUIStyle['font-size.px'] = fontSize;
-    this.customTitleUIStyle['padding-left.px'] = this.optionsStyle.height * 1.05;
-    this.customTitleUIStyle['padding-right.px'] = (borderRadius - 10 < 5) ? fontSize : borderRadius - 10;
-
-    this.customLogoOKUIStyle['width.px'] = this.optionsStyle.height - 4;
-    this.customLogoOKUIStyle['height.px'] = this.optionsStyle.height - 4;
-    this.customLogoOKUIStyle['fill'] = this.optionsStyle.color;
-    this.customLogoOKUIStyle['margin-left.px'] = fontSize;
-    this.customLogoOKUIStyle['margin-top.px'] = (this.optionsStyle.height - fontSize * _LOGO_SCALE) / 2 - 2;
-
-    this.customLogoNotOKUIStyle['width.px'] = this.optionsStyle.height - 4;
-    this.customLogoNotOKUIStyle['height.px'] = this.optionsStyle.height - 4;
-    this.customLogoNotOKUIStyle['fill'] = this.optionsStyle.color;
-    this.customLogoNotOKUIStyle['margin-left.px'] = fontSize;
-    this.customLogoNotOKUIStyle['margin-top.px'] = (this.optionsStyle.height - 28 / 18 * fontSize * _LOGO_SCALE) / 2 - 2;
-  }
+  constructor(private renderer: Renderer2) { }
 
   ngOnInit() {
+    this.setCustomStyle();
   }
 
-  getBorderRadius() {
+  setCustomStyle() {
+    const _LOGO_SCALE = 0.8;
+    const height = this.optionsStyle && this.optionsStyle.height ? this.optionsStyle.height : this.defaultOptionsStyle.height;
+    const corners = this.optionsStyle && this.optionsStyle.corners ? this.optionsStyle.corners : this.defaultOptionsStyle.corners;
+    const borderRadius = this.getBorderRadius(height, corners);
+    const fontSize = height / 3;
+
+    this.titleButton = this.optionsStyle && this.optionsStyle.textXRNotFoundTitle ? this.optionsStyle.textXRNotFoundTitle : this.defaultOptionsStyle.textXRNotFoundTitle;
+
+    this.logoHeight = height * _LOGO_SCALE / 3;
+    this.aspectDim = height * _LOGO_SCALE * 14 / 27;
+
+    this.customButtonUIStyle['border-color'] = this.optionsStyle && this.optionsStyle.color ? this.optionsStyle.color : this.defaultOptionsStyle.color;
+    this.customButtonUIStyle['border-radius.px'] = borderRadius;
+    this.customButtonUIStyle['height.px'] = height;
+    this.customButtonUIStyle['min-width.px'] = fontSize;
+
+    this.customTitleUIStyle['color'] = this.optionsStyle && this.optionsStyle.color ? this.optionsStyle.color : this.defaultOptionsStyle.color;
+    this.customTitleUIStyle['font-size.px'] = fontSize;
+    this.customTitleUIStyle['padding-left.px'] = height * 1.05;
+    this.customTitleUIStyle['padding-right.px'] = (borderRadius - 10 < 5) ? fontSize : borderRadius - 10;
+
+    this.customLogoOKUIStyle['width.px'] = height - 4;
+    this.customLogoOKUIStyle['height.px'] = height - 4;
+    this.customLogoOKUIStyle['fill'] = this.optionsStyle && this.optionsStyle.color ? this.optionsStyle.color : this.defaultOptionsStyle.color;
+    this.customLogoOKUIStyle['margin-left.px'] = fontSize;
+    this.customLogoOKUIStyle['margin-top.px'] = (height - fontSize * _LOGO_SCALE) / 2 - 2;
+
+    this.customLogoNotOKUIStyle['width.px'] = height - 4;
+    this.customLogoNotOKUIStyle['height.px'] = height - 4;
+    this.customLogoNotOKUIStyle['fill'] = this.optionsStyle && this.optionsStyle.color ? this.optionsStyle.color : this.defaultOptionsStyle.color;
+    this.customLogoNotOKUIStyle['margin-left.px'] = fontSize;
+    this.customLogoNotOKUIStyle['margin-top.px'] = (height - 28 / 18 * fontSize * _LOGO_SCALE) / 2 - 2;
+  }
+
+  getBorderRadius(height, corners) {
     let borderRadius;
-    if (this.optionsStyle.corners === 'round') {
-      borderRadius = this.optionsStyle.height / 2;
-    } else if (this.optionsStyle.corners === 'square') {
+    if (corners === 'round') {
+      borderRadius = height / 2;
+    } else if (corners === 'square') {
       borderRadius = 2;
     } else {
-      borderRadius = this.optionsStyle.corners;
+      borderRadius = corners;
     }
     return borderRadius;
   }
@@ -115,13 +122,16 @@ export class VrButtonComponent implements OnInit {
 
   updateButtonState() {
     if (this.session) {
-      this.setTitle(this.optionsStyle.textExitXRTitle, 'Exit XR presentation');
+      const title = this.optionsStyle && this.optionsStyle.textExitXRTitle ? this.optionsStyle.textExitXRTitle : this.defaultOptionsStyle.textExitXRTitle;
+      this.setTitle(title, 'Exit XR presentation');
       this.setDisabledAttribute(false);
     } else if (this.enabled) {
-      this.setTitle(this.optionsStyle.textEnterXRTitle, 'Enter XR');
+      const title = this.optionsStyle && this.optionsStyle.textEnterXRTitle ? this.optionsStyle.textEnterXRTitle : this.defaultOptionsStyle.textEnterXRTitle;
+      this.setTitle(title, 'Enter XR');
       this.setDisabledAttribute(false);
     } else {
-      this.setTitle(this.optionsStyle.textXRNotFoundTitle, 'No XR headset found.');
+      const title = this.optionsStyle && this.optionsStyle.textXRNotFoundTitle ? this.optionsStyle.textXRNotFoundTitle : this.defaultOptionsStyle.textXRNotFoundTitle;
+      this.setTitle(title, 'No XR headset found.');
       this.setDisabledAttribute(true);
     }
   }

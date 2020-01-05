@@ -5,6 +5,7 @@ import { Gltf2Node } from './class/render/nodes/gltf2';
 import { SkyboxNode } from './class/render/nodes/skybox';
 import { InlineViewerHelper } from './class/util/inline-viewer-helper';
 import { VrButtonComponent } from './components/vr-button/vr-button.component';
+import { OptionStyle } from './models/option-style';
 
 declare var navigator: any;
 declare var XRWebGLLayer: any;
@@ -33,6 +34,11 @@ export class NgxView360Component implements OnInit, AfterViewInit {
    */
   @Input() leftController: string;
 
+  /**
+   * custom style
+   */
+  @Input() customStyle: OptionStyle;
+
   @ViewChild('webxrContainer', { static: true }) webxrContainer;
 
   @ViewChild(VrButtonComponent, { static: true }) vrButton: VrButtonComponent;
@@ -43,10 +49,15 @@ export class NgxView360Component implements OnInit, AfterViewInit {
   renderer: Renderer = null;
   scene: Scene = new Scene();
 
+  customBackground = {};
+
 
   constructor(private rendererAngular: Renderer2) { }
 
   ngOnInit() {
+    if (this.customStyle && this.customStyle.backColor) {
+      this.customBackground['background-color'] = this.customStyle.backColor;
+    }
     if (this.imageSrc !== null && this.imageSrc !== undefined) {
       this.scene.addNode(new SkyboxNode({
         url: this.imageSrc,
