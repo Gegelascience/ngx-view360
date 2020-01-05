@@ -1,6 +1,5 @@
 import { Component, OnInit, Input, HostListener, AfterViewInit, ViewChild, Renderer2 } from '@angular/core';
 import { Scene, WebXRView } from './class/render/scenes/scene';
-import { WebXRButton } from './class/util/webxr-button';
 import { Renderer, createWebGLContext } from './class/render/core/renderer';
 import { Gltf2Node } from './class/render/nodes/gltf2';
 import { SkyboxNode } from './class/render/nodes/skybox';
@@ -36,7 +35,7 @@ export class NgxView360Component implements OnInit, AfterViewInit {
 
   @ViewChild('webxrContainer', { static: true }) webxrContainer;
 
-  @ViewChild(VrButtonComponent, { static: true }) buttonTest: VrButtonComponent;
+  @ViewChild(VrButtonComponent, { static: true }) vrButton: VrButtonComponent;
 
   xrImmersiveRefSpace = null;
   inlineViewerHelper: InlineViewerHelper = null;
@@ -68,8 +67,8 @@ export class NgxView360Component implements OnInit, AfterViewInit {
   initXR() {
     if (navigator.xr) {
       navigator.xr.isSessionSupported('immersive-vr').then((supported) => {
-        this.buttonTest.enabled = supported;
-        this.buttonTest.updateButtonState();
+        this.vrButton.enabled = supported;
+        this.vrButton.updateButtonState();
       });
       navigator.xr.requestSession('inline').then(this.onSessionStarted);
     }
@@ -111,15 +110,15 @@ export class NgxView360Component implements OnInit, AfterViewInit {
 
   onRequestSession = () => {
     return navigator.xr.requestSession('immersive-vr').then((session) => {
-      this.buttonTest.setSession(session);
+      this.vrButton.setSession(session);
       session.isImmersive = true;
       this.onSessionStarted(session);
     }).catch((err => {
       const errorMsg = `XRSession creation failed: ${err.message}`;
       console.error(errorMsg);
-      this.buttonTest.setDisabledAttribute(true);
+      this.vrButton.setDisabledAttribute(true);
       setTimeout(() => {
-        this.buttonTest.setDisabledAttribute(false);
+        this.vrButton.setDisabledAttribute(false);
       }, 1000);
     }));
   }
@@ -145,7 +144,7 @@ export class NgxView360Component implements OnInit, AfterViewInit {
   }
   onSessionEnded = (event) => {
     if (event.session.isImmersive) {
-      this.buttonTest.setSession(null);
+      this.vrButton.setSession(null);
     }
   }
   onXRFrame = (t, frame) => {

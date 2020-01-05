@@ -18,14 +18,10 @@
 
 button.webvr-ui-button {
     font-family: 'Karla', sans-serif;
-
-    border: rgb(80,168,252) 2px solid;
-    border-radius: 2px;
+    border: 2px solid;
     box-sizing: border-box;
     background: 'none';
 
-    height: 55px;
-    min-width: calc(18px * 9.6);
     display: inline-block;
     position: relative;
 
@@ -45,19 +41,9 @@ button.webvr-ui-button:focus {
     position: absolute;
     top:0px;
     left:0px;
-    width: calc(55px - 4px);
-    height: calc(55px - 4px);
-}
-.webvr-ui-svg {
-    fill: rgb(80,168,252);
-    margin-top: calc((55px - 18px * 0.8) / 2 - 2px);
-    margin-left: calc(55px/ 3);
 }
 .webvr-ui-svg-error {
-    fill: rgb(80,168,252);
     display:initial;
-    margin-top: calc((55px - 28px / 18 * 18 * 0.8) / 2 - 2px);
-    margin-left: calc(55px/ 3);
 }
 
 
@@ -66,11 +52,7 @@ button.webvr-ui-button:focus {
 */
 
 .webvr-ui-title {
-    color: rgb(80,168,252);
     position: relative;
-    font-size: 18px;
-    padding-left: calc(55px * 1.05);
-    padding-right: calc(55px/ 3);
     transition: color 0.5s;
 }
 

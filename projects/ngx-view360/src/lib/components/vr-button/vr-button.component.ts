@@ -7,9 +7,6 @@ import { Component, OnInit, EventEmitter, Output, ViewChild, ElementRef, Rendere
 })
 export class VrButtonComponent implements OnInit {
 
-  _LOGO_SCALE = 0.8;
-  _WEBXR_UI_CSS_INJECTED = {};
-
   optionsStyle = {
     color: 'rgb(80,168,252)',
     background: false,
@@ -33,17 +30,64 @@ export class VrButtonComponent implements OnInit {
 
   @ViewChild('buttonMain', { static: true }) buttonEl: ElementRef;
 
-  logoHeight = this.optionsStyle.height * this._LOGO_SCALE / 3;
+  logoHeight: number;
 
-  aspectDim = this.optionsStyle.height * this._LOGO_SCALE * 14 / 27;
+  aspectDim: number;
 
-  tierceHeight = this.optionsStyle.height / 3;
+  customButtonUIStyle = {};
+
+  customTitleUIStyle = {};
+
+  customLogoOKUIStyle = {};
+
+  customLogoNotOKUIStyle = {};
 
   constructor(private renderer: Renderer2) {
 
+    const _LOGO_SCALE = 0.8;
+    const borderRadius = this.getBorderRadius();
+    const fontSize = this.optionsStyle.height / 3;
+
+    this.logoHeight = this.optionsStyle.height * _LOGO_SCALE / 3;
+
+    this.aspectDim = this.optionsStyle.height * _LOGO_SCALE * 14 / 27;
+
+    this.customButtonUIStyle['border-color'] = this.optionsStyle.color;
+    this.customButtonUIStyle['border-radius.px'] = borderRadius;
+    this.customButtonUIStyle['height.px'] = this.optionsStyle.height;
+    this.customButtonUIStyle['min-width.px'] = fontSize;
+
+    this.customTitleUIStyle['color'] = this.optionsStyle.color;
+    this.customTitleUIStyle['font-size.px'] = fontSize;
+    this.customTitleUIStyle['padding-left.px'] = this.optionsStyle.height * 1.05;
+    this.customTitleUIStyle['padding-right.px'] = (borderRadius - 10 < 5) ? fontSize : borderRadius - 10;
+
+    this.customLogoOKUIStyle['width.px'] = this.optionsStyle.height - 4;
+    this.customLogoOKUIStyle['height.px'] = this.optionsStyle.height - 4;
+    this.customLogoOKUIStyle['fill'] = this.optionsStyle.color;
+    this.customLogoOKUIStyle['margin-left.px'] = fontSize;
+    this.customLogoOKUIStyle['margin-top.px'] = (this.optionsStyle.height - fontSize * _LOGO_SCALE) / 2 - 2;
+
+    this.customLogoNotOKUIStyle['width.px'] = this.optionsStyle.height - 4;
+    this.customLogoNotOKUIStyle['height.px'] = this.optionsStyle.height - 4;
+    this.customLogoNotOKUIStyle['fill'] = this.optionsStyle.color;
+    this.customLogoNotOKUIStyle['margin-left.px'] = fontSize;
+    this.customLogoNotOKUIStyle['margin-top.px'] = (this.optionsStyle.height - 28 / 18 * fontSize * _LOGO_SCALE) / 2 - 2;
   }
 
   ngOnInit() {
+  }
+
+  getBorderRadius() {
+    let borderRadius;
+    if (this.optionsStyle.corners === 'round') {
+      borderRadius = this.optionsStyle.height / 2;
+    } else if (this.optionsStyle.corners === 'square') {
+      borderRadius = 2;
+    } else {
+      borderRadius = this.optionsStyle.corners;
+    }
+    return borderRadius;
   }
 
   onXRButtonClick() {

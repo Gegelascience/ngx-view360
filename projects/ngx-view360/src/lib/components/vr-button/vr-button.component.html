@@ -1,8 +1,8 @@
-<button #buttonMain (click)='onXRButtonClick()' class="webvr-ui-button">
-    <div class="webvr-ui-title">
+<button #buttonMain (click)='onXRButtonClick()' class="webvr-ui-button" [ngStyle]='customButtonUIStyle'>
+    <div class="webvr-ui-title" [ngStyle]='customTitleUIStyle'>
         {{titleButton}}
     </div>
-    <div class="webvr-ui-logo">
+    <div class="webvr-ui-logo" [ngStyle]='enabled? customLogoOKUIStyle: customLogoNotOKUIStyle'>
         <ng-container *ngIf='enabled'>
             <svg class="webvr-ui-svg" version="1.1" x="0px" y="0px" [attr.width.px]="aspectDim"
                 [attr.height.px]="logoHeight" viewBox="0 0 28 18" xml:space="preserve">
