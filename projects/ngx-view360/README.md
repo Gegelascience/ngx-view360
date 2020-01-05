@@ -51,9 +51,9 @@ Then, you can use the component in template:
 <ngx-view360 imageSrc="path/to/image"></ngx-view360>
 ```
 
-## Library
+## API
 
-The **NgxView360Component** has some attributes to display the view
+The **NgxView360Component** has some attributes to display the view.
 
 Attributes | description
 ------------ | -------------
@@ -61,8 +61,24 @@ imageSrc | source of the image to display, need to be a equirectangular image (j
 displayMode(optional) | Mode to display image ('mono', 'stereoTopBottom','stereoLeftRight'). 'mono' is the default mode.
 rightController(optional) | gltf file containing right controller 3D model
 leftController(optional) | gltf file containing left controller 3D model
+customStyle(optional) | object to customize vr button
 
-To show controllers, you need to give the 3D model for each controller, you need to take in account handedness.
+The property 'customStyle' has this structure:
+
+```typescript
+interface OptionStyle {
+    color?: string;
+    height?: number;
+    corners?: any;
+    backColor?: string;
+    textEnterXRTitle?: string;
+    textXRNotFoundTitle?: string;
+    textExitXRTitle?: string;
+}
+```
+
+
+NB: To show controllers, you need to give the 3D model for each controller, you need to take in account handedness.
 
 
 # Work in progress
