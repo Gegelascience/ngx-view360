@@ -1,10 +1,11 @@
 import { Component, OnInit, Input, HostListener, AfterViewInit, ViewChild, Renderer2 } from '@angular/core';
 import { Scene, WebXRView } from './class/render/scenes/scene';
-import { WebXRButton } from './class/util/webxr-button';
 import { Renderer, createWebGLContext } from './class/render/core/renderer';
 import { Gltf2Node } from './class/render/nodes/gltf2';
 import { SkyboxNode } from './class/render/nodes/skybox';
 import { InlineViewerHelper } from './class/util/inline-viewer-helper';
+import { VrButtonComponent } from './components/vr-button/vr-button.component';
+import { OptionStyle } from './models/option-style';
 
 declare var navigator: any;
 declare var XRWebGLLayer: any;
@@ -33,19 +34,30 @@ export class NgxView360Component implements OnInit, AfterViewInit {
    */
   @Input() leftController: string;
 
-  @ViewChild('buttonVr', { static: true }) buttonVr;
+  /**
+   * custom style
+   */
+  @Input() customStyle: OptionStyle;
+
   @ViewChild('webxrContainer', { static: true }) webxrContainer;
-  xrButton: WebXRButton = null;
+
+  @ViewChild(VrButtonComponent, { static: true }) vrButton: VrButtonComponent;
+
   xrImmersiveRefSpace = null;
   inlineViewerHelper: InlineViewerHelper = null;
   gl = null;
   renderer: Renderer = null;
   scene: Scene = new Scene();
 
+  customBackground = {};
+
 
   constructor(private rendererAngular: Renderer2) { }
 
   ngOnInit() {
+    if (this.customStyle && this.customStyle.backColor) {
+      this.customBackground['background-color'] = this.customStyle.backColor;
+    }
     if (this.imageSrc !== null && this.imageSrc !== undefined) {
       this.scene.addNode(new SkyboxNode({
         url: this.imageSrc,
@@ -64,14 +76,10 @@ export class NgxView360Component implements OnInit, AfterViewInit {
   }
 
   initXR() {
-    this.xrButton = new WebXRButton({
-      onRequestSession: this.onRequestSession,
-      onEndSession: this.onEndSession
-    });
-    this.rendererAngular.appendChild(this.buttonVr.nativeElement, this.xrButton.domElement);
     if (navigator.xr) {
       navigator.xr.isSessionSupported('immersive-vr').then((supported) => {
-        this.xrButton.enabled = supported;
+        this.vrButton.enabled = supported;
+        this.vrButton.updateButtonState();
       });
       navigator.xr.requestSession('inline').then(this.onSessionStarted);
     }
@@ -113,10 +121,17 @@ export class NgxView360Component implements OnInit, AfterViewInit {
 
   onRequestSession = () => {
     return navigator.xr.requestSession('immersive-vr').then((session) => {
-      this.xrButton.setSession(session);
+      this.vrButton.setSession(session);
       session.isImmersive = true;
       this.onSessionStarted(session);
-    });
+    }).catch((err => {
+      const errorMsg = `XRSession creation failed: ${err.message}`;
+      console.error(errorMsg);
+      this.vrButton.setDisabledAttribute(true);
+      setTimeout(() => {
+        this.vrButton.setDisabledAttribute(false);
+      }, 1000);
+    }));
   }
 
   onSessionStarted = (session) => {
@@ -140,7 +155,7 @@ export class NgxView360Component implements OnInit, AfterViewInit {
   }
   onSessionEnded = (event) => {
     if (event.session.isImmersive) {
-      this.xrButton.setSession(null);
+      this.vrButton.setSession(null);
     }
   }
   onXRFrame = (t, frame) => {

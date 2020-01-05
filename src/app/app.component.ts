@@ -7,4 +7,9 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'ngxPhotos360webxr';
+
+  customStyle = {
+    color: 'white',
+    backColor: 'crimson'
+  }
 }

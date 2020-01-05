@@ -78,9 +78,7 @@ export class Scene extends Node {
                 // hand (as opposed to their head or the screen) use it to render
                 // a ray coming out of the input device to indicate the pointer
                 // direction.
-                if (this.ControllersMeshExist) {
-                    this.inputRenderer.addLaserPointer(targetRayPose.transform);
-                }
+                this.inputRenderer.addLaserPointer(targetRayPose.transform);
             }
 
             // If we have a pointer matrix we can also use it to render a cursor
@@ -91,9 +89,7 @@ export class Scene extends Node {
 
             if (hitResult) {
                 // Render a cursor at the intersection point.
-                if (this.ControllersMeshExist) {
-                    this.inputRenderer.addCursor(hitResult.intersection);
-                }
+                this.inputRenderer.addCursor(hitResult.intersection);
 
                 if (hitResult.node._hoverFrameId !== lastHoverFrame) {
                     hitResult.node.onHoverStart();
@@ -117,9 +113,9 @@ export class Scene extends Node {
                 ]);
                 // let cursorPos = vec3.fromValues(0, 0, -1.0);
                 // vec3.transformMat4(cursorPos, cursorPos, inputPose.targetRay);
-                if (this.ControllersMeshExist) {
-                    this.inputRenderer.addCursor(cursorPos);
-                }
+
+                this.inputRenderer.addCursor(cursorPos);
+
             }
 
             if (inputSource.gripSpace) {
