@@ -81,7 +81,7 @@ Attributes | description
 ------------ | -------------
 color(optional) | color of texts and logos and borders
 height(optional) | height of the button (px).
-corners(optional) | 'square' | 'round' or any number representing border-radius (px)
+corners(optional) | 'square' or 'round' or any number representing border-radius (px)
 backColor(optional) | background color of vr button
 textEnterXRTitle(optional) | Text showing when support for VR
 textXRNotFoundTitle(optional) | Text showing when no support for VR
