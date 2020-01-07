@@ -62,5 +62,6 @@ import 'zone.js/dist/zone';  // Included with Angular CLI.
  * APPLICATION IMPORTS
  */
 
-import WebXRPolyfill from 'webxr-polyfill/build/webxr-polyfill.module.js';
+// import WebXRPolyfill from 'webxr-polyfill/build/webxr-polyfill.module.js';
+import WebXRPolyfill from 'webxr-polyfill';
 let polyfill = new WebXRPolyfill();

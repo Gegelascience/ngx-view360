@@ -21,7 +21,7 @@ npm i gl-matrix --save
 Then append these lines on polyfills.ts:
 
 ```typescript
-import WebXRPolyfill from 'webxr-polyfill/build/webxr-polyfill.module.js';
+import WebXRPolyfill from 'webxr-polyfill';
 let polyfill = new WebXRPolyfill();
 ```
 
@@ -77,13 +77,18 @@ interface OptionStyle {
 }
 ```
 
+Attributes | description
+------------ | -------------
+color(optional) | color of texts and logos and borders
+height(optional) | height of the button (px).
+corners(optional) | 'square' | 'round' or any number representing border-radius (px)
+backColor(optional) | background color of vr button
+textEnterXRTitle(optional) | Text showing when support for VR
+textXRNotFoundTitle(optional) | Text showing when no support for VR
+textExitXRTitle(optional) | Text showing when quiting vr experience (case with device associated with computer)
 
 NB: To show controllers, you need to give the 3D model for each controller, you need to take in account handedness.
 
-
-# Work in progress
-
-* Working on firefox on desktop.
 
 
 ## LICENSE
