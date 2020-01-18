@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, HostListener, AfterViewInit, ViewChild, Renderer2, ElementRef } from '@angular/core';
+import { Component, OnInit, Input, HostListener, AfterViewInit, ViewChild, Renderer2, ElementRef, OnChanges, SimpleChanges } from '@angular/core';
 import { Scene, WebXRView } from './class/render/scenes/scene';
 import { Renderer, createWebGLContext } from './class/render/core/renderer';
 import { Gltf2Node } from './class/render/nodes/gltf2';
@@ -15,7 +15,7 @@ declare var XRWebGLLayer: any;
   templateUrl: './ngx-view360.component.html',
   styleUrls: ['./ngx-view360.component.css']
 })
-export class NgxView360Component implements OnInit, AfterViewInit {
+export class NgxView360Component implements OnInit, AfterViewInit, OnChanges {
 
   /**
    * path to image
@@ -54,7 +54,7 @@ export class NgxView360Component implements OnInit, AfterViewInit {
 
   constructor(private rendererAngular: Renderer2) { }
 
-  ngOnInit() {
+  ngOnChanges(changes: SimpleChanges) {
     if (this.customStyle && this.customStyle.backColor) {
       this.customBackground['background-color'] = this.customStyle.backColor;
     }
@@ -67,6 +67,8 @@ export class NgxView360Component implements OnInit, AfterViewInit {
       console.error('path to image invalid');
     }
   }
+
+  ngOnInit() {}
 
   ngAfterViewInit() {
     // Start the XR application.

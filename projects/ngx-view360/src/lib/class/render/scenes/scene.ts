@@ -150,19 +150,6 @@ export class Scene extends Node {
         }
     }
 
-    standingStats(enable) {
-        this._statsStanding = enable;
-        if (this._stats) {
-            if (this._statsStanding) {
-                this._stats.translation = [0, 1.4, -0.75];
-            } else {
-                this._stats.translation = [0, -0.3, -0.5];
-            }
-            this._stats.scale = [0.3, 0.3, 0.3];
-            quat.fromEuler(this._stats.rotation, -45.0, 0.0, 0.0);
-        }
-    }
-
     draw(projectionMatrix, viewTransform, eye) {
         const view = new RenderView(projectionMatrix, viewTransform);
         if (eye) {
