@@ -10,6 +10,7 @@ export class AppComponent {
 
   customStyle = {
     color: 'white',
-    backColor: 'crimson'
+    backColor: 'crimson',
+    height: 60
   }
 }

@@ -108,8 +108,10 @@ export class VrButtonComponent implements OnInit {
 
   setDisabledAttribute(disabled) {
     if (disabled || this.forceDisabled) {
+      this.renderer.setAttribute(this.buttonEl.nativeElement, 'disabled', 'true');
       this.renderer.setStyle(this.buttonEl.nativeElement, 'opacity', 0.5);
     } else {
+      this.renderer.removeAttribute(this.buttonEl.nativeElement, 'disabled');
       this.renderer.setStyle(this.buttonEl.nativeElement, 'opacity', 1);
     }
   }

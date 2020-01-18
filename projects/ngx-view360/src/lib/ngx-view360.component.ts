@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, HostListener, AfterViewInit, ViewChild, Renderer2 } from '@angular/core';
+import { Component, OnInit, Input, HostListener, AfterViewInit, ViewChild, Renderer2, ElementRef } from '@angular/core';
 import { Scene, WebXRView } from './class/render/scenes/scene';
 import { Renderer, createWebGLContext } from './class/render/core/renderer';
 import { Gltf2Node } from './class/render/nodes/gltf2';

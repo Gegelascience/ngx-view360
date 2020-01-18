@@ -1,6 +1,7 @@
 
 .componentContainer{
   width:80vw;
+  position: relative;
 }
 
 .canvasContainer{
@@ -16,7 +17,7 @@
   padding: 0.5em;
   background-color: white;
   border-radius: 2px;
-  position: relative;
-  margin-top: -70px;
-  float: right;
+  position: absolute;
+  bottom: 0;
+  right: 0;
 }
