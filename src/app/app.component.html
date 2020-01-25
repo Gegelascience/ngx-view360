@@ -1,7 +1,9 @@
 <h1 class="titre"> This is an integration test for 360 view with webxr</h1>
-<button (click)='changeImgToSpace()'>In space</button>
-<button (click)='changeImgToEiffel()'>In paris</button>
+<div style="display: flex;justify-content: space-around;">
+    <button (click)='changeImgToSpace()'>In space</button>
+    <button (click)='changeImgToEiffel()'>In paris</button>
+</div>
 <h2 class="titre"> with controllers</h2>
 <div class="test">
-    <ngx-view360 [imageSrc]="imgSrc" [customStyle]="customStyle" rightController="assets/media/gltf/controller/controller.gltf" leftController="assets/media/gltf/controller/controller-left.gltf"></ngx-view360>
+    <ngx-view360 [imageSrc]="imgSrc" [customStyle]="customStyle"></ngx-view360>
 </div>

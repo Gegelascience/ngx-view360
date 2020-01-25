@@ -31,7 +31,7 @@ Now, you can add the library:
 npm i ngx-view360 --save
 ````
 
-## Using
+### Using
 
 Import NgxView360Module on AppModule.
 

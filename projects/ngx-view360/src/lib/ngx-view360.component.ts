@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, HostListener, AfterViewInit, ViewChild, Renderer2, ElementRef, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, OnInit, Input, HostListener, AfterViewInit, ViewChild, Renderer2, OnChanges, SimpleChanges } from '@angular/core';
 import { Scene, WebXRView } from './class/render/scenes/scene';
 import { Renderer, createWebGLContext } from './class/render/core/renderer';
 import { Gltf2Node } from './class/render/nodes/gltf2';
@@ -68,7 +68,7 @@ export class NgxView360Component implements OnInit, AfterViewInit, OnChanges {
     }
   }
 
-  ngOnInit() {}
+  ngOnInit() { }
 
   ngAfterViewInit() {
     // Start the XR application.
