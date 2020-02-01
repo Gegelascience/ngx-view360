@@ -1,5 +1,9 @@
 <div [ngStyle]='customCanvasBackground' class="componentContainer">
-    <div #webxrContainer class="canvasContainer"></div>
+    <div class="canvasContainer">
+        <canvas class="myCanvas" #webxrContainer (mousemove)="mouseMove($event)" (touchmove)='touchMove($event)'
+            (touchstart)='touchStart($event)' (touchend)='touchEnd($event)'
+            (touchcancel)='touchCancel($event)'></canvas>
+    </div>
     <ngx-vr-button class="vrButton" [ngStyle]='customButtonBackground' [optionsStyle]="customButtonStyle"
         (RequestSession)='onRequestSession()' (EndSession)='onEndSession($event)'></ngx-vr-button>
 </div>

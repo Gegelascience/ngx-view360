@@ -23,7 +23,6 @@ export class VrButtonComponent implements OnInit, OnChanges {
 
   enabled = false;
   session = null;
-  forceDisabled = false;
 
   @Input() optionsStyle: ButtonOptionStyle;
 
@@ -46,11 +45,11 @@ export class VrButtonComponent implements OnInit, OnChanges {
 
   constructor(private renderer: Renderer2) { }
 
-  ngOnChanges(changes: SimpleChanges){
+  ngOnChanges(changes: SimpleChanges) {
     this.setCustomStyle();
   }
 
-  ngOnInit() {}
+  ngOnInit() { }
 
   setCustomStyle() {
     const _LOGO_SCALE = 0.8;
@@ -109,7 +108,7 @@ export class VrButtonComponent implements OnInit, OnChanges {
   }
 
   setDisabledAttribute(disabled) {
-    if (disabled || this.forceDisabled) {
+    if (disabled) {
       this.renderer.setAttribute(this.buttonEl.nativeElement, 'disabled', 'true');
       this.renderer.setStyle(this.buttonEl.nativeElement, 'opacity', 0.5);
     } else {

@@ -14,7 +14,7 @@ export class TextureSampler {
 }
 
 export class Texture {
-    sampler;
+    sampler: TextureSampler;
     mipmap: boolean;
     constructor() {
         this.sampler = new TextureSampler();

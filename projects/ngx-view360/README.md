@@ -89,7 +89,7 @@ textXRNotFoundTitle(optional) | Text showing when no support for VR
 textExitXRTitle(optional) | Text showing when quiting vr experience (case with device associated with computer)
 
 
-The property 'customButtonStyle' has this structure:
+The property 'customCanvasStyle' has this structure:
 
 ```typescript
 interface CanvasOptionStyle {

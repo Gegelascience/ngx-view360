@@ -4,6 +4,7 @@ import { Program } from './program';
 import { DataTexture } from './texture';
 import * as vec3 from 'gl-matrix/cjs/vec3';
 import * as mat4 from 'gl-matrix/cjs/mat4';
+import { Primitive } from './primitives';
 
 declare var XRRigidTransform: any;
 
@@ -58,10 +59,11 @@ function isPowerOfTwo(n) {
 }
 
 // Creates a WebGL context and initializes it with some common default state.
-export function createWebGLContext(glAttribs) {
+export function createWebGLContext(glAttribs, canvas) {
     glAttribs = glAttribs || { alpha: false };
 
-    const webglCanvas = document.createElement('canvas');
+    // const webglCanvas = document.createElement('canvas');
+    const webglCanvas = canvas;
     const contextTypes = glAttribs.webgl2 ? ['webgl2'] : ['webgl', 'experimental-webgl'];
     let context = null;
 
@@ -84,7 +86,7 @@ export function createWebGLContext(glAttribs) {
 export class RenderView {
     projectionMatrix;
     viewport;
-    _eye;
+    _eye: string;
     _eyeIndex: number;
     _viewMatrix;
     viewTransform;
@@ -103,17 +105,6 @@ export class RenderView {
         } else {
             this.viewTransform = viewTransform;
             this._viewMatrix = viewTransform.inverse.matrix;
-
-            // Alternative view matrix code path
-            /*this._viewMatrix = mat4.create();
-            let q = viewTransform.orientation;
-            let t = viewTransform.position;
-            mat4.fromRotationTranslation(
-                this._viewMatrix,
-                [q.x, q.y, q.z, q.w],
-                [t.x, t.y, t.z]
-            );
-            mat4.invert(this._viewMatrix, this._viewMatrix);*/
         }
     }
 
@@ -190,21 +181,21 @@ class RenderPrimitiveAttributeBuffer {
 }
 
 class RenderPrimitive {
-    _activeFrameId;
+    _activeFrameId: number;
     _instances;
     _material;
-    _mode;
-    _elementCount;
+    _mode: number;
+    _elementCount: number;
     _promise;
     _vao;
-    _complete;
+    _complete: boolean;
     _attributeBuffers;
     _attributeMask;
     _indexBuffer;
-    _indexByteOffset;
-    _indexType;
-    _min: number;
-    _max: number;
+    _indexByteOffset: number;
+    _indexType: number;
+    _min;
+    _max;
 
     constructor(primitive) {
         this._activeFrameId = 0;
@@ -214,7 +205,7 @@ class RenderPrimitive {
         this.setPrimitive(primitive);
     }
 
-    setPrimitive(primitive) {
+    setPrimitive(primitive: Primitive) {
         this._mode = primitive.mode;
         this._elementCount = primitive.elementCount;
         this._promise = null;
@@ -323,7 +314,7 @@ class RenderPrimitive {
 export class RenderTexture {
     _texture;
     _complete: boolean;
-    _activeFrameId;
+    _activeFrameId: number;
     _activeCallback;
 
     constructor(texture) {
@@ -577,7 +568,7 @@ export class Renderer {
     _globalLightDir;
 
     constructor(gl) {
-        this._gl = gl || createWebGLContext({ alpha: false });
+        this._gl = gl;
         this._frameId = 0;
         this._programCache = {};
         this._textureCache = {};

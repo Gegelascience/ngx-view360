@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, HostListener, AfterViewInit, ViewChild, Renderer2, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, OnInit, Input, HostListener, AfterViewInit, ViewChild, OnChanges, SimpleChanges } from '@angular/core';
 import { Scene, WebXRView } from './class/render/scenes/scene';
 import { Renderer, createWebGLContext } from './class/render/core/renderer';
 import { Gltf2Node } from './class/render/nodes/gltf2';
@@ -53,15 +53,18 @@ export class NgxView360Component implements OnInit, AfterViewInit, OnChanges {
   xrImmersiveRefSpace = null;
   inlineViewerHelper: InlineViewerHelper = null;
   gl = null;
-  renderer: Renderer = null;
   scene: Scene = new Scene();
 
   customButtonBackground = {};
 
   customCanvasBackground = {};
 
+  primaryTouch;
+  prevTouchX;
+  prevTouchY;
 
-  constructor(private rendererAngular: Renderer2) { }
+
+  constructor() { }
 
   ngOnChanges(changes: SimpleChanges) {
     if (this.customButtonStyle && this.customButtonStyle.backColor) {
@@ -109,17 +112,9 @@ export class NgxView360Component implements OnInit, AfterViewInit, OnChanges {
 
     this.gl = createWebGLContext({
       xrCompatible: true
-    });
-    this.rendererAngular.appendChild(this.webxrContainer.nativeElement, this.gl.canvas);
-    this.rendererAngular.setStyle(this.webxrContainer.nativeElement.firstChild, 'position', 'absolute');
-    this.rendererAngular.setStyle(this.webxrContainer.nativeElement.firstChild, 'z-index', '0');
-    this.rendererAngular.setStyle(this.webxrContainer.nativeElement.firstChild, 'width', '100%');
-    this.rendererAngular.setStyle(this.webxrContainer.nativeElement.firstChild, 'height', '100%');
-    this.rendererAngular.setStyle(this.webxrContainer.nativeElement.firstChild, 'touch-action', 'none');
-
+    }, this.webxrContainer.nativeElement);
     this.onResize();
-    this.renderer = new Renderer(this.gl);
-    this.scene.setRenderer(this.renderer);
+    this.scene.setRenderer(new Renderer(this.gl));
     if (this.leftController !== null && this.leftController !== undefined) {
       if (this.rightController !== null && this.rightController !== undefined) {
         this.scene.inputRenderer.setControllerMesh(new Gltf2Node({ url: this.rightController }), 'right');
@@ -161,7 +156,7 @@ export class NgxView360Component implements OnInit, AfterViewInit, OnChanges {
       if (session.isImmersive) {
         this.xrImmersiveRefSpace = refSpace;
       } else {
-        this.inlineViewerHelper = new InlineViewerHelper(this.gl.canvas, refSpace);
+        this.inlineViewerHelper = new InlineViewerHelper(refSpace);
       }
       session.requestAnimationFrame(this.onXRFrame);
     });
@@ -200,6 +195,50 @@ export class NgxView360Component implements OnInit, AfterViewInit, OnChanges {
       this.scene.drawViewArray(views);
     }
     this.scene.endFrame();
+  }
+
+
+  mouseMove(event) {
+    // Only rotate when the left button is pressed
+    if (event.buttons & 1) {
+      this.inlineViewerHelper.rotateView(event.movementX, event.movementY);
+    }
+  }
+
+  touchStart(event) {
+    if (this.primaryTouch === undefined) {
+      const touch = event.changedTouches[0];
+      this.primaryTouch = touch.identifier;
+      this.prevTouchX = touch.pageX;
+      this.prevTouchY = touch.pageY;
+    }
+  }
+
+  touchEnd(event) {
+    for (const touch of event.changedTouches) {
+      if (this.primaryTouch === touch.identifier) {
+        this.primaryTouch = undefined;
+        this.inlineViewerHelper.rotateView(touch.pageX - this.prevTouchX, touch.pageY - this.prevTouchY);
+      }
+    }
+  }
+
+  touchCancel(event) {
+    for (const touch of event.changedTouches) {
+      if (this.primaryTouch === touch.identifier) {
+        this.primaryTouch = undefined;
+      }
+    }
+  }
+
+  touchMove(event) {
+    for (const touch of event.changedTouches) {
+      if (this.primaryTouch === touch.identifier) {
+        this.inlineViewerHelper.rotateView(touch.pageX - this.prevTouchX, touch.pageY - this.prevTouchY);
+        this.prevTouchX = touch.pageX;
+        this.prevTouchY = touch.pageY;
+      }
+    }
   }
 
 

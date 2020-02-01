@@ -2,7 +2,6 @@ import { RenderView, Renderer } from '../core/renderer';
 import { InputRenderer } from '../nodes/input-renderer';
 import { Node } from '../core/node';
 import * as vec3 from 'gl-matrix/cjs/vec3';
-import * as quat from 'gl-matrix/cjs/quat';
 import { Ray } from '../math/ray';
 
 export class WebXRView extends RenderView {
@@ -20,9 +19,6 @@ export class WebXRView extends RenderView {
 export class Scene extends Node {
     _timestamp = -1;
     _frameDelta = 0;
-    _statsStanding = false;
-    _stats = null;
-    _statsEnabled = false;
     _inputRenderer: InputRenderer = null;
     _resetInputEndFrame = true;
 
@@ -45,7 +41,6 @@ export class Scene extends Node {
 
     loseRenderer() {
         if (this._renderer) {
-            this._stats = null;
             this._renderer = null;
             this._inputRenderer = null;
         }
@@ -200,9 +195,6 @@ export class Scene extends Node {
     startFrame() {
         const prevTimestamp = this._timestamp;
         this._timestamp = performance.now();
-        if (this._stats) {
-            this._stats.begin();
-        }
 
         if (prevTimestamp >= 0) {
             this._frameDelta = this._timestamp - prevTimestamp;
@@ -218,10 +210,6 @@ export class Scene extends Node {
     endFrame() {
         if (this._inputRenderer && this._resetInputEndFrame) {
             this._inputRenderer.reset(undefined);
-        }
-
-        if (this._stats) {
-            this._stats.end();
         }
     }
 
