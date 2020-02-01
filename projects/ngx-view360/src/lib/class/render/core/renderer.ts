@@ -62,13 +62,11 @@ function isPowerOfTwo(n) {
 export function createWebGLContext(glAttribs, canvas) {
     glAttribs = glAttribs || { alpha: false };
 
-    // const webglCanvas = document.createElement('canvas');
-    const webglCanvas = canvas;
     const contextTypes = glAttribs.webgl2 ? ['webgl2'] : ['webgl', 'experimental-webgl'];
     let context = null;
 
     for (const contextType of contextTypes) {
-        context = webglCanvas.getContext(contextType, glAttribs);
+        context = canvas.getContext(contextType, glAttribs);
         if (context) {
             break;
         }
