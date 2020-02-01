@@ -1,5 +1,5 @@
 import { Component, OnInit, EventEmitter, Output, ViewChild, ElementRef, Renderer2, Input, OnChanges, SimpleChanges } from '@angular/core';
-import { OptionStyle } from '../../models/option-style';
+import { ButtonOptionStyle } from '../../models/button-option-style';
 
 @Component({
   selector: 'ngx-vr-button',
@@ -9,7 +9,7 @@ import { OptionStyle } from '../../models/option-style';
 export class VrButtonComponent implements OnInit, OnChanges {
 
 
-  defaultOptionsStyle: OptionStyle = {
+  defaultOptionsStyle: ButtonOptionStyle = {
     color: 'rgb(80,168,252)',
     height: 55,
     corners: 'square',
@@ -25,7 +25,7 @@ export class VrButtonComponent implements OnInit, OnChanges {
   session = null;
   forceDisabled = false;
 
-  @Input() optionsStyle: OptionStyle;
+  @Input() optionsStyle: ButtonOptionStyle;
 
   @Output() RequestSession = new EventEmitter();
   @Output() EndSession = new EventEmitter<any>();

@@ -10,10 +10,15 @@ export class AppComponent {
 
   imgSrc = 'assets/eiffel.jpg';
 
-  customStyle = {
+  customButtonStyle = {
     color: 'white',
     backColor: 'crimson',
     height: 60
+  };
+
+  customCanvas = {
+    height: '50vh',
+    width: '50vw'
   };
 
   changeImgToSpace() {

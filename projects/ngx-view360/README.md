@@ -61,12 +61,13 @@ imageSrc | source of the image to display, need to be a equirectangular image (j
 displayMode(optional) | Mode to display image ('mono', 'stereoTopBottom','stereoLeftRight'). 'mono' is the default mode.
 rightController(optional) | gltf file containing right controller 3D model
 leftController(optional) | gltf file containing left controller 3D model
-customStyle(optional) | object to customize vr button
+customButtonStyle(optional) | object to customize vr button
+customCanvasStyle(optional) | object to customize canvas dimensions
 
-The property 'customStyle' has this structure:
+The property 'customButtonStyle' has this structure:
 
 ```typescript
-interface OptionStyle {
+interface ButtonOptionStyle {
     color?: string;
     height?: number;
     corners?: any;
@@ -86,6 +87,21 @@ backColor(optional) | background color of vr button
 textEnterXRTitle(optional) | Text showing when support for VR
 textXRNotFoundTitle(optional) | Text showing when no support for VR
 textExitXRTitle(optional) | Text showing when quiting vr experience (case with device associated with computer)
+
+
+The property 'customButtonStyle' has this structure:
+
+```typescript
+interface CanvasOptionStyle {
+    height?: string;
+    width?: string;
+}
+```
+
+Attributes | description
+------------ | -------------
+height(optional) | height of the canvas.
+width(optional) | width of the canvas
 
 NB: To show controllers, you need to give the 3D model for each controller, you need to take in account handedness.
 

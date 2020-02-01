@@ -1,5 +1,15 @@
 # CHANGELOG
 
+## 1.2.0
+
+### Added
+
+* Modify component dimensions enable
+
+### Changed
+
+* Modify some properties name
+
 ## 1.1.1
 
 ### Added
@@ -16,7 +26,7 @@
 
 ## 1.0.2
 
-### Fix
+### Fixed
 
 * VR button always on bottom right of canvas
 

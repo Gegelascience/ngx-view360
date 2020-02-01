@@ -3,7 +3,7 @@
     <button (click)='changeImgToSpace()'>In space</button>
     <button (click)='changeImgToEiffel()'>In paris</button>
 </div>
-<h2 class="titre"> with controllers</h2>
+<h2 class="titre"> without controllers</h2>
 <div class="test">
-    <ngx-view360 [imageSrc]="imgSrc" [customStyle]="customStyle"></ngx-view360>
+    <ngx-view360 [imageSrc]="imgSrc" [customCanvasStyle]='customCanvas' [customButtonStyle]="customButtonStyle"></ngx-view360>
 </div>

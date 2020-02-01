@@ -5,7 +5,8 @@ import { Gltf2Node } from './class/render/nodes/gltf2';
 import { SkyboxNode } from './class/render/nodes/skybox';
 import { InlineViewerHelper } from './class/util/inline-viewer-helper';
 import { VrButtonComponent } from './components/vr-button/vr-button.component';
-import { OptionStyle } from './models/option-style';
+import { ButtonOptionStyle } from './models/button-option-style';
+import { CanvasOptionStyle } from './models/canvas-option-style';
 
 declare var navigator: any;
 declare var XRWebGLLayer: any;
@@ -35,9 +36,15 @@ export class NgxView360Component implements OnInit, AfterViewInit, OnChanges {
   @Input() leftController: string;
 
   /**
-   * custom style
+   * custom button style
    */
-  @Input() customStyle: OptionStyle;
+  @Input() customButtonStyle: ButtonOptionStyle;
+
+
+  /**
+   * custom canvas style
+   */
+  @Input() customCanvasStyle: CanvasOptionStyle;
 
   @ViewChild('webxrContainer', { static: true }) webxrContainer;
 
@@ -49,14 +56,16 @@ export class NgxView360Component implements OnInit, AfterViewInit, OnChanges {
   renderer: Renderer = null;
   scene: Scene = new Scene();
 
-  customBackground = {};
+  customButtonBackground = {};
+
+  customCanvasBackground = {};
 
 
   constructor(private rendererAngular: Renderer2) { }
 
   ngOnChanges(changes: SimpleChanges) {
-    if (this.customStyle && this.customStyle.backColor) {
-      this.customBackground['background-color'] = this.customStyle.backColor;
+    if (this.customButtonStyle && this.customButtonStyle.backColor) {
+      this.customButtonBackground['background-color'] = this.customButtonStyle.backColor;
     }
     if (this.imageSrc !== null && this.imageSrc !== undefined) {
       this.scene.addNode(new SkyboxNode({
@@ -65,6 +74,12 @@ export class NgxView360Component implements OnInit, AfterViewInit, OnChanges {
       }));
     } else {
       console.error('path to image invalid');
+    }
+    if (this.customCanvasStyle && this.customCanvasStyle.width) {
+      this.customCanvasBackground['width'] = this.customCanvasStyle.width;
+    }
+    if (this.customCanvasStyle && this.customCanvasStyle.height) {
+      this.customCanvasBackground['height'] = this.customCanvasStyle.height;
     }
   }
 
@@ -96,10 +111,10 @@ export class NgxView360Component implements OnInit, AfterViewInit, OnChanges {
       xrCompatible: true
     });
     this.rendererAngular.appendChild(this.webxrContainer.nativeElement, this.gl.canvas);
-    this.rendererAngular.setStyle(this.webxrContainer.nativeElement.firstChild, 'position', 'relative');
+    this.rendererAngular.setStyle(this.webxrContainer.nativeElement.firstChild, 'position', 'absolute');
     this.rendererAngular.setStyle(this.webxrContainer.nativeElement.firstChild, 'z-index', '0');
     this.rendererAngular.setStyle(this.webxrContainer.nativeElement.firstChild, 'width', '100%');
-    this.rendererAngular.setStyle(this.webxrContainer.nativeElement.firstChild, 'height', 'inherit');
+    this.rendererAngular.setStyle(this.webxrContainer.nativeElement.firstChild, 'height', '100%');
     this.rendererAngular.setStyle(this.webxrContainer.nativeElement.firstChild, 'touch-action', 'none');
 
     this.onResize();
