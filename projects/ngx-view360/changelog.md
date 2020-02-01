@@ -2,13 +2,13 @@
 
 ## 1.1.1
 
-### Add
+### Added
 
 * Add Changelog
 
 ## 1.1.0
 
-### Add
+### Added
 
 * Dynamically change image enable
 
