@@ -1,4 +1,4 @@
-import { Component, OnInit, EventEmitter, Output, ViewChild, ElementRef, Renderer2, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Output, ViewChild, Renderer2, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { ButtonOptionStyle } from '../../models/button-option-style';
 
 @Component({
@@ -6,7 +6,7 @@ import { ButtonOptionStyle } from '../../models/button-option-style';
   templateUrl: './vr-button.component.html',
   styleUrls: ['./vr-button.component.css']
 })
-export class VrButtonComponent implements OnInit, OnChanges {
+export class VrButtonComponent implements OnChanges {
 
 
   defaultOptionsStyle: ButtonOptionStyle = {
@@ -29,7 +29,7 @@ export class VrButtonComponent implements OnInit, OnChanges {
   @Output() RequestSession = new EventEmitter();
   @Output() EndSession = new EventEmitter<any>();
 
-  @ViewChild('buttonMain', { static: true }) buttonEl: ElementRef;
+  @ViewChild('buttonMain', { static: true }) buttonEl: any;
 
   logoHeight: number;
 
@@ -48,8 +48,6 @@ export class VrButtonComponent implements OnInit, OnChanges {
   ngOnChanges(changes: SimpleChanges) {
     this.setCustomStyle();
   }
-
-  ngOnInit() { }
 
   setCustomStyle() {
     const _LOGO_SCALE = 0.8;

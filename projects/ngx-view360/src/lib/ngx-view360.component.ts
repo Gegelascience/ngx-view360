@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, HostListener, AfterViewInit, ViewChild, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, OnInit, Input, HostListener, ViewChild, OnChanges, SimpleChanges } from '@angular/core';
 import { Scene, WebXRView } from './class/render/scenes/scene';
 import { Renderer, createWebGLContext } from './class/render/core/renderer';
 import { Gltf2Node } from './class/render/nodes/gltf2';
@@ -16,7 +16,7 @@ declare var XRWebGLLayer: any;
   templateUrl: './ngx-view360.component.html',
   styleUrls: ['./ngx-view360.component.css']
 })
-export class NgxView360Component implements OnInit, AfterViewInit, OnChanges {
+export class NgxView360Component implements OnInit, OnChanges {
 
   /**
    * path to image
@@ -30,7 +30,7 @@ export class NgxView360Component implements OnInit, AfterViewInit, OnChanges {
    * gltf2 file containing right controller 3D model
    */
   @Input() rightController: string;
-  /***
+  /**
    * gltf2 file containing left controller 3D model
    */
   @Input() leftController: string;
@@ -86,9 +86,7 @@ export class NgxView360Component implements OnInit, AfterViewInit, OnChanges {
     }
   }
 
-  ngOnInit() { }
-
-  ngAfterViewInit() {
+  ngOnInit() {
     // Start the XR application.
     if (this.imageSrc !== null && this.imageSrc !== undefined) {
       this.initXR();

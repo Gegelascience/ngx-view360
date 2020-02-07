@@ -106,8 +106,6 @@ export class Scene extends Node {
                     targetRay.direction[1] * cursorDistance,
                     targetRay.direction[2] * cursorDistance,
                 ]);
-                // let cursorPos = vec3.fromValues(0, 0, -1.0);
-                // vec3.transformMat4(cursorPos, cursorPos, inputPose.targetRay);
 
                 this.inputRenderer.addCursor(cursorPos);
 
