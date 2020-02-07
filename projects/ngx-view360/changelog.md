@@ -1,8 +1,14 @@
 # CHANGELOG
 
+# 1.2.2
+
+### Changed
+
+* Optimization of library perf and size
+
 ## 1.2.1
 
-### FIxed
+### Fixed
 
 * Fix readme
 
