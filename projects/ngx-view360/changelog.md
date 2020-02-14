@@ -1,6 +1,16 @@
 # CHANGELOG
 
-# 1.2.2
+## 2.0.0
+
+### Changed
+
+* Optimization of library perf and size
+
+### Removed
+
+* Custom controller model enable
+
+## 1.2.2
 
 ### Changed
 

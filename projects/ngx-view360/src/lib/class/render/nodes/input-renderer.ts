@@ -3,7 +3,6 @@ import { Node } from '../core/node';
 import { Primitive, PrimitiveAttribute } from '../core/primitives';
 import { DataTexture } from '../core/texture';
 import { Renderer } from '../core/renderer';
-import { Gltf2Node } from './gltf2';
 
 const GL = WebGLRenderingContext; // For enums
 
@@ -224,40 +223,6 @@ export class InputRenderer extends Node {
         this._activeControllers = 0;
         this._activeLasers = 0;
         this._activeCursors = 0;
-    }
-
-    setControllerMesh(controllerNode: Gltf2Node, handedness = 'right') {
-        if (!this._controllerNodes) {
-            this._controllerNodes = {};
-        }
-        this._controllerNodes[handedness] = controllerNode;
-        this._controllerNodes[handedness].visible = false;
-        // FIXME: Temporary fix to initialize for cloning.
-        this.addNode(this._controllerNodes[handedness]);
-    }
-
-    addController(gripMatrix, handedness = 'right') {
-        let controllerNode = this._controllerNodes[handedness];
-        if (!controllerNode) {
-            // in the case if we don't have a node for correct handedness - fall back to the 'right' one.
-            controllerNode = this._controllerNodes.right;
-            if (!controllerNode) {
-                return;
-            }
-        }
-
-        let controller = null;
-        if (this._activeControllers < this._controllers.length) {
-            controller = this._controllers[this._activeControllers];
-        } else {
-            controller = controllerNode.clone();
-            this.addNode(controller);
-            this._controllers.push(controller);
-        }
-        this._activeControllers = (this._activeControllers + 1) % this._maxInputElements;
-
-        controller.matrix = gripMatrix;
-        controller.visible = true;
     }
 
     addLaserPointer(rigidTransform) {

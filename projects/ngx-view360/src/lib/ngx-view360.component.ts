@@ -1,7 +1,6 @@
 import { Component, OnInit, Input, HostListener, ViewChild, OnChanges, SimpleChanges } from '@angular/core';
 import { Scene, WebXRView } from './class/render/scenes/scene';
 import { Renderer, createWebGLContext } from './class/render/core/renderer';
-import { Gltf2Node } from './class/render/nodes/gltf2';
 import { SkyboxNode } from './class/render/nodes/skybox';
 import { InlineViewerHelper } from './class/util/inline-viewer-helper';
 import { VrButtonComponent } from './components/vr-button/vr-button.component';
@@ -26,14 +25,6 @@ export class NgxView360Component implements OnInit, OnChanges {
    * mode of image: 'mono' || 'stereoTopBottom' || 'stereoLeftRight'
    */
   @Input() displayMode?: string;
-  /**
-   * gltf2 file containing right controller 3D model
-   */
-  @Input() rightController: string;
-  /**
-   * gltf2 file containing left controller 3D model
-   */
-  @Input() leftController: string;
 
   /**
    * custom button style
@@ -113,13 +104,6 @@ export class NgxView360Component implements OnInit, OnChanges {
     }, this.webxrContainer.nativeElement);
     this.onResize();
     this.scene.setRenderer(new Renderer(this.gl));
-    if (this.leftController !== null && this.leftController !== undefined) {
-      if (this.rightController !== null && this.rightController !== undefined) {
-        this.scene.inputRenderer.setControllerMesh(new Gltf2Node({ url: this.rightController }), 'right');
-        this.scene.inputRenderer.setControllerMesh(new Gltf2Node({ url: this.leftController }), 'left');
-        this.scene.ControllersMeshExist = true;
-      }
-    }
   }
 
 

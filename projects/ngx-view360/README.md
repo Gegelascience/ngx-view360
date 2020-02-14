@@ -6,6 +6,12 @@ NgxView360 let you use 360 photo viewer in VR using Angular technology.
 This library adapt one of the samples from [WebXR Sample](https://github.com/immersive-web/webxr-samples).
 A great thanks to *The Immersive Web Community Group*.
 
+## Breaking Change
+
+From version 2.0.0 doesn't allow you to use a custom controller.
+It use a lot resources for little result.
+If you realy need custom controller, you can use the version 1.2.2.
+
 ## Setup
 
 ### Installing
@@ -59,8 +65,6 @@ Attributes | description
 ------------ | -------------
 imageSrc | source of the image to display, need to be a equirectangular image (jpg or png accepted)
 displayMode(optional) | Mode to display image ('mono', 'stereoTopBottom','stereoLeftRight'). 'mono' is the default mode.
-rightController(optional) | gltf file containing right controller 3D model
-leftController(optional) | gltf file containing left controller 3D model
 customButtonStyle(optional) | object to customize vr button
 customCanvasStyle(optional) | object to customize canvas dimensions
 
@@ -103,7 +107,6 @@ Attributes | description
 height(optional) | height of the canvas.
 width(optional) | width of the canvas
 
-NB: To show controllers, you need to give the 3D model for each controller, you need to take in account handedness.
 
 
 
