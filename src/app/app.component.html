@@ -1,9 +1,10 @@
 <h1 class="titre"> This is an integration test for 360 view with webxr</h1>
-<div style="display: flex;justify-content: space-around;">
+<div style="display: flex;justify-content: space-around;margin-bottom: 15px;">
     <button (click)='changeImgToSpace()'>In space</button>
     <button (click)='changeImgToEiffel()'>In paris</button>
 </div>
 <div class="test">
-    <ngx-view360 [imageSrc]="imgSrc" [customCanvasStyle]='customCanvas' [customButtonStyle]="customButtonStyle">
+    <ngx-view360 [imageSrc]="imgSrc" [customCanvasStyle]='customCanvas' [customButtonStyle]="customButtonStyle"
+        [showVRButton]="true">
     </ngx-view360>
 </div>

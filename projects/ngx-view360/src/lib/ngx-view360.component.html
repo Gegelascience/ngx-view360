@@ -4,6 +4,7 @@
             (touchstart)='touchStart($event)' (touchend)='touchEnd($event)'
             (touchcancel)='touchCancel($event)'></canvas>
     </div>
-    <ngx-vr-button class="vrButton" [ngStyle]='customButtonBackground' [optionsStyle]="customButtonStyle"
-        (RequestSession)='onRequestSession()' (EndSession)='onEndSession($event)'></ngx-vr-button>
+    <ngx-vr-button class="vrButton" [ngClass]="{'hideBtn': !showVRButton}" [ngStyle]='customButtonBackground'
+        [optionsStyle]="customButtonStyle" (RequestSession)='onRequestSession()' (EndSession)='onEndSession($event)'>
+    </ngx-vr-button>
 </div>

@@ -1,10 +1,14 @@
 # CHANGELOG
 
-## 2.0.0
+## 1.3.0
 
 ### Changed
 
 * Optimization of library perf and size
+
+### Added
+
+* Modify VR button visibility enable
 
 ### Removed
 

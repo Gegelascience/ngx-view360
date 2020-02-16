@@ -36,3 +36,7 @@
   touch-action: none;
   cursor: grab;
 }
+
+.hideBtn{
+  display: none;
+}

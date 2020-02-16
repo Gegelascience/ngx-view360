@@ -8,7 +8,7 @@ A great thanks to *The Immersive Web Community Group*.
 
 ## Breaking Change
 
-From version 2.0.0 doesn't allow you to use a custom controller.
+From version 1.3.0 doesn't allow you to use a custom controller.
 It use a lot resources for little result.
 If you realy need custom controller, you can use the version 1.2.2.
 
@@ -67,6 +67,7 @@ imageSrc | source of the image to display, need to be a equirectangular image (j
 displayMode(optional) | Mode to display image ('mono', 'stereoTopBottom','stereoLeftRight'). 'mono' is the default mode.
 customButtonStyle(optional) | object to customize vr button
 customCanvasStyle(optional) | object to customize canvas dimensions
+showVRButton(optional) | boolean to show VR button (default value: true)
 
 The property 'customButtonStyle' has this structure:
 
