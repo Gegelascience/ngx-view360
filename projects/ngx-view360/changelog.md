@@ -1,6 +1,20 @@
 # CHANGELOG
 
-# 1.2.2
+## 1.3.0
+
+### Changed
+
+* Optimization of library perf and size
+
+### Added
+
+* Modify VR button visibility enable
+
+### Removed
+
+* Custom controller model enable
+
+## 1.2.2
 
 ### Changed
 

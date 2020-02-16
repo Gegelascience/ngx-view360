@@ -29,8 +29,6 @@ export class Scene extends Node {
 
     clear = true;
 
-    ControllersMeshExist = false;
-
     constructor() {
         super();
     }
@@ -114,10 +112,6 @@ export class Scene extends Node {
             if (inputSource.gripSpace) {
                 const gripPose = frame.getPose(inputSource.gripSpace, refSpace);
 
-                // Any time that we have a grip matrix, we'll render a controller.
-                if (gripPose && this.ControllersMeshExist) {
-                    this.inputRenderer.addController(gripPose.transform.matrix, inputSource.handedness);
-                }
             }
 
         }

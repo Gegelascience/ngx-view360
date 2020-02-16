@@ -146,14 +146,3 @@ export class DataTexture extends Texture {
         return this._key;
     }
 }
-
-export class ColorTexture extends DataTexture {
-
-    constructor(r, g, b, a) {
-        const colorData = new Uint8Array([r * 255.0, g * 255.0, b * 255.0, a * 255.0]);
-        super(colorData, 1, 1);
-
-        this.mipmap = false;
-        this._key = `COLOR_${colorData[0]}_${colorData[1]}_${colorData[2]}_${colorData[3]}`;
-    }
-}
