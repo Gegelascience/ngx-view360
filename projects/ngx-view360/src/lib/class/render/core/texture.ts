@@ -104,6 +104,7 @@ export class UrlTexture extends ImageTexture {
     constructor(url: string) {
         const img = new Image();
         super(img);
+        img.crossOrigin = 'anonymous';
         img.src = url;
     }
 }
