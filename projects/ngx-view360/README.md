@@ -6,11 +6,19 @@ NgxView360 let you use 360 photo viewer in VR using Angular technology.
 This library adapt one of the samples from [WebXR Sample](https://github.com/immersive-web/webxr-samples).
 A great thanks to *The Immersive Web Community Group*.
 
+## Warning
+
+**You must use _https_ to display XR content. If you use _http_ you will only have cardboard display.**
+[More informations](https://www.w3.org/TR/webxr/)
+
+
 ## Breaking Change
 
 From version 1.3.0 doesn't allow you to use a custom controller.
 It use a lot resources for little result.
 If you realy need custom controller, you can use the version 1.2.2.
+
+[Changelog](changelog.md)
 
 ## Setup
 

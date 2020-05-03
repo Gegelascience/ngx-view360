@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## 1.3.2
+
+### Changed
+
+* Update dependencies
+* Add warning on http protocol 
+
 ## 1.3.1
 
 ### Fixed
