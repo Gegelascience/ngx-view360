@@ -157,6 +157,19 @@ export class NgxView360Component implements OnInit, OnChanges {
       this.vrButton.setSession(null);
     }
   }
+
+  onFullScreenStart = () => {
+    if (this.webxrContainer.nativeElement.requestFullscreen) {
+      this.webxrContainer.nativeElement.requestFullscreen();
+    }
+  }
+
+  onFullScreenEnd = () => {
+    if (this.webxrContainer.nativeElement.exitFullscreen) {
+      this.webxrContainer.nativeElement.exitFullscreen();
+    }
+  }
+
   onXRFrame = (t, frame) => {
     const session = frame.session;
     const refSpace = session.isImmersive ?

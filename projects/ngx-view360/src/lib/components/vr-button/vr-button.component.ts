@@ -14,7 +14,7 @@ export class VrButtonComponent implements OnChanges {
     height: 55,
     corners: 'square',
     textEnterXRTitle: 'ENTER VR',
-    textXRNotFoundTitle: 'VR NOT FOUND',
+    textXRNotFoundTitle: 'VIEW IN FULLSCREEN',
     textExitXRTitle: 'EXIT VR',
 
   };
@@ -28,6 +28,7 @@ export class VrButtonComponent implements OnChanges {
 
   @Output() RequestSession = new EventEmitter();
   @Output() EndSession = new EventEmitter<any>();
+  @Output() RequestFullScreen = new EventEmitter();
 
   @ViewChild('buttonMain', { static: true }) buttonEl: any;
 
@@ -102,6 +103,8 @@ export class VrButtonComponent implements OnChanges {
 
     } else if (this.enabled) {
       this.RequestSession.emit();
+    } else {
+      this.RequestFullScreen.emit();
     }
   }
 
@@ -133,7 +136,7 @@ export class VrButtonComponent implements OnChanges {
     } else {
       const title = this.optionsStyle && this.optionsStyle.textXRNotFoundTitle ? this.optionsStyle.textXRNotFoundTitle : this.defaultOptionsStyle.textXRNotFoundTitle;
       this.setTitle(title, 'No XR headset found.');
-      this.setDisabledAttribute(true);
+      this.setDisabledAttribute(false);
     }
   }
 

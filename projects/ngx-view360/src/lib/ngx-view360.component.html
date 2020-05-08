@@ -5,6 +5,7 @@
             (touchcancel)='touchCancel($event)'></canvas>
     </div>
     <ngx-vr-button class="vrButton" [ngClass]="{'hideBtn': !showVRButton}" [ngStyle]='customButtonBackground'
-        [optionsStyle]="customButtonStyle" (RequestSession)='onRequestSession()' (EndSession)='onEndSession($event)'>
+        [optionsStyle]="customButtonStyle" (RequestSession)='onRequestSession()' (EndSession)='onEndSession($event)'
+        (RequestFullScreen)='onFullScreenStart()'>
     </ngx-vr-button>
 </div>

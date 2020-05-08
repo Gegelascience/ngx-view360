@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 1.4.0
+
+### Added:
+
+* Add fullscreen feature when vr not supported
+
 ## 1.3.2
 
 ### Changed

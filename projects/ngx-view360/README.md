@@ -1,10 +1,13 @@
 # NgxView360
 
-This library was generated with [Angular CLI](https://github.com/angular/angular-cli) version 8.2.14.
-
 NgxView360 let you use 360 photo viewer in VR using Angular technology.
 This library adapt one of the samples from [WebXR Sample](https://github.com/immersive-web/webxr-samples).
 A great thanks to *The Immersive Web Community Group*.
+
+If VR is not supported, a magic window is enabled.
+
+This library was generated with [Angular CLI](https://github.com/angular/angular-cli) version 8.2.14.
+
 
 ## Warning
 
