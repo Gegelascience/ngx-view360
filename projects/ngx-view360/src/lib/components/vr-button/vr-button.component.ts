@@ -13,13 +13,7 @@ export class VrButtonComponent implements OnChanges {
     color: 'rgb(80,168,252)',
     height: 55,
     corners: 'square',
-    textEnterXRTitle: 'ENTER VR',
-    textXRNotFoundTitle: 'VIEW IN FULLSCREEN',
-    textExitXRTitle: 'EXIT VR',
-
   };
-
-  titleButton: string;
 
   enabled = false;
   session = null;
@@ -38,11 +32,7 @@ export class VrButtonComponent implements OnChanges {
 
   customButtonUIStyle = {};
 
-  customTitleUIStyle = {};
-
   customLogoOKUIStyle = {};
-
-  customLogoNotOKUIStyle = {};
 
   constructor(private renderer: Renderer2) { }
 
@@ -57,32 +47,17 @@ export class VrButtonComponent implements OnChanges {
     const borderRadius = this.getBorderRadius(height, corners);
     const fontSize = height / 3;
 
-    this.titleButton = this.optionsStyle && this.optionsStyle.textXRNotFoundTitle ? this.optionsStyle.textXRNotFoundTitle : this.defaultOptionsStyle.textXRNotFoundTitle;
-
     this.logoHeight = height * _LOGO_SCALE / 3;
     this.aspectDim = height * _LOGO_SCALE * 14 / 27;
 
     this.customButtonUIStyle['border-color'] = this.optionsStyle && this.optionsStyle.color ? this.optionsStyle.color : this.defaultOptionsStyle.color;
     this.customButtonUIStyle['border-radius.px'] = borderRadius;
-    this.customButtonUIStyle['height.px'] = height;
     this.customButtonUIStyle['min-width.px'] = fontSize;
 
-    this.customTitleUIStyle['color'] = this.optionsStyle && this.optionsStyle.color ? this.optionsStyle.color : this.defaultOptionsStyle.color;
-    this.customTitleUIStyle['font-size.px'] = fontSize;
-    this.customTitleUIStyle['padding-left.px'] = height * 1.05;
-    this.customTitleUIStyle['padding-right.px'] = (borderRadius - 10 < 5) ? fontSize : borderRadius - 10;
-
-    this.customLogoOKUIStyle['width.px'] = height - 4;
-    this.customLogoOKUIStyle['height.px'] = height - 4;
+    this.customLogoOKUIStyle['width.px'] = height + fontSize;
+    this.customLogoOKUIStyle['height.px'] = height - fontSize / 2;
     this.customLogoOKUIStyle['fill'] = this.optionsStyle && this.optionsStyle.color ? this.optionsStyle.color : this.defaultOptionsStyle.color;
-    this.customLogoOKUIStyle['margin-left.px'] = fontSize;
-    this.customLogoOKUIStyle['margin-top.px'] = (height - fontSize * _LOGO_SCALE) / 2 - 2;
 
-    this.customLogoNotOKUIStyle['width.px'] = height - 4;
-    this.customLogoNotOKUIStyle['height.px'] = height - 4;
-    this.customLogoNotOKUIStyle['fill'] = this.optionsStyle && this.optionsStyle.color ? this.optionsStyle.color : this.defaultOptionsStyle.color;
-    this.customLogoNotOKUIStyle['margin-left.px'] = fontSize;
-    this.customLogoNotOKUIStyle['margin-top.px'] = (height - 28 / 18 * fontSize * _LOGO_SCALE) / 2 - 2;
   }
 
   getBorderRadius(height, corners) {
@@ -126,22 +101,16 @@ export class VrButtonComponent implements OnChanges {
 
   updateButtonState() {
     if (this.session) {
-      const title = this.optionsStyle && this.optionsStyle.textExitXRTitle ? this.optionsStyle.textExitXRTitle : this.defaultOptionsStyle.textExitXRTitle;
-      this.setTitle(title, 'Exit XR presentation');
-      this.setDisabledAttribute(false);
+      this.setTitle('Exit XR presentation');
     } else if (this.enabled) {
-      const title = this.optionsStyle && this.optionsStyle.textEnterXRTitle ? this.optionsStyle.textEnterXRTitle : this.defaultOptionsStyle.textEnterXRTitle;
-      this.setTitle(title, 'Enter XR');
-      this.setDisabledAttribute(false);
+      this.setTitle('Enter XR');
     } else {
-      const title = this.optionsStyle && this.optionsStyle.textXRNotFoundTitle ? this.optionsStyle.textXRNotFoundTitle : this.defaultOptionsStyle.textXRNotFoundTitle;
-      this.setTitle(title, 'No XR headset found.');
-      this.setDisabledAttribute(false);
+      this.setTitle('No XR headset found.');
     }
+    this.setDisabledAttribute(false);
   }
 
-  setTitle(text, title) {
-    this.titleButton = text;
+  setTitle(title) {
     this.renderer.setAttribute(this.buttonEl.nativeElement, 'title', title);
     return this;
   }

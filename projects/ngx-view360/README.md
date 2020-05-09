@@ -15,13 +15,9 @@ This library was generated with [Angular CLI](https://github.com/angular/angular
 [More informations](https://www.w3.org/TR/webxr/)
 
 
-## Breaking Change
+## Changelog
 
-From version 1.3.0 doesn't allow you to use a custom controller.
-It use a lot resources for little result.
-If you realy need custom controller, you can use the version 1.2.2.
-
-[Changelog](changelog.md)
+[see file](changelog.md)
 
 ## Setup
 
@@ -88,9 +84,6 @@ interface ButtonOptionStyle {
     height?: number;
     corners?: any;
     backColor?: string;
-    textEnterXRTitle?: string;
-    textXRNotFoundTitle?: string;
-    textExitXRTitle?: string;
 }
 ```
 
@@ -100,9 +93,6 @@ color(optional) | color of texts and logos and borders
 height(optional) | height of the button (px).
 corners(optional) | 'square' or 'round' or any number representing border-radius (px)
 backColor(optional) | background color of vr button
-textEnterXRTitle(optional) | Text showing when support for VR
-textXRNotFoundTitle(optional) | Text showing when no support for VR
-textExitXRTitle(optional) | Text showing when quiting vr experience (case with device associated with computer)
 
 
 The property 'customCanvasStyle' has this structure:

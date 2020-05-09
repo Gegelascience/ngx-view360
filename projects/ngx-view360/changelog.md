@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 2.0.0
+
+### Changed
+* reworking on XR button UI
+* Optimization of library size
+
 ## 1.4.0
 
 ### Added:
