@@ -37,6 +37,7 @@ export class NgxView360Component implements OnInit, OnChanges {
    */
   @Input() customCanvasStyle: CanvasOptionStyle;
 
+
   /**
    * enable vr button
    */

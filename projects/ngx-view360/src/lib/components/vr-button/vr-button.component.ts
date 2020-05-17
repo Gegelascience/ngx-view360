@@ -26,9 +26,9 @@ export class VrButtonComponent implements OnChanges {
 
   @ViewChild('buttonMain', { static: true }) buttonEl: any;
 
-  logoHeight: number;
+  logoHeight: string;
 
-  aspectDim: number;
+  aspectDim: string;
 
   customButtonUIStyle = {};
 
@@ -47,8 +47,8 @@ export class VrButtonComponent implements OnChanges {
     const borderRadius = this.getBorderRadius(height, corners);
     const fontSize = height / 3;
 
-    this.logoHeight = height * _LOGO_SCALE / 3;
-    this.aspectDim = height * _LOGO_SCALE * 14 / 27;
+    this.logoHeight = height * _LOGO_SCALE / 3 + 'px';
+    this.aspectDim = height * _LOGO_SCALE * 14 / 27 + 'px';
 
     this.customButtonUIStyle['border-color'] = this.optionsStyle && this.optionsStyle.color ? this.optionsStyle.color : this.defaultOptionsStyle.color;
     this.customButtonUIStyle['border-radius.px'] = borderRadius;

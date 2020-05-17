@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 2.1.0
+
+### Changed
+* Library compiled with ivy
+* angular dependancies updated to angular 9
+
 ## 2.0.0
 
 ### Changed
