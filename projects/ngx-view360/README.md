@@ -14,7 +14,6 @@ This library was generated with [Angular CLI](https://github.com/angular/angular
 **You must use _https_ to display XR content. If you use _http_ you will only have cardboard display.**
 [More informations](https://www.w3.org/TR/webxr/)
 
-**Since the version 2.1.0, this library use Ivy as compiler. You need to enable ivy in the tsconfig of your app to use ngx-view360**
 
 
 ## Changelog
