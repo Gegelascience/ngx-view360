@@ -1,4 +1,4 @@
-import * as quat from 'gl-matrix/cjs/quat';
+import { quat } from 'gl-matrix';
 
 declare var XRRigidTransform: any;
 

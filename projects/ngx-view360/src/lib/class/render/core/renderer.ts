@@ -2,8 +2,7 @@ import { CAP, MAT_STATE, RENDER_ORDER, stateToBlendFunc } from './material';
 import { Node } from './node';
 import { Program } from './program';
 import { DataTexture } from './texture';
-import * as vec3 from 'gl-matrix/cjs/vec3';
-import * as mat4 from 'gl-matrix/cjs/mat4';
+import { mat4, vec3 } from 'gl-matrix';
 import { Primitive } from './primitives';
 
 declare var XRRigidTransform: any;
