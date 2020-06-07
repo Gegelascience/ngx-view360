@@ -1,7 +1,7 @@
 import { CAP, MAT_STATE, RENDER_ORDER, stateToBlendFunc } from './material';
 import { Node } from './node';
 import { Program } from './program';
-import { DataTexture } from './texture';
+import { DataTexture, UrlTexture } from './texture';
 import { mat4, vec3 } from 'gl-matrix';
 import { Primitive } from './primitives';
 
@@ -824,6 +824,19 @@ export class Renderer {
                     0, texture.format, texture._type, texture._data);
                 this._setSamplerParameters(texture);
                 renderTexture._complete = true;
+            } else if (texture instanceof UrlTexture) {
+                texture.waitForComplete().then(() => {
+                    gl.bindTexture(gl.TEXTURE_2D, textureHandle);
+                    const limitTexture = gl.getParameter(gl.MAX_TEXTURE_SIZE);
+                    const dimensionsLimit = limitTexture * limitTexture;
+                    const imgDimensions = texture.width * texture.height;
+                    if (imgDimensions > dimensionsLimit) {
+                        console.warn('texture too big for your browser, containing more than ' + dimensionsLimit + 'px');
+                    }
+                    gl.texImage2D(gl.TEXTURE_2D, 0, texture.format, texture.format, gl.UNSIGNED_BYTE, texture.source);
+                    this._setSamplerParameters(texture);
+                    renderTexture._complete = true;
+                });
             } else {
                 texture.waitForComplete().then(() => {
                     gl.bindTexture(gl.TEXTURE_2D, textureHandle);

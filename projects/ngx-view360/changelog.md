@@ -1,9 +1,14 @@
 # CHANGELOG
 
+## 2.1.1
+
+### Added
+* warning on texture limit size and browser
+
 ## 2.1.0
 
 ### Changed
-* angular dependancies updated to angular 9
+* angular dependencies updated to angular 9
 
 ## 2.0.0
 

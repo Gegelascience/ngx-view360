@@ -14,11 +14,16 @@ This library was generated with [Angular CLI](https://github.com/angular/angular
 **You must use _https_ to display XR content. If you use _http_ you will only have cardboard display.**
 [More informations](https://www.w3.org/TR/webxr/)
 
+## Versions
 
+NgxView360 | Angular
+------------ | -------------
+2.0.0 | 8
+2.1.0 + | 9 
 
 ## Changelog
 
-[see file](changelog.md)
+[see file](https://github.com/Gegelascience/ngx-view360/blob/master/projects/ngx-view360/changelog.md)
 
 ## Setup
 

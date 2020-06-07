@@ -8,7 +8,8 @@ import { Component } from '@angular/core';
 export class AppComponent {
   title = 'ngxPhotos360webxr';
 
-  //imgSrc = 'assets/eiffel.jpg';
+  // imgSrc = 'assets/eiffel.jpg';
+  // imgSrc = 'assets/100_0017.JPG'
   imgSrc = 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/67/Castle_Church_of_Lutherstadt_Wittenberg_%28interior%2C_full_spherical_panoramic_image%2C_equirectangular_projection%29.jpg/1280px-Castle_Church_of_Lutherstadt_Wittenberg_%28interior%2C_full_spherical_panoramic_image%2C_equirectangular_projection%29.jpg'
 
   customButtonStyle = {
