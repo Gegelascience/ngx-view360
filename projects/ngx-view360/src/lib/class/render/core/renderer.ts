@@ -1,7 +1,7 @@
 import { CAP, MAT_STATE, RENDER_ORDER, stateToBlendFunc } from './material';
 import { Node } from './node';
 import { Program } from './program';
-import { DataTexture, UrlTexture } from './texture';
+import { DataTexture, ImageUrlTexture } from './texture';
 import { mat4, vec3 } from 'gl-matrix';
 import { Primitive } from './primitives';
 
@@ -128,25 +128,25 @@ class RenderBuffer {
     _usage;
     _length: number;
     _buffer;
-    _promise;
+    promise: Promise<any>;
     constructor(target, usage, buffer, length = 0) {
         this._target = target;
         this._usage = usage;
         this._length = length;
         if (buffer instanceof Promise) {
             this._buffer = null;
-            this._promise = buffer.then((buffer) => {
+            this.promise = buffer.then((buffer) => {
                 this._buffer = buffer;
                 return this;
             });
         } else {
             this._buffer = buffer;
-            this._promise = Promise.resolve(this);
+            this.promise = Promise.resolve(this);
         }
     }
 
     waitForComplete() {
-        return this._promise;
+        return this.promise;
     }
 }
 
@@ -183,16 +183,16 @@ class RenderPrimitive {
     _material;
     _mode: number;
     _elementCount: number;
-    _promise;
+    promise: Promise<any>;
     _vao;
-    _complete: boolean;
+    complete: boolean;
     _attributeBuffers;
     _attributeMask;
     _indexBuffer;
     _indexByteOffset: number;
     _indexType: number;
-    _min;
-    _max;
+    min;
+    max;
 
     constructor(primitive) {
         this._activeFrameId = 0;
@@ -205,9 +205,9 @@ class RenderPrimitive {
     setPrimitive(primitive: Primitive) {
         this._mode = primitive.mode;
         this._elementCount = primitive.elementCount;
-        this._promise = null;
+        this.promise = null;
         this._vao = null;
-        this._complete = false;
+        this.complete = false;
         this._attributeBuffers = [];
         this._attributeMask = 0;
 
@@ -239,31 +239,31 @@ class RenderPrimitive {
             this._indexBuffer = primitive.indexBuffer;
         }
 
-        if (primitive._min) {
-            this._min = vec3.clone(primitive._min);
-            this._max = vec3.clone(primitive._max);
+        if (primitive.min) {
+            this.min = vec3.clone(primitive.min);
+            this.max = vec3.clone(primitive.max);
         } else {
-            this._min = null;
-            this._max = null;
+            this.min = null;
+            this.max = null;
         }
 
         if (this._material != null) {
-            this.waitForComplete(); // To flip the _complete flag.
+            this.waitForComplete(); // To flip the complete flag.
         }
     }
 
     setRenderMaterial(material) {
         this._material = material;
-        this._promise = null;
-        this._complete = false;
+        this.promise = null;
+        this.complete = false;
 
         if (this._material != null) {
-            this.waitForComplete(); // To flip the _complete flag.
+            this.waitForComplete(); // To flip the complete flag.
         }
     }
 
     markActive(frameId) {
-        if (this._complete && this._activeFrameId !== frameId) {
+        if (this.complete && this._activeFrameId !== frameId) {
             if (this._material) {
                 if (!this._material.markActive(frameId)) {
                     return;
@@ -282,7 +282,7 @@ class RenderPrimitive {
     }
 
     waitForComplete() {
-        if (!this._promise) {
+        if (!this.promise) {
             if (!this._material) {
                 return Promise.reject('RenderPrimitive does not have a material');
             }
@@ -291,32 +291,32 @@ class RenderPrimitive {
 
             for (const attributeBuffer of this._attributeBuffers) {
                 if (!attributeBuffer._buffer._buffer) {
-                    completionPromises.push(attributeBuffer._buffer._promise);
+                    completionPromises.push(attributeBuffer._buffer.promise);
                 }
             }
 
             if (this._indexBuffer && !this._indexBuffer._buffer) {
-                completionPromises.push(this._indexBuffer._promise);
+                completionPromises.push(this._indexBuffer.promise);
             }
 
-            this._promise = Promise.all(completionPromises).then(() => {
-                this._complete = true;
+            this.promise = Promise.all(completionPromises).then(() => {
+                this.complete = true;
                 return this;
             });
         }
-        return this._promise;
+        return this.promise;
     }
 }
 
 export class RenderTexture {
     _texture;
-    _complete: boolean;
+    complete: boolean;
     _activeFrameId: number;
     _activeCallback;
 
     constructor(texture) {
         this._texture = texture;
-        this._complete = false;
+        this.complete = false;
         this._activeFrameId = 0;
         this._activeCallback = null;
     }
@@ -463,7 +463,7 @@ class RenderMaterial {
 
         for (const sampler of this._samplers) {
             gl.activeTexture(gl.TEXTURE0 + sampler._index);
-            if (sampler._renderTexture && sampler._renderTexture._complete) {
+            if (sampler._renderTexture && sampler._renderTexture.complete) {
                 gl.bindTexture(gl.TEXTURE_2D, sampler._renderTexture._texture);
             } else {
                 gl.bindTexture(gl.TEXTURE_2D, null);
@@ -487,7 +487,7 @@ class RenderMaterial {
             for (let i = 0; i < this._samplers.length; ++i) {
                 const sampler = this._samplers[i];
                 if (sampler._renderTexture) {
-                    if (!sampler._renderTexture._complete) {
+                    if (!sampler._renderTexture.complete) {
                         this._completeForActiveFrame = false;
                         break;
                     }
@@ -821,10 +821,10 @@ export class Renderer {
             if (texture instanceof DataTexture) {
                 gl.bindTexture(gl.TEXTURE_2D, textureHandle);
                 gl.texImage2D(gl.TEXTURE_2D, 0, texture.format, texture.width, texture.height,
-                    0, texture.format, texture._type, texture._data);
+                    0, texture.format, texture._type, texture.data);
                 this._setSamplerParameters(texture);
-                renderTexture._complete = true;
-            } else if (texture instanceof UrlTexture) {
+                renderTexture.complete = true;
+            } else if (texture instanceof ImageUrlTexture) {
                 texture.waitForComplete().then(() => {
                     gl.bindTexture(gl.TEXTURE_2D, textureHandle);
                     const limitTexture = gl.getParameter(gl.MAX_TEXTURE_SIZE);
@@ -835,14 +835,14 @@ export class Renderer {
                     }
                     gl.texImage2D(gl.TEXTURE_2D, 0, texture.format, texture.format, gl.UNSIGNED_BYTE, texture.source);
                     this._setSamplerParameters(texture);
-                    renderTexture._complete = true;
+                    renderTexture.complete = true;
                 });
             } else {
                 texture.waitForComplete().then(() => {
                     gl.bindTexture(gl.TEXTURE_2D, textureHandle);
                     gl.texImage2D(gl.TEXTURE_2D, 0, texture.format, texture.format, gl.UNSIGNED_BYTE, texture.source);
                     this._setSamplerParameters(texture);
-                    renderTexture._complete = true;
+                    renderTexture.complete = true;
                 });
             }
 

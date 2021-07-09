@@ -1,7 +1,7 @@
 import { Material, RENDER_ORDER } from '../core/material';
 import { Primitive, PrimitiveAttribute } from '../core/primitives';
 import { Node } from '../core/node';
-import { UrlTexture } from '../core/texture';
+import { ImageUrlTexture } from '../core/texture';
 import { Renderer } from '../core/renderer';
 
 const GL = WebGLRenderingContext; // For enums
@@ -61,16 +61,16 @@ class SkyboxMaterial extends Material {
 }
 
 export class SkyboxNode extends Node {
-    _url: string;
-    _displayMode: string;
-    _rotationY: number;
+    url: string;
+    displayMode: string;
+    rotationY: number;
 
     constructor(options) {
         super();
 
-        this._url = options.url;
-        this._displayMode = options.displayMode || 'mono';
-        this._rotationY = options.rotationY || 0;
+        this.url = options.url;
+        this.displayMode = options.displayMode || 'mono';
+        this.rotationY = options.rotationY || 0;
     }
 
     onRendererChanged(renderer: Renderer) {
@@ -90,7 +90,7 @@ export class SkyboxNode extends Node {
             const idxOffsetB = (i + 1) * (lonSegments + 1);
 
             for (let j = 0; j <= lonSegments; ++j) {
-                const phi = (j * 2 * Math.PI / lonSegments) + this._rotationY;
+                const phi = (j * 2 * Math.PI / lonSegments) + this.rotationY;
                 const x = Math.sin(phi) * sinTheta;
                 const y = cosTheta;
                 const z = -Math.cos(phi) * sinTheta;
@@ -123,9 +123,9 @@ export class SkyboxNode extends Node {
         primitive.setIndexBuffer(indexBuffer, 0, 5123);
 
         const material = new SkyboxMaterial();
-        material.image.texture = new UrlTexture(this._url);
+        material.image.texture = new ImageUrlTexture(this.url);
 
-        switch (this._displayMode) {
+        switch (this.displayMode) {
             case 'mono':
                 material.texCoordScaleOffset.value = [1.0, 1.0, 0.0, 0.0,
                     1.0, 1.0, 0.0, 0.0];

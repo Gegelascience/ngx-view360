@@ -8,9 +8,9 @@ describe('NgxView360Component', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ NgxView360Component ]
+      declarations: [NgxView360Component]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

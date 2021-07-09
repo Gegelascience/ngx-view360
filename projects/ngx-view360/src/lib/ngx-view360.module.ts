@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { NgxView360Component } from './ngx-view360.component';
+import { NgxView360Component } from './components/ngx-view360/ngx-view360.component';
 import { VrButtonComponent } from './components/vr-button/vr-button.component';
 import { CommonModule } from '@angular/common';
 

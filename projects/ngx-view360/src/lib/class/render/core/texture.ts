@@ -40,24 +40,24 @@ export class Texture {
 }
 
 export class ImageTexture extends Texture {
-    _img;
-    _imgBitmap;
-    _promise;
+    img: HTMLImageElement;
+    imgBitmap: ImageBitmap;
+    promise: Promise<any>;
 
-    constructor(img) {
+    constructor(img: HTMLImageElement) {
         super();
 
-        this._img = img;
-        this._imgBitmap = null;
+        this.img = img;
+        this.imgBitmap = null;
 
         if (img.src && img.complete) {
             if (img.naturalWidth) {
-                this._promise = this._finishImage();
+                this.promise = this._finishImage();
             } else {
-                this._promise = Promise.reject('Image provided had failed to load.');
+                this.promise = Promise.reject('Image provided had failed to load.');
             }
         } else {
-            this._promise = new Promise((resolve, reject) => {
+            this.promise = new Promise((resolve, reject) => {
                 img.addEventListener('load', () => resolve(this._finishImage()));
                 img.addEventListener('error', reject);
             });
@@ -66,8 +66,8 @@ export class ImageTexture extends Texture {
 
     _finishImage() {
         if (window.createImageBitmap) {
-            return window.createImageBitmap(this._img).then((imgBitmap) => {
-                this._imgBitmap = imgBitmap;
+            return window.createImageBitmap(this.img).then((imgBitmap) => {
+                this.imgBitmap = imgBitmap;
                 return Promise.resolve(this);
             });
         }
@@ -80,27 +80,27 @@ export class ImageTexture extends Texture {
     }
 
     get width() {
-        return this._img.width;
+        return this.img.width;
     }
 
     get height() {
-        return this._img.height;
+        return this.img.height;
     }
 
     waitForComplete() {
-        return this._promise;
+        return this.promise;
     }
 
     get textureKey() {
-        return this._img.src;
+        return this.img.src;
     }
 
     get source() {
-        return this._imgBitmap || this._img;
+        return this.imgBitmap || this.img;
     }
 }
 
-export class UrlTexture extends ImageTexture {
+export class ImageUrlTexture extends ImageTexture {
     constructor(url: string) {
         const img = new Image();
         super(img);
@@ -112,7 +112,7 @@ export class UrlTexture extends ImageTexture {
 let nextDataTextureIndex = 0;
 
 export class DataTexture extends Texture {
-    _data;
+    data;
     _width: number;
     _height: number;
     _format;
@@ -122,7 +122,7 @@ export class DataTexture extends Texture {
     constructor(data, width: number, height: number, format = GL.RGBA, type = GL.UNSIGNED_BYTE) {
         super();
 
-        this._data = data;
+        this.data = data;
         this._width = width;
         this._height = height;
         this._format = format;
@@ -145,5 +145,72 @@ export class DataTexture extends Texture {
 
     get textureKey() {
         return this._key;
+    }
+}
+
+
+export class ColorTexture extends DataTexture {
+    constructor(r, g, b, a) {
+        const colorData = new Uint8Array([r * 255.0, g * 255.0, b * 255.0, a * 255.0]);
+        super(colorData, 1, 1);
+
+        this.mipmap = false;
+        this._key = `COLOR_${colorData[0]}_${colorData[1]}_${colorData[2]}_${colorData[3]}`;
+    }
+}
+
+export class VideoTexture extends Texture {
+    video: HTMLVideoElement;
+    promise: Promise<any>;
+    constructor(video) {
+        super();
+
+        this.video = video;
+
+        if (video.readyState >= 2) {
+            this.promise = Promise.resolve(this);
+        } else if (video.error) {
+            this.promise = Promise.reject(video.error);
+        } else {
+            this.promise = new Promise((resolve, reject) => {
+                video.addEventListener('loadeddata', () => resolve(this));
+                video.addEventListener('error', reject);
+            });
+        }
+    }
+
+    get format() {
+        // TODO: Can be RGB in some cases.
+        return GL.RGBA;
+    }
+
+    get width() {
+        return this.video.videoWidth;
+    }
+
+    get height() {
+        return this.video.videoHeight;
+    }
+
+    waitForComplete() {
+        return this.promise;
+    }
+
+    get textureKey() {
+        return this.video.src;
+    }
+
+    get source() {
+        return this.video;
+    }
+}
+
+export class VideoUrlTexture extends VideoTexture {
+    constructor(url: string) {
+        const video: HTMLVideoElement = document.createElement('video');
+        super(video);
+        video.crossOrigin = 'anonymous';
+        video.src = url;
+        video.controls = true;
     }
 }

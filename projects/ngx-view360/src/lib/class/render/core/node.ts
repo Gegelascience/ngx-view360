@@ -359,13 +359,13 @@ export class Node {
         if (this._renderPrimitives) {
             let localRay = null;
             for (const primitive of this._renderPrimitives) {
-                if (primitive._min) {
+                if (primitive.min) {
                     if (!localRay) {
                         mat4.invert(tmpRayMatrix, this.worldMatrix);
                         mat4.multiply(tmpRayMatrix, tmpRayMatrix, rigidTransform.matrix);
                         localRay = new Ray(tmpRayMatrix);
                     }
-                    const intersection = localRay.intersectsAABB(primitive._min, primitive._max);
+                    const intersection = localRay.intersectsAABB(primitive.min, primitive.max);
                     if (intersection) {
                         vec3.transformMat4(intersection, intersection, this.worldMatrix);
                         return intersection;

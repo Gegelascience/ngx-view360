@@ -1,11 +1,11 @@
 import { Component, OnInit, Input, HostListener, ViewChild, OnChanges, SimpleChanges } from '@angular/core';
-import { Scene, WebXRView } from './class/render/scenes/scene';
-import { Renderer, createWebGLContext } from './class/render/core/renderer';
-import { SkyboxNode } from './class/render/nodes/skybox';
-import { InlineViewerHelper } from './class/util/inline-viewer-helper';
-import { VrButtonComponent } from './components/vr-button/vr-button.component';
-import { ButtonOptionStyle } from './models/button-option-style';
-import { CanvasOptionStyle } from './models/canvas-option-style';
+import { Scene, WebXRView } from '../../class/render/scenes/scene';
+import { Renderer, createWebGLContext } from '../../class/render/core/renderer';
+import { SkyboxNode } from '../../class/render/nodes/skybox';
+import { InlineViewerHelper } from '../../class/util/inline-viewer-helper';
+import { VrButtonComponent } from '../vr-button/vr-button.component';
+import { ButtonOptionStyle } from '../../models/button-option-style';
+import { CanvasOptionStyle } from '../../models/canvas-option-style';
 
 declare var navigator: any;
 declare var XRWebGLLayer: any;
@@ -54,7 +54,10 @@ export class NgxView360Component implements OnInit, OnChanges {
 
   customButtonBackground = {};
 
-  customCanvasBackground = {};
+  customCanvasBackground: CanvasOptionStyle = {
+    width: '50vw',
+    height: '50vh'
+  };
 
   primaryTouch;
   prevTouchX;
@@ -76,10 +79,10 @@ export class NgxView360Component implements OnInit, OnChanges {
       console.error('path to image invalid');
     }
     if (this.customCanvasStyle && this.customCanvasStyle.width) {
-      this.customCanvasBackground['width'] = this.customCanvasStyle.width;
+      this.customCanvasBackground.width = this.customCanvasStyle.width;
     }
     if (this.customCanvasStyle && this.customCanvasStyle.height) {
-      this.customCanvasBackground['height'] = this.customCanvasStyle.height;
+      this.customCanvasBackground.height = this.customCanvasStyle.height;
     }
   }
 

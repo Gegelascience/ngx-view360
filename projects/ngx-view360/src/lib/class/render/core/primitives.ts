@@ -27,8 +27,8 @@ export class Primitive {
     indexBuffer;
     indexByteOffset: number;
     indexType: number;
-    _min;
-    _max;
+    min;
+    max;
 
     constructor(attributes, elementCount: number, mode: number) {
         this.attributes = attributes || [];
@@ -37,8 +37,8 @@ export class Primitive {
         this.indexBuffer = null;
         this.indexByteOffset = 0;
         this.indexType = 0;
-        this._min = null;
-        this._max = null;
+        this.min = null;
+        this.max = null;
     }
 
     setIndexBuffer(indexBuffer, byteOffset: number, indexType: number) {
@@ -48,7 +48,7 @@ export class Primitive {
     }
 
     setBounds(min, max) {
-        this._min = vec3.clone(min);
-        this._max = vec3.clone(max);
+        this.min = vec3.clone(min);
+        this.max = vec3.clone(max);
     }
 }
