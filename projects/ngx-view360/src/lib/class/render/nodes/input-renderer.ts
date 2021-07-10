@@ -190,57 +190,57 @@ class CursorHiddenMaterial extends Material {
 }
 
 export class InputRenderer extends Node {
-    _maxInputElements: number;
-    _controllers;
-    _controllerNodes;
-    _lasers;
-    _cursors;
-    _activeControllers: number;
-    _activeLasers: number;
-    _activeCursors: number;
+    maxInputElements: number;
+    controllers;
+    controllerNodes;
+    lasers;
+    cursors;
+    activeControllers: number;
+    activeLasers: number;
+    activeCursors: number;
 
     constructor() {
         super();
 
-        this._maxInputElements = 32;
+        this.maxInputElements = 32;
 
-        this._controllers = [];
-        this._controllerNodes = null;
-        this._lasers = null;
-        this._cursors = null;
+        this.controllers = [];
+        this.controllerNodes = null;
+        this.lasers = null;
+        this.cursors = null;
 
-        this._activeControllers = 0;
-        this._activeLasers = 0;
-        this._activeCursors = 0;
+        this.activeControllers = 0;
+        this.activeLasers = 0;
+        this.activeCursors = 0;
     }
 
     onRendererChanged(renderer: Renderer) {
-        this._controllers = [];
-        this._controllerNodes = null;
-        this._lasers = null;
-        this._cursors = null;
+        this.controllers = [];
+        this.controllerNodes = null;
+        this.lasers = null;
+        this.cursors = null;
 
-        this._activeControllers = 0;
-        this._activeLasers = 0;
-        this._activeCursors = 0;
+        this.activeControllers = 0;
+        this.activeLasers = 0;
+        this.activeCursors = 0;
     }
 
     addLaserPointer(rigidTransform) {
         // Create the laser pointer mesh if needed.
-        if (!this._lasers && this._renderer) {
-            this._lasers = [this._createLaserMesh()];
-            this.addNode(this._lasers[0]);
+        if (!this.lasers && this.renderer) {
+            this.lasers = [this._createLaserMesh()];
+            this.addNode(this.lasers[0]);
         }
 
         let laser = null;
-        if (this._activeLasers < this._lasers.length) {
-            laser = this._lasers[this._activeLasers];
+        if (this.activeLasers < this.lasers.length) {
+            laser = this.lasers[this.activeLasers];
         } else {
-            laser = this._lasers[0].clone();
+            laser = this.lasers[0].clone();
             this.addNode(laser);
-            this._lasers.push(laser);
+            this.lasers.push(laser);
         }
-        this._activeLasers = (this._activeLasers + 1) % this._maxInputElements;
+        this.activeLasers = (this.activeLasers + 1) % this.maxInputElements;
 
         laser.matrix = rigidTransform.matrix;
         laser.visible = true;
@@ -248,20 +248,20 @@ export class InputRenderer extends Node {
 
     addCursor(cursorPos) {
         // Create the cursor mesh if needed.
-        if (!this._cursors && this._renderer) {
-            this._cursors = [this._createCursorMesh()];
-            this.addNode(this._cursors[0]);
+        if (!this.cursors && this.renderer) {
+            this.cursors = [this._createCursorMesh()];
+            this.addNode(this.cursors[0]);
         }
 
         let cursor = null;
-        if (this._activeCursors < this._cursors.length) {
-            cursor = this._cursors[this._activeCursors];
+        if (this.activeCursors < this.cursors.length) {
+            cursor = this.cursors[this.activeCursors];
         } else {
-            cursor = this._cursors[0].clone();
+            cursor = this.cursors[0].clone();
             this.addNode(cursor);
-            this._cursors.push(cursor);
+            this.cursors.push(cursor);
         }
-        this._activeCursors = (this._activeCursors + 1) % this._maxInputElements;
+        this.activeCursors = (this.activeCursors + 1) % this.maxInputElements;
 
         cursor.translation = cursorPos;
         cursor.visible = true;
@@ -271,28 +271,28 @@ export class InputRenderer extends Node {
         if (!options) {
             options = DEFAULT_RESET_OPTIONS;
         }
-        if (this._controllers && options.controllers) {
-            for (const controller of this._controllers) {
+        if (this.controllers && options.controllers) {
+            for (const controller of this.controllers) {
                 controller.visible = false;
             }
-            this._activeControllers = 0;
+            this.activeControllers = 0;
         }
-        if (this._lasers && options.lasers) {
-            for (const laser of this._lasers) {
+        if (this.lasers && options.lasers) {
+            for (const laser of this.lasers) {
                 laser.visible = false;
             }
-            this._activeLasers = 0;
+            this.activeLasers = 0;
         }
-        if (this._cursors && options.cursors) {
-            for (const cursor of this._cursors) {
+        if (this.cursors && options.cursors) {
+            for (const cursor of this.cursors) {
                 cursor.visible = false;
             }
-            this._activeCursors = 0;
+            this.activeCursors = 0;
         }
     }
 
     _createLaserMesh() {
-        const gl = this._renderer.gl;
+        const gl = this.renderer.gl;
 
         const lr = LASER_DIAMETER * 0.5;
         const ll = LASER_LENGTH;
@@ -327,8 +327,8 @@ export class InputRenderer extends Node {
             12, 13, 14, 13, 15, 14,
         ];
 
-        const laserVertexBuffer = this._renderer.createRenderBuffer(gl.ARRAY_BUFFER, new Float32Array(laserVerts));
-        const laserIndexBuffer = this._renderer.createRenderBuffer(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(laserIndices));
+        const laserVertexBuffer = this.renderer.createRenderBuffer(gl.ARRAY_BUFFER, new Float32Array(laserVerts));
+        const laserIndexBuffer = this.renderer.createRenderBuffer(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(laserIndices));
 
         const laserIndexCount = laserIndices.length;
 
@@ -342,14 +342,14 @@ export class InputRenderer extends Node {
 
         const laserMaterial = new LaserMaterial();
 
-        const laserRenderPrimitive = this._renderer.createRenderPrimitive(laserPrimitive, laserMaterial);
+        const laserRenderPrimitive = this.renderer.createRenderPrimitive(laserPrimitive, laserMaterial);
         const meshNode = new Node();
         meshNode.addRenderPrimitive(laserRenderPrimitive);
         return meshNode;
     }
 
     _createCursorMesh() {
-        const gl = this._renderer.gl;
+        const gl = this.renderer.gl;
 
         // Cursor is a circular white dot with a dark "shadow" skirt around the edge
         // that fades from black to transparent as it moves out from the center.
@@ -384,9 +384,9 @@ export class InputRenderer extends Node {
                 CURSOR_SHADOW_OUTER_LUMINANCE, CURSOR_SHADOW_OUTER_OPACITY);
 
             if (i > 0) {
-                const idx = indexOffset + (i * 2);
-                cursorIndices.push(idx - 2, idx - 1, idx);
-                cursorIndices.push(idx - 1, idx + 1, idx);
+                const idx0 = indexOffset + (i * 2);
+                cursorIndices.push(idx0 - 2, idx0 - 1, idx0);
+                cursorIndices.push(idx0 - 1, idx0 + 1, idx0);
             }
         }
 
@@ -394,8 +394,8 @@ export class InputRenderer extends Node {
         cursorIndices.push(idx - 2, idx - 1, indexOffset);
         cursorIndices.push(idx - 1, indexOffset + 1, indexOffset);
 
-        const cursorVertexBuffer = this._renderer.createRenderBuffer(gl.ARRAY_BUFFER, new Float32Array(cursorVerts));
-        const cursorIndexBuffer = this._renderer.createRenderBuffer(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(cursorIndices));
+        const cursorVertexBuffer = this.renderer.createRenderBuffer(gl.ARRAY_BUFFER, new Float32Array(cursorVerts));
+        const cursorIndexBuffer = this.renderer.createRenderBuffer(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(cursorIndices));
 
         const cursorIndexCount = cursorIndices.length;
 
@@ -412,8 +412,8 @@ export class InputRenderer extends Node {
         // Cursor renders two parts: The bright opaque cursor for areas where it's
         // not obscured and a more transparent, darker version for areas where it's
         // behind another object.
-        const cursorRenderPrimitive = this._renderer.createRenderPrimitive(cursorPrimitive, cursorMaterial);
-        const cursorHiddenRenderPrimitive = this._renderer.createRenderPrimitive(cursorPrimitive, cursorHiddenMaterial);
+        const cursorRenderPrimitive = this.renderer.createRenderPrimitive(cursorPrimitive, cursorMaterial);
+        const cursorHiddenRenderPrimitive = this.renderer.createRenderPrimitive(cursorPrimitive, cursorHiddenMaterial);
         const meshNode = new Node();
         meshNode.addRenderPrimitive(cursorRenderPrimitive);
         meshNode.addRenderPrimitive(cursorHiddenRenderPrimitive);

@@ -1,6 +1,6 @@
 import { Ray } from '../math/ray';
 import { mat4, quat, vec3 } from 'gl-matrix';
-import { Renderer } from './renderer';
+import { Renderer, RenderPrimitive } from './renderer';
 
 const DEFAULT_TRANSLATION = new Float32Array([0, 0, 0]);
 const DEFAULT_ROTATION = new Float32Array([0, 0, 0, 1]);
@@ -23,8 +23,8 @@ export class Node {
     _worldMatrix;
     activeFrameId: number;
     _hoverFrameId: number;
-    _renderPrimitives;
-    _renderer: Renderer;
+    renderPrimitives: RenderPrimitive[];
+    renderer: Renderer;
     _selectHandler;
 
     constructor() {
@@ -46,24 +46,24 @@ export class Node {
 
         this.activeFrameId = -1;
         this._hoverFrameId = -1;
-        this._renderPrimitives = null;
-        this._renderer = null;
+        this.renderPrimitives = null;
+        this.renderer = null;
 
         this._selectHandler = null;
     }
 
     _setRenderer(renderer: Renderer) {
-        if (this._renderer === renderer) {
+        if (this.renderer === renderer) {
             return;
         }
 
-        if (this._renderer) {
+        if (this.renderer) {
             // Changing the renderer removes any previously attached renderPrimitives
             // from a different renderer.
             this.clearRenderPrimitives();
         }
 
-        this._renderer = renderer;
+        this.renderer = renderer;
         if (renderer) {
             this.onRendererChanged(renderer);
 
@@ -84,7 +84,7 @@ export class Node {
         const cloneNode = new Node();
         cloneNode.name = this.name;
         cloneNode.visible = this.visible;
-        cloneNode._renderer = this._renderer;
+        cloneNode.renderer = this.renderer;
 
         cloneNode.dirtyTRS = this.dirtyTRS;
 
@@ -116,8 +116,8 @@ export class Node {
         }
 
         this.waitForComplete().then(() => {
-            if (this._renderPrimitives) {
-                for (const primitive of this._renderPrimitives) {
+            if (this.renderPrimitives) {
+                for (const primitive of this.renderPrimitives) {
                     cloneNode.addRenderPrimitive(primitive);
                 }
             }
@@ -131,9 +131,9 @@ export class Node {
     }
 
     markActive(frameId: number) {
-        if (this.visible && this._renderPrimitives) {
+        if (this.visible && this.renderPrimitives) {
             this.activeFrameId = frameId;
-            for (const primitive of this._renderPrimitives) {
+            for (const primitive of this.renderPrimitives) {
                 primitive.markActive(frameId);
             }
         }
@@ -157,8 +157,8 @@ export class Node {
 
         this.children.push(value);
 
-        if (this._renderer) {
-            value._setRenderer(this._renderer);
+        if (this.renderer) {
+            value._setRenderer(this.renderer);
         }
     }
 
@@ -302,28 +302,25 @@ export class Node {
         for (const child of this.children) {
             childPromises.push(child.waitForComplete());
         }
-        if (this._renderPrimitives) {
-            for (const primitive of this._renderPrimitives) {
+        if (this.renderPrimitives) {
+            for (const primitive of this.renderPrimitives) {
                 childPromises.push(primitive.waitForComplete());
             }
         }
         return Promise.all(childPromises).then(() => this);
     }
 
-    get renderPrimitives() {
-        return this._renderPrimitives;
-    }
 
-    addRenderPrimitive(primitive) {
-        if (!this._renderPrimitives) {
-            this._renderPrimitives = [primitive];
+    addRenderPrimitive(primitive: RenderPrimitive) {
+        if (!this.renderPrimitives) {
+            this.renderPrimitives = [primitive];
         } else {
-            this._renderPrimitives.push(primitive);
+            this.renderPrimitives.push(primitive);
         }
         primitive._instances.push(this);
     }
 
-    removeRenderPrimitive(primitive) {
+    /*removeRenderPrimitive(primitive: RenderPrimitive) {
         if (!this._renderPrimitives) {
             return;
         }
@@ -341,24 +338,24 @@ export class Node {
                 this._renderPrimitives = null;
             }
         }
-    }
+    }*/
 
     clearRenderPrimitives() {
-        if (this._renderPrimitives) {
-            for (const primitive of this._renderPrimitives) {
+        if (this.renderPrimitives) {
+            for (const primitive of this.renderPrimitives) {
                 const index = primitive._instances.indexOf(this);
                 if (index > -1) {
                     primitive._instances.splice(index, 1);
                 }
             }
-            this._renderPrimitives = null;
+            this.renderPrimitives = null;
         }
     }
 
     _hitTestSelectableNode(rigidTransform) {
-        if (this._renderPrimitives) {
+        if (this.renderPrimitives) {
             let localRay: Ray = null;
-            for (const primitive of this._renderPrimitives) {
+            for (const primitive of this.renderPrimitives) {
                 if (primitive.min) {
                     if (!localRay) {
                         mat4.invert(tmpRayMatrix, this.worldMatrix);

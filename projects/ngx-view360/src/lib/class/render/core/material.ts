@@ -1,3 +1,5 @@
+import { Texture } from './texture';
+
 const GL = WebGLRenderingContext; // For enums
 
 export const CAP = {
@@ -214,71 +216,55 @@ export class MaterialState {
 }
 
 export class MaterialSampler {
-    _uniformName: string;
-    _texture;
+    uniformName: string;
+    texture: Texture;
     constructor(uniformName: string) {
-        this._uniformName = uniformName;
-        this._texture = null;
-    }
-
-    get texture() {
-        return this._texture;
-    }
-
-    set texture(value) {
-        this._texture = value;
+        this.uniformName = uniformName;
+        this.texture = null;
     }
 }
 
 export class MaterialUniform {
-    _uniformName: string;
-    _value;
-    _length: number;
+    uniformName: string;
+    value;
+    length: number;
 
     constructor(uniformName: string, defaultValue, length: number) {
-        this._uniformName = uniformName;
-        this._value = defaultValue;
-        this._length = length;
-        if (!this._length) {
+        this.uniformName = uniformName;
+        this.value = defaultValue;
+        this.length = length;
+        if (!this.length) {
             if (defaultValue instanceof Array) {
-                this._length = defaultValue.length;
+                this.length = defaultValue.length;
             } else {
-                this._length = 1;
+                this.length = 1;
             }
         }
-    }
-
-    get value() {
-        return this._value;
-    }
-
-    set value(value) {
-        this._value = value;
     }
 }
 
 export class Material {
     state: MaterialState;
     renderOrder: number;
-    _samplers: MaterialSampler[];
-    _uniforms: MaterialUniform[];
+    samplers: MaterialSampler[];
+    uniforms: MaterialUniform[];
 
     constructor() {
         this.state = new MaterialState();
         this.renderOrder = RENDER_ORDER.DEFAULT;
-        this._samplers = [];
-        this._uniforms = [];
+        this.samplers = [];
+        this.uniforms = [];
     }
 
     defineSampler(uniformName: string) {
         const sampler = new MaterialSampler(uniformName);
-        this._samplers.push(sampler);
+        this.samplers.push(sampler);
         return sampler;
     }
 
     defineUniform(uniformName: string, defaultValue = null, length = 0) {
         const uniform = new MaterialUniform(uniformName, defaultValue, length);
-        this._uniforms.push(uniform);
+        this.uniforms.push(uniform);
         return uniform;
     }
 

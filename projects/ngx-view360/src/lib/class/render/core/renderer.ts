@@ -1,7 +1,7 @@
-import { CAP, Material, MAT_STATE, RENDER_ORDER, stateToBlendFunc } from './material';
+import { CAP, Material, MaterialSampler, MaterialUniform, MAT_STATE, RENDER_ORDER, stateToBlendFunc } from './material';
 import { Node } from './node';
 import { Program } from './program';
-import { DataTexture, ImageUrlTexture, Texture } from './texture';
+import { DataTexture, ImageUrlTexture, Texture, VideoTexture } from './texture';
 import { mat4, vec3 } from 'gl-matrix';
 import { Primitive } from './primitives';
 
@@ -86,7 +86,7 @@ export class RenderView {
     viewport;
     _eye: string;
     _eyeIndex: number;
-    _viewMatrix;
+    viewMatrix;
     viewTransform;
 
     constructor(projectionMatrix, viewTransform, viewport = null, eye = 'left') {
@@ -98,16 +98,12 @@ export class RenderView {
 
         // Compute the view matrix
         if (viewTransform instanceof Float32Array) {
-            this._viewMatrix = mat4.clone(viewTransform);
+            this.viewMatrix = mat4.clone(viewTransform);
             this.viewTransform = new XRRigidTransform(); // TODO
         } else {
             this.viewTransform = viewTransform;
-            this._viewMatrix = viewTransform.inverse.matrix;
+            this.viewMatrix = viewTransform.inverse.matrix;
         }
-    }
-
-    get viewMatrix() {
-        return this._viewMatrix;
     }
 
     get eye() {
@@ -127,17 +123,17 @@ export class RenderView {
 export class RenderBuffer {
     _target: number;
     _usage;
-    _length: number;
+    length: number;
     _buffer;
     promise: Promise<any>;
     constructor(target: number, usage, buffer, length = 0) {
         this._target = target;
         this._usage = usage;
-        this._length = length;
+        this.length = length;
         if (buffer instanceof Promise) {
             this._buffer = null;
-            this.promise = buffer.then((buffer) => {
-                this._buffer = buffer;
+            this.promise = buffer.then((buff) => {
+                this._buffer = buff;
                 return this;
             });
         } else {
@@ -178,7 +174,7 @@ class RenderPrimitiveAttributeBuffer {
     }
 }
 
-class RenderPrimitive {
+export class RenderPrimitive {
     activeFrameId: number;
     _instances: Node[];
     _material: RenderMaterial;
@@ -311,13 +307,13 @@ class RenderPrimitive {
 }
 
 export class RenderTexture {
-    _texture;
+    texture: WebGLTexture;
     complete: boolean;
     activeFrameId: number;
     _activeCallback;
 
-    constructor(texture) {
-        this._texture = texture;
+    constructor(texture: WebGLTexture) {
+        this.texture = texture;
         this.complete = false;
         this.activeFrameId = 0;
         this._activeCallback = null;
@@ -348,37 +344,37 @@ function setCap(gl, glEnum, cap, prevState, state) {
 }
 
 class RenderMaterialSampler {
-    _renderer;
-    _uniformName: string;
-    _renderTexture;
-    _index;
+    renderer: Renderer;
+    uniformName: string;
+    renderTexture: RenderTexture;
+    index: number;
 
-    constructor(renderer, materialSampler, index) {
-        this._renderer = renderer;
-        this._uniformName = materialSampler._uniformName;
-        this._renderTexture = renderer._getRenderTexture(materialSampler._texture);
-        this._index = index;
+    constructor(renderer: Renderer, materialSampler: MaterialSampler, index: number) {
+        this.renderer = renderer;
+        this.uniformName = materialSampler.uniformName;
+        this.renderTexture = renderer._getRenderTexture(materialSampler.texture);
+        this.index = index;
     }
 
     set texture(value) {
-        this._renderTexture = this._renderer._getRenderTexture(value);
+        this.renderTexture = this.renderer._getRenderTexture(value);
     }
 }
 
 class RenderMaterialUniform {
-    _uniformName: string;
-    _uniform;
-    _length: number;
+    uniformName: string;
+    uniform: WebGLUniformLocation;
+    length: number;
     _value;
 
-    constructor(materialUniform) {
-        this._uniformName = materialUniform._uniformName;
-        this._uniform = null;
-        this._length = materialUniform._length;
-        if (materialUniform._value instanceof Array) {
-            this._value = new Float32Array(materialUniform._value);
+    constructor(materialUniform: MaterialUniform) {
+        this.uniformName = materialUniform.uniformName;
+        this.uniform = null;
+        this.length = materialUniform.length;
+        if (materialUniform.value instanceof Array) {
+            this._value = new Float32Array(materialUniform.value);
         } else {
-            this._value = new Float32Array([materialUniform._value]);
+            this._value = new Float32Array([materialUniform.value]);
         }
     }
 
@@ -394,48 +390,48 @@ class RenderMaterialUniform {
 }
 
 class RenderMaterial {
-    _program: Program;
+    program: Program;
     state: number;
     activeFrameId: number;
     _completeForActiveFrame: boolean;
     _samplerDictionary;
-    _samplers: RenderMaterialSampler[];
+    samplers: RenderMaterialSampler[];
     _uniform_dictionary;
-    _uniforms: RenderMaterialUniform[];
+    uniforms: RenderMaterialUniform[];
     firstBind: boolean;
-    _renderOrder;
+    renderOrder: number;
 
     constructor(renderer: Renderer, material: Material, program: Program) {
-        this._program = program;
+        this.program = program;
         this.state = material.state.state;
         this.activeFrameId = 0;
         this._completeForActiveFrame = false;
 
         this._samplerDictionary = {};
-        this._samplers = [];
-        for (let i = 0; i < material._samplers.length; ++i) {
-            const renderSampler = new RenderMaterialSampler(renderer, material._samplers[i], i);
-            this._samplers.push(renderSampler);
-            this._samplerDictionary[renderSampler._uniformName] = renderSampler;
+        this.samplers = [];
+        for (let i = 0; i < material.samplers.length; ++i) {
+            const renderSampler = new RenderMaterialSampler(renderer, material.samplers[i], i);
+            this.samplers.push(renderSampler);
+            this._samplerDictionary[renderSampler.uniformName] = renderSampler;
         }
 
         this._uniform_dictionary = {};
-        this._uniforms = [];
-        for (const uniform of material._uniforms) {
+        this.uniforms = [];
+        for (const uniform of material.uniforms) {
             const renderUniform = new RenderMaterialUniform(uniform);
-            this._uniforms.push(renderUniform);
-            this._uniform_dictionary[renderUniform._uniformName] = renderUniform;
+            this.uniforms.push(renderUniform);
+            this._uniform_dictionary[renderUniform.uniformName] = renderUniform;
         }
 
         this.firstBind = true;
 
-        this._renderOrder = material.renderOrder;
-        if (this._renderOrder === RENDER_ORDER.DEFAULT) {
+        this.renderOrder = material.renderOrder;
+        if (this.renderOrder === RENDER_ORDER.DEFAULT) {
             // tslint:disable-next-line:no-bitwise
             if (this.state & CAP.BLEND) {
-                this._renderOrder = RENDER_ORDER.TRANSPARENT;
+                this.renderOrder = RENDER_ORDER.TRANSPARENT;
             } else {
-                this._renderOrder = RENDER_ORDER.OPAQUE;
+                this.renderOrder = RENDER_ORDER.OPAQUE;
             }
         }
     }
@@ -444,20 +440,20 @@ class RenderMaterial {
         // First time we do a binding, cache the uniform locations and remove
         // unused uniforms from the list.
         if (this.firstBind) {
-            for (let i = 0; i < this._samplers.length;) {
-                const sampler = this._samplers[i];
-                if (!this._program.uniform[sampler._uniformName]) {
-                    this._samplers.splice(i, 1);
+            for (let i = 0; i < this.samplers.length;) {
+                const sampler = this.samplers[i];
+                if (!this.program.uniform[sampler.uniformName]) {
+                    this.samplers.splice(i, 1);
                     continue;
                 }
                 ++i;
             }
 
-            for (let i = 0; i < this._uniforms.length;) {
-                const uniform = this._uniforms[i];
-                uniform._uniform = this._program.uniform[uniform._uniformName];
-                if (!uniform._uniform) {
-                    this._uniforms.splice(i, 1);
+            for (let i = 0; i < this.uniforms.length;) {
+                const uniform = this.uniforms[i];
+                uniform.uniform = this.program.uniform[uniform.uniformName];
+                if (!uniform.uniform) {
+                    this.uniforms.splice(i, 1);
                     continue;
                 }
                 ++i;
@@ -465,21 +461,21 @@ class RenderMaterial {
             this.firstBind = false;
         }
 
-        for (const sampler of this._samplers) {
-            gl.activeTexture(gl.TEXTURE0 + sampler._index);
-            if (sampler._renderTexture && sampler._renderTexture.complete) {
-                gl.bindTexture(gl.TEXTURE_2D, sampler._renderTexture._texture);
+        for (const sampler of this.samplers) {
+            gl.activeTexture(gl.TEXTURE0 + sampler.index);
+            if (sampler.renderTexture && sampler.renderTexture.complete) {
+                gl.bindTexture(gl.TEXTURE_2D, sampler.renderTexture.texture);
             } else {
                 gl.bindTexture(gl.TEXTURE_2D, null);
             }
         }
 
-        for (const uniform of this._uniforms) {
-            switch (uniform._length) {
-                case 1: gl.uniform1fv(uniform._uniform, uniform._value); break;
-                case 2: gl.uniform2fv(uniform._uniform, uniform._value); break;
-                case 3: gl.uniform3fv(uniform._uniform, uniform._value); break;
-                case 4: gl.uniform4fv(uniform._uniform, uniform._value); break;
+        for (const uniform of this.uniforms) {
+            switch (uniform.length) {
+                case 1: gl.uniform1fv(uniform.uniform, uniform._value); break;
+                case 2: gl.uniform2fv(uniform.uniform, uniform._value); break;
+                case 3: gl.uniform3fv(uniform.uniform, uniform._value); break;
+                case 4: gl.uniform4fv(uniform.uniform, uniform._value); break;
             }
         }
     }
@@ -488,14 +484,13 @@ class RenderMaterial {
         if (this.activeFrameId !== frameId) {
             this.activeFrameId = frameId;
             this._completeForActiveFrame = true;
-            for (let i = 0; i < this._samplers.length; ++i) {
-                const sampler = this._samplers[i];
-                if (sampler._renderTexture) {
-                    if (!sampler._renderTexture.complete) {
+            for (const sampler of this.samplers) {
+                if (sampler.renderTexture) {
+                    if (!sampler.renderTexture.complete) {
                         this._completeForActiveFrame = false;
                         break;
                     }
-                    sampler._renderTexture.markActive(frameId);
+                    sampler.renderTexture.markActive(frameId);
                 }
             }
         }
@@ -625,7 +620,7 @@ export class Renderer {
             const renderBuffer = new RenderBuffer(target, usage, data.then((data) => {
                 gl.bindBuffer(target, glBuffer);
                 gl.bufferData(target, data, usage);
-                renderBuffer._length = data.byteLength;
+                renderBuffer.length = data.byteLength;
                 return glBuffer;
             }));
             return renderBuffer;
@@ -640,14 +635,14 @@ export class Renderer {
         if (buffer._buffer) {
             const gl = this.gl;
             gl.bindBuffer(buffer._target, buffer._buffer);
-            if (offset === 0 && buffer._length === data.byteLength) {
+            if (offset === 0 && buffer.length === data.byteLength) {
                 gl.bufferData(buffer._target, data, buffer._usage);
             } else {
                 gl.bufferSubData(buffer._target, offset, data);
             }
         } else {
-            buffer.waitForComplete().then((buffer) => {
-                this.updateRenderBuffer(buffer, data, offset);
+            buffer.waitForComplete().then((buff) => {
+                this.updateRenderBuffer(buff, data, offset);
             });
         }
     }
@@ -659,11 +654,11 @@ export class Renderer {
         const renderMaterial = new RenderMaterial(this, material, program);
         renderPrimitive.setRenderMaterial(renderMaterial);
 
-        if (!this._renderPrimitives[renderMaterial._renderOrder]) {
-            this._renderPrimitives[renderMaterial._renderOrder] = [];
+        if (!this._renderPrimitives[renderMaterial.renderOrder]) {
+            this._renderPrimitives[renderMaterial.renderOrder] = [];
         }
 
-        this._renderPrimitives[renderMaterial._renderOrder].push(renderPrimitive);
+        this._renderPrimitives[renderMaterial.renderOrder].push(renderPrimitive);
 
         return renderPrimitive;
     }
@@ -742,8 +737,8 @@ export class Renderer {
             // Bind the primitive material's program if it's different than the one we
             // were using for the previous primitive.
             // TODO: The ording of this could be more efficient.
-            if (program !== primitive._material._program) {
-                program = primitive._material._program;
+            if (program !== primitive._material.program) {
+                program = primitive._material.program;
                 program.use();
 
                 if (program.uniform.LIGHT_DIRECTION) {
@@ -813,7 +808,7 @@ export class Renderer {
         }
     }
 
-    _getRenderTexture(texture) {
+    _getRenderTexture(texture: Texture) {
         if (!texture) {
             return null;
         }
@@ -851,14 +846,23 @@ export class Renderer {
                     this._setSamplerParameters(texture);
                     renderTexture.complete = true;
                 });
-            } else {
+            } else if (texture instanceof VideoTexture) {
+                texture.video.addEventListener('playing', () => {
+                    renderTexture._activeCallback = () => {
+                        if (!texture.video.paused && !texture.video.onwaiting) {
+                            gl.bindTexture(gl.TEXTURE_2D, textureHandle);
+                            gl.texImage2D(gl.TEXTURE_2D, 0, texture.format, texture.format, gl.UNSIGNED_BYTE, texture.source);
+                        }
+                    };
+                });
+            } /*else {
                 texture.waitForComplete().then(() => {
                     gl.bindTexture(gl.TEXTURE_2D, textureHandle);
                     gl.texImage2D(gl.TEXTURE_2D, 0, texture.format, texture.format, gl.UNSIGNED_BYTE, texture.source);
                     this._setSamplerParameters(texture);
                     renderTexture.complete = true;
                 });
-            }
+            }*/
 
             return renderTexture;
         }
@@ -932,12 +936,12 @@ export class Renderer {
             const program = new Program(this.gl, fullVertexSource, fullFragmentSource, ATTRIB, defines);
             this._programCache[key] = program;
 
-            program.onNextUse((program: Program) => {
+            program.onNextUse((prog: Program) => {
                 // Bind the samplers to the right texture index. This is constant for
                 // the lifetime of the program.
-                for (let i = 0; i < material._samplers.length; ++i) {
-                    const sampler = material._samplers[i];
-                    const uniform = program.uniform[sampler._uniformName];
+                for (let i = 0; i < material.samplers.length; ++i) {
+                    const sampler = material.samplers[i];
+                    const uniform = prog.uniform[sampler.uniformName];
                     if (uniform) {
                         this.gl.uniform1i(uniform, i);
                     }

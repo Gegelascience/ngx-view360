@@ -2,6 +2,7 @@ import { Material, MaterialSampler, MaterialUniform } from '../core/material.js'
 import { Primitive, PrimitiveAttribute } from '../core/primitives';
 import { Node } from '../core/node.js';
 import { VideoTexture } from '../core/texture.js';
+import { Renderer } from '../core/renderer.js';
 
 const GL = WebGLRenderingContext; // For enums
 
@@ -76,7 +77,7 @@ export class VideoNode extends Node {
         return width / height;
     }
 
-    onRendererChanged(renderer) {
+    onRendererChanged(renderer: Renderer) {
         const vertices = [
             -1.0, 1.0, 0.0, 0.0, 0.0,
             1.0, 1.0, 0.0, 1.0, 0.0,

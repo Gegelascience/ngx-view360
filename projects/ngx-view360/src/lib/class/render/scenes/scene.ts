@@ -42,8 +42,8 @@ export class Scene extends Node {
     }
 
     loseRenderer() {
-        if (this._renderer) {
-            this._renderer = null;
+        if (this.renderer) {
+            this.renderer = null;
             this.inputRenderer = null;
         }
     }
@@ -145,11 +145,11 @@ export class Scene extends Node {
 
     /** Draws the scene into the base layer of the XRFrame's session */
     drawXRFrame(xrFrame, pose) {
-        if (!this._renderer || !pose) {
+        if (!this.renderer || !pose) {
             return;
         }
 
-        const gl = this._renderer.gl;
+        const gl = this.renderer.gl;
         const session = xrFrame.session;
         // Assumed to be a XRWebGLLayer for now.
         const layer = session.renderState.baseLayer;
@@ -175,11 +175,11 @@ export class Scene extends Node {
 
     drawViewArray(views) {
         // Don't draw when we don't have a valid context
-        if (!this._renderer) {
+        if (!this.renderer) {
             return;
         }
 
-        this._renderer.drawViews(views, this);
+        this.renderer.drawViews(views, this);
     }
 
     startFrame() {
