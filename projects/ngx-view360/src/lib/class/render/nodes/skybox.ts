@@ -1,14 +1,15 @@
-import { Material, RENDER_ORDER } from '../core/material';
+import { Material, MaterialUniform, RENDER_ORDER } from '../core/material';
 import { Primitive, PrimitiveAttribute } from '../core/primitives';
 import { Node } from '../core/node';
 import { ImageUrlTexture } from '../core/texture';
 import { Renderer } from '../core/renderer';
+import { MaterialSampler } from '../core/material';
 
 const GL = WebGLRenderingContext; // For enums
 
 class SkyboxMaterial extends Material {
-    image;
-    texCoordScaleOffset;
+    image: MaterialSampler;
+    texCoordScaleOffset: MaterialUniform;
 
     constructor() {
         super();

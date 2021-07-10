@@ -1,4 +1,4 @@
-import { Material, RENDER_ORDER } from '../core/material';
+import { Material, MaterialSampler, MaterialUniform, RENDER_ORDER } from '../core/material';
 import { Node } from '../core/node';
 import { Primitive, PrimitiveAttribute } from '../core/primitives';
 import { DataTexture } from '../core/texture';
@@ -48,8 +48,8 @@ const DEFAULT_RESET_OPTIONS = {
 };
 
 class LaserMaterial extends Material {
-    laser;
-    laserColor;
+    laser: MaterialSampler;
+    laserColor: MaterialUniform;
     constructor() {
         super();
         this.renderOrder = RENDER_ORDER.ADDITIVE;

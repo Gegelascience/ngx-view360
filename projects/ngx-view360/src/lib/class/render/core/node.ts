@@ -15,13 +15,13 @@ export class Node {
     visible: boolean;
     selectable: boolean;
     _matrix;
-    _dirtyTRS: boolean;
+    dirtyTRS: boolean;
     _translation;
     _rotation;
-    _scale;
-    _dirtyWorldMatrix: boolean;
+    _scale: Float32Array;
+    dirtyWorldMatrix: boolean;
     _worldMatrix;
-    _activeFrameId: number;
+    activeFrameId: number;
     _hoverFrameId: number;
     _renderPrimitives;
     _renderer: Renderer;
@@ -36,15 +36,15 @@ export class Node {
 
         this._matrix = null;
 
-        this._dirtyTRS = false;
+        this.dirtyTRS = false;
         this._translation = null;
         this._rotation = null;
         this._scale = null;
 
-        this._dirtyWorldMatrix = false;
+        this.dirtyWorldMatrix = false;
         this._worldMatrix = null;
 
-        this._activeFrameId = -1;
+        this.activeFrameId = -1;
         this._hoverFrameId = -1;
         this._renderPrimitives = null;
         this._renderer = null;
@@ -86,7 +86,7 @@ export class Node {
         cloneNode.visible = this.visible;
         cloneNode._renderer = this._renderer;
 
-        cloneNode._dirtyTRS = this._dirtyTRS;
+        cloneNode.dirtyTRS = this.dirtyTRS;
 
         if (this._translation) {
             cloneNode._translation = vec3.create();
@@ -104,13 +104,13 @@ export class Node {
         }
 
         // Only copy the matrices if they're not already dirty.
-        if (!cloneNode._dirtyTRS && this._matrix) {
+        if (!cloneNode.dirtyTRS && this._matrix) {
             cloneNode._matrix = mat4.create();
             mat4.copy(cloneNode._matrix, this._matrix);
         }
 
-        cloneNode._dirtyWorldMatrix = this._dirtyWorldMatrix;
-        if (!cloneNode._dirtyWorldMatrix && this._worldMatrix) {
+        cloneNode.dirtyWorldMatrix = this.dirtyWorldMatrix;
+        if (!cloneNode.dirtyWorldMatrix && this._worldMatrix) {
             cloneNode._worldMatrix = mat4.create();
             mat4.copy(cloneNode._worldMatrix, this._worldMatrix);
         }
@@ -130,9 +130,9 @@ export class Node {
         return cloneNode;
     }
 
-    markActive(frameId) {
+    markActive(frameId: number) {
         if (this.visible && this._renderPrimitives) {
-            this._activeFrameId = frameId;
+            this.activeFrameId = frameId;
             for (const primitive of this._renderPrimitives) {
                 primitive.markActive(frameId);
             }
@@ -145,7 +145,7 @@ export class Node {
         }
     }
 
-    addNode(value) {
+    addNode(value: Node) {
         if (!value || value.parent === this) {
             return;
         }
@@ -162,7 +162,7 @@ export class Node {
         }
     }
 
-    removeNode(value) {
+    removeNode(value: Node) {
         const i = this.children.indexOf(value);
         if (i > -1) {
             this.children.splice(i, 1);
@@ -178,8 +178,8 @@ export class Node {
     }
 
     setMatrixDirty() {
-        if (!this._dirtyWorldMatrix) {
-            this._dirtyWorldMatrix = true;
+        if (!this.dirtyWorldMatrix) {
+            this.dirtyWorldMatrix = true;
             for (const child of this.children) {
                 child.setMatrixDirty();
             }
@@ -191,8 +191,8 @@ export class Node {
             this._matrix = mat4.create();
         }
 
-        if (this._dirtyTRS) {
-            this._dirtyTRS = false;
+        if (this.dirtyTRS) {
+            this.dirtyTRS = false;
             mat4.fromRotationTranslationScale(
                 this._matrix,
                 this._rotation || DEFAULT_ROTATION,
@@ -213,7 +213,7 @@ export class Node {
             this._matrix = null;
         }
         this.setMatrixDirty();
-        this._dirtyTRS = false;
+        this.dirtyTRS = false;
         this._translation = null;
         this._rotation = null;
         this._scale = null;
@@ -227,11 +227,11 @@ export class Node {
 
     get worldMatrix() {
         if (!this._worldMatrix) {
-            this._dirtyWorldMatrix = true;
+            this.dirtyWorldMatrix = true;
             this._worldMatrix = mat4.create();
         }
 
-        if (this._dirtyWorldMatrix || this._dirtyTRS) {
+        if (this.dirtyWorldMatrix || this.dirtyTRS) {
             if (this.parent) {
                 // TODO: Some optimizations that could be done here if the node matrix
                 // is an identity matrix.
@@ -239,7 +239,7 @@ export class Node {
             } else {
                 mat4.copy(this._worldMatrix, this._updateLocalMatrix());
             }
-            this._dirtyWorldMatrix = false;
+            this.dirtyWorldMatrix = false;
         }
 
         return this._worldMatrix;
@@ -248,14 +248,14 @@ export class Node {
     // TODO: Decompose matrix when fetching these?
     set translation(value) {
         if (value != null) {
-            this._dirtyTRS = true;
+            this.dirtyTRS = true;
             this.setMatrixDirty();
         }
         this._translation = value;
     }
 
     get translation() {
-        this._dirtyTRS = true;
+        this.dirtyTRS = true;
         this.setMatrixDirty();
         if (!this._translation) {
             this._translation = vec3.clone(DEFAULT_TRANSLATION);
@@ -265,14 +265,14 @@ export class Node {
 
     set rotation(value) {
         if (value != null) {
-            this._dirtyTRS = true;
+            this.dirtyTRS = true;
             this.setMatrixDirty();
         }
         this._rotation = value;
     }
 
     get rotation() {
-        this._dirtyTRS = true;
+        this.dirtyTRS = true;
         this.setMatrixDirty();
         if (!this._rotation) {
             this._rotation = quat.clone(DEFAULT_ROTATION);
@@ -282,14 +282,14 @@ export class Node {
 
     set scale(value) {
         if (value != null) {
-            this._dirtyTRS = true;
+            this.dirtyTRS = true;
             this.setMatrixDirty();
         }
         this._scale = value;
     }
 
     get scale() {
-        this._dirtyTRS = true;
+        this.dirtyTRS = true;
         this.setMatrixDirty();
         if (!this._scale) {
             this._scale = vec3.clone(DEFAULT_SCALE);
@@ -435,7 +435,7 @@ export class Node {
 
     }
 
-    _update(timestamp, frameDelta) {
+    _update(timestamp: number, frameDelta: number) {
         this.onUpdate(timestamp, frameDelta);
 
         for (const child of this.children) {
@@ -444,7 +444,7 @@ export class Node {
     }
 
     // Called every frame so that the nodes can animate themselves
-    onUpdate(timestamp, frameDelta) {
+    onUpdate(timestamp: number, frameDelta: number) {
 
     }
 }

@@ -17,20 +17,24 @@ export class WebXRView extends RenderView {
 }
 
 export class Scene extends Node {
-    _timestamp = -1;
-    _frameDelta = 0;
-    _inputRenderer: InputRenderer = null;
-    _resetInputEndFrame = true;
+    timestamp = -1;
+    frameDelta = 0;
+    inputRenderer: InputRenderer = null;
+    resetInputEndFrame = true;
 
-    _lastTimestamp = 0;
+    lastTimestamp = 0;
 
-    _hoverFrame = 0;
-    _hoveredNodes = [];
+    hoverFrame = 0;
+    hoveredNodes: Node[] = [];
 
     clear = true;
 
     constructor() {
         super();
+        if (!this.inputRenderer) {
+            this.inputRenderer = new InputRenderer();
+            this.addNode(this.inputRenderer);
+        }
     }
 
     setRenderer(renderer: Renderer) {
@@ -40,24 +44,17 @@ export class Scene extends Node {
     loseRenderer() {
         if (this._renderer) {
             this._renderer = null;
-            this._inputRenderer = null;
+            this.inputRenderer = null;
         }
     }
 
-    get inputRenderer() {
-        if (!this._inputRenderer) {
-            this._inputRenderer = new InputRenderer();
-            this.addNode(this._inputRenderer);
-        }
-        return this._inputRenderer;
-    }
 
     // Helper function that automatically adds the appropriate visual elements for
     // all input sources.
     updateInputSources(frame, refSpace) {
         const newHoveredNodes = [];
-        const lastHoverFrame = this._hoverFrame;
-        this._hoverFrame++;
+        const lastHoverFrame = this.hoverFrame;
+        this.hoverFrame++;
 
         for (const inputSource of frame.session.inputSources) {
             const targetRayPose = frame.getPose(inputSource.targetRaySpace, refSpace);
@@ -87,7 +84,7 @@ export class Scene extends Node {
                 if (hitResult.node._hoverFrameId !== lastHoverFrame) {
                     hitResult.node.onHoverStart();
                 }
-                hitResult.node._hoverFrameId = this._hoverFrame;
+                hitResult.node._hoverFrameId = this.hoverFrame;
                 newHoveredNodes.push(hitResult.node);
             } else {
                 // Statically render the cursor 1 meters down the ray since we didn't
@@ -116,13 +113,13 @@ export class Scene extends Node {
 
         }
 
-        for (const hoverNode of this._hoveredNodes) {
-            if (hoverNode._hoverFrameId !== this._hoverFrame) {
+        for (const hoverNode of this.hoveredNodes) {
+            if (hoverNode._hoverFrameId !== this.hoverFrame) {
                 hoverNode.onHoverEnd();
             }
         }
 
-        this._hoveredNodes = newHoveredNodes;
+        this.hoveredNodes = newHoveredNodes;
     }
 
     handleSelectPointer(rigidTransform) {
@@ -186,23 +183,23 @@ export class Scene extends Node {
     }
 
     startFrame() {
-        const prevTimestamp = this._timestamp;
-        this._timestamp = performance.now();
+        const prevTimestamp = this.timestamp;
+        this.timestamp = performance.now();
 
         if (prevTimestamp >= 0) {
-            this._frameDelta = this._timestamp - prevTimestamp;
+            this.frameDelta = this.timestamp - prevTimestamp;
         } else {
-            this._frameDelta = 0;
+            this.frameDelta = 0;
         }
 
-        this._update(this._timestamp, this._frameDelta);
+        this._update(this.timestamp, this.frameDelta);
 
-        return this._frameDelta;
+        return this.frameDelta;
     }
 
     endFrame() {
-        if (this._inputRenderer && this._resetInputEndFrame) {
-            this._inputRenderer.reset(undefined);
+        if (this.inputRenderer && this.resetInputEndFrame) {
+            this.inputRenderer.reset(undefined);
         }
     }
 

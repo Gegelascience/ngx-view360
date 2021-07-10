@@ -213,7 +213,7 @@ export class MaterialState {
     }
 }
 
-class MaterialSampler {
+export class MaterialSampler {
     _uniformName: string;
     _texture;
     constructor(uniformName: string) {
@@ -230,7 +230,7 @@ class MaterialSampler {
     }
 }
 
-class MaterialUniform {
+export class MaterialUniform {
     _uniformName: string;
     _value;
     _length: number;

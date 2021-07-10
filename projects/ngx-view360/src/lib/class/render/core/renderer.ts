@@ -179,7 +179,7 @@ class RenderPrimitiveAttributeBuffer {
 }
 
 class RenderPrimitive {
-    _activeFrameId: number;
+    activeFrameId: number;
     _instances: Node[];
     _material: RenderMaterial;
     _mode: number;
@@ -196,7 +196,7 @@ class RenderPrimitive {
     max;
 
     constructor(primitive: Primitive) {
-        this._activeFrameId = 0;
+        this.activeFrameId = 0;
         this._instances = [];
         this._material = null;
 
@@ -264,14 +264,14 @@ class RenderPrimitive {
         }
     }
 
-    markActive(frameId) {
-        if (this.complete && this._activeFrameId !== frameId) {
+    markActive(frameId: number) {
+        if (this.complete && this.activeFrameId !== frameId) {
             if (this._material) {
                 if (!this._material.markActive(frameId)) {
                     return;
                 }
             }
-            this._activeFrameId = frameId;
+            this.activeFrameId = frameId;
         }
     }
 
@@ -313,19 +313,19 @@ class RenderPrimitive {
 export class RenderTexture {
     _texture;
     complete: boolean;
-    _activeFrameId: number;
+    activeFrameId: number;
     _activeCallback;
 
     constructor(texture) {
         this._texture = texture;
         this.complete = false;
-        this._activeFrameId = 0;
+        this.activeFrameId = 0;
         this._activeCallback = null;
     }
 
-    markActive(frameId) {
-        if (this._activeCallback && this._activeFrameId !== frameId) {
-            this._activeFrameId = frameId;
+    markActive(frameId: number) {
+        if (this._activeCallback && this.activeFrameId !== frameId) {
+            this.activeFrameId = frameId;
             this._activeCallback(this);
         }
     }
@@ -396,7 +396,7 @@ class RenderMaterialUniform {
 class RenderMaterial {
     _program: Program;
     state: number;
-    _activeFrameId: number;
+    activeFrameId: number;
     _completeForActiveFrame: boolean;
     _samplerDictionary;
     _samplers: RenderMaterialSampler[];
@@ -408,7 +408,7 @@ class RenderMaterial {
     constructor(renderer: Renderer, material: Material, program: Program) {
         this._program = program;
         this.state = material.state.state;
-        this._activeFrameId = 0;
+        this.activeFrameId = 0;
         this._completeForActiveFrame = false;
 
         this._samplerDictionary = {};
@@ -484,9 +484,9 @@ class RenderMaterial {
         }
     }
 
-    markActive(frameId) {
-        if (this._activeFrameId !== frameId) {
-            this._activeFrameId = frameId;
+    markActive(frameId: number) {
+        if (this.activeFrameId !== frameId) {
+            this.activeFrameId = frameId;
             this._completeForActiveFrame = true;
             for (let i = 0; i < this._samplers.length; ++i) {
                 const sampler = this._samplers[i];
@@ -569,7 +569,7 @@ class RenderMaterial {
 
 export class Renderer {
     gl: WebGLRenderingContext;
-    _frameId: number;
+    frameId: number;
     _programCache;
     _textureCache;
     _renderPrimitives;
@@ -583,7 +583,7 @@ export class Renderer {
 
     constructor(gl: WebGLRenderingContext) {
         this.gl = gl;
-        this._frameId = 0;
+        this.frameId = 0;
         this._programCache = {};
         this._textureCache = {};
         this._renderPrimitives = Array(RENDER_ORDER.DEFAULT);
@@ -680,9 +680,9 @@ export class Renderer {
         }
 
         const gl = this.gl;
-        this._frameId++;
+        this.frameId++;
 
-        rootNode.markActive(this._frameId);
+        rootNode.markActive(this.frameId);
 
         // If there's only one view then flip the algorithm a bit so that we're only
         // setting the viewport once.
@@ -735,7 +735,7 @@ export class Renderer {
         // Loop through every primitive known to the renderer.
         for (const primitive of renderPrimitives) {
             // Skip over those that haven't been marked as active for this frame.
-            if (primitive._activeFrameId !== this._frameId) {
+            if (primitive.activeFrameId !== this.frameId) {
                 continue;
             }
 
@@ -796,7 +796,7 @@ export class Renderer {
                 }
 
                 for (const instance of primitive._instances) {
-                    if (instance._activeFrameId !== this._frameId) {
+                    if (instance.activeFrameId !== this.frameId) {
                         continue;
                     }
 

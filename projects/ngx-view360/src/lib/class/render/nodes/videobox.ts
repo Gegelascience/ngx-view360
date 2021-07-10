@@ -1,4 +1,4 @@
-import { Material } from '../core/material.js';
+import { Material, MaterialSampler, MaterialUniform } from '../core/material.js';
 import { Primitive, PrimitiveAttribute } from '../core/primitives';
 import { Node } from '../core/node.js';
 import { VideoTexture } from '../core/texture.js';
@@ -6,8 +6,8 @@ import { VideoTexture } from '../core/texture.js';
 const GL = WebGLRenderingContext; // For enums
 
 class VideoMaterial extends Material {
-    image;
-    texCoordScaleOffset;
+    image: MaterialSampler;
+    texCoordScaleOffset: MaterialUniform;
     constructor() {
         super();
 
@@ -50,7 +50,7 @@ class VideoMaterial extends Material {
 export class VideoNode extends Node {
     video: HTMLVideoElement;
     displayMode: string;
-    videoTexture;
+    videoTexture: VideoTexture;
     constructor(options) {
         super();
 
