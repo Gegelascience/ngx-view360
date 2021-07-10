@@ -1,0 +1,46 @@
+
+.componentContainer{
+    width:80vw;
+    height: 80vh;
+    display: flex;
+    min-height: 50vh;
+    min-width: 50vw;
+    position: relative;
+    
+  }
+  
+  .canvasContainer{
+    position: relative;
+    width: 100%;
+    height: 100%;
+      
+  }
+  
+  .vrButton{
+    z-index: 2;
+    text-align: left;
+    max-width: 420px;
+    background-color: white;
+    border-radius: 2px;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+  }
+  
+  .myCanvas{
+    position: absolute;
+    z-index: 0;
+    width: 100%;
+    height: 100%;
+    touch-action: none;
+    cursor: grab;
+  }
+  
+  .myCanvas :-webkit-full-screen {
+    width: 100%;
+    height: 100%;
+  }
+  
+  .hideBtn{
+    display: none;
+  }

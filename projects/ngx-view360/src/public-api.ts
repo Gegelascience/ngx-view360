@@ -3,4 +3,5 @@
  */
 
 export * from './lib/components/ngx-view360/ngx-view360.component';
+export * from './lib/components/ngx-video360/ngx-video360.component';
 export * from './lib/ngx-view360.module';

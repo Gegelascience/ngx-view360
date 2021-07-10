@@ -1,1 +1,11 @@
-<p>ngx-video360 works!</p>
+<div [ngStyle]='customCanvasBackground' class="componentContainer">
+    <div class="canvasContainer">
+        <canvas class="myCanvas" #webxrContainer (mousemove)="mouseMove($event)" (touchmove)='touchMove($event)'
+            (touchstart)='touchStart($event)' (touchend)='touchEnd($event)'
+            (touchcancel)='touchCancel($event)'></canvas>
+    </div>
+    <ngx-vr-button class="vrButton" [ngClass]="{'hideBtn': !showVRButton}" [ngStyle]='customButtonBackground'
+        [optionsStyle]="customButtonStyle" (RequestSession)='onRequestSession()' (EndSession)='onEndSession($event)'
+        (RequestFullScreen)='onFullScreenStart()'>
+    </ngx-vr-button>
+</div>

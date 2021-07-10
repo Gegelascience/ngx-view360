@@ -11,6 +11,6 @@ import { NgxVideo360Component } from './components/ngx-video360/ngx-video360.com
   imports: [
     CommonModule
   ],
-  exports: [NgxView360Component]
+  exports: [NgxView360Component, NgxVideo360Component]
 })
 export class NgxView360Module { }

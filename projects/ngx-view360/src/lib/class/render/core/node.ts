@@ -18,7 +18,7 @@ export class Node {
     dirtyTRS: boolean;
     _translation;
     _rotation;
-    _scale: Float32Array;
+    _scale;
     dirtyWorldMatrix: boolean;
     _worldMatrix;
     activeFrameId: number;

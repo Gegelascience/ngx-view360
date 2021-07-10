@@ -1,8 +1,8 @@
-import { Material, MaterialSampler, MaterialUniform } from '../core/material.js';
+import { Material, MaterialSampler, MaterialUniform } from '../core/material';
 import { Primitive, PrimitiveAttribute } from '../core/primitives';
-import { Node } from '../core/node.js';
-import { VideoTexture } from '../core/texture.js';
-import { Renderer } from '../core/renderer.js';
+import { Node } from '../core/node';
+import { VideoTexture } from '../core/texture';
+import { Renderer } from '../core/renderer';
 
 const GL = WebGLRenderingContext; // For enums
 
