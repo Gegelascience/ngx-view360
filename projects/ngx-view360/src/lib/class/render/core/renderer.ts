@@ -85,7 +85,7 @@ export class RenderView {
     projectionMatrix;
     viewport;
     _eye: string;
-    _eyeIndex: number;
+    eyeIndex: number;
     viewMatrix;
     viewTransform;
 
@@ -94,7 +94,7 @@ export class RenderView {
         this.viewport = viewport;
         // If an eye isn't given the left eye is assumed.
         this._eye = eye;
-        this._eyeIndex = (eye === 'left' ? 0 : 1);
+        this.eyeIndex = (eye === 'left' ? 0 : 1);
 
         // Compute the view matrix
         if (viewTransform instanceof Float32Array) {
@@ -112,32 +112,28 @@ export class RenderView {
 
     set eye(value) {
         this._eye = value;
-        this._eyeIndex = (value === 'left' ? 0 : 1);
-    }
-
-    get eyeIndex() {
-        return this._eyeIndex;
+        this.eyeIndex = (value === 'left' ? 0 : 1);
     }
 }
 
 export class RenderBuffer {
-    _target: number;
-    _usage;
+    target: number;
+    usage: number;
     length: number;
-    _buffer;
+    buffer: WebGLBuffer;
     promise: Promise<any>;
-    constructor(target: number, usage, buffer, length = 0) {
-        this._target = target;
-        this._usage = usage;
+    constructor(target: number, usage: number, buffer: WebGLBuffer, length = 0) {
+        this.target = target;
+        this.usage = usage;
         this.length = length;
         if (buffer instanceof Promise) {
-            this._buffer = null;
+            this.buffer = null;
             this.promise = buffer.then((buff) => {
-                this._buffer = buff;
+                this.buffer = buff;
                 return this;
             });
         } else {
-            this._buffer = buffer;
+            this.buffer = buffer;
             this.promise = Promise.resolve(this);
         }
     }
@@ -148,93 +144,93 @@ export class RenderBuffer {
 }
 
 class RenderPrimitiveAttribute {
-    _attrib_index;
-    _componentCount;
-    _componentType;
-    _stride;
-    _byteOffset;
-    _normalized;
+    attribIndex: number;
+    componentCount: number;
+    componentType: number;
+    stride: number;
+    byteOffset: number;
+    normalized: boolean;
 
     constructor(primitiveAttribute) {
-        this._attrib_index = ATTRIB[primitiveAttribute.name];
-        this._componentCount = primitiveAttribute.componentCount;
-        this._componentType = primitiveAttribute.componentType;
-        this._stride = primitiveAttribute.stride;
-        this._byteOffset = primitiveAttribute.byteOffset;
-        this._normalized = primitiveAttribute.normalized;
+        this.attribIndex = ATTRIB[primitiveAttribute.name];
+        this.componentCount = primitiveAttribute.componentCount;
+        this.componentType = primitiveAttribute.componentType;
+        this.stride = primitiveAttribute.stride;
+        this.byteOffset = primitiveAttribute.byteOffset;
+        this.normalized = primitiveAttribute.normalized;
     }
 }
 
 class RenderPrimitiveAttributeBuffer {
-    _buffer;
-    _attributes: RenderPrimitiveAttribute[];
-    constructor(buffer) {
-        this._buffer = buffer;
-        this._attributes = [];
+    buffer: RenderBuffer;
+    attributes: RenderPrimitiveAttribute[];
+    constructor(buffer: RenderBuffer) {
+        this.buffer = buffer;
+        this.attributes = [];
     }
 }
 
 export class RenderPrimitive {
     activeFrameId: number;
-    _instances: Node[];
-    _material: RenderMaterial;
-    _mode: number;
-    _elementCount: number;
+    instances: Node[];
+    material: RenderMaterial;
+    mode: number;
+    elementCount: number;
     promise: Promise<any>;
-    _vao;
+    vao: WebGLVertexArrayObjectOES;
     complete: boolean;
-    _attributeBuffers: RenderPrimitiveAttributeBuffer[];
-    _attributeMask;
-    _indexBuffer;
-    _indexByteOffset: number;
-    _indexType: number;
-    min;
-    max;
+    attributeBuffers: RenderPrimitiveAttributeBuffer[];
+    attributeMask: number;
+    indexBuffer: RenderBuffer;
+    indexByteOffset: number;
+    indexType: number;
+    min: vec3;
+    max: vec3;
 
     constructor(primitive: Primitive) {
         this.activeFrameId = 0;
-        this._instances = [];
-        this._material = null;
+        this.instances = [];
+        this.material = null;
 
         this.setPrimitive(primitive);
     }
 
     setPrimitive(primitive: Primitive) {
-        this._mode = primitive.mode;
-        this._elementCount = primitive.elementCount;
+        this.mode = primitive.mode;
+        this.elementCount = primitive.elementCount;
         this.promise = null;
-        this._vao = null;
+        this.vao = null;
         this.complete = false;
-        this._attributeBuffers = [];
-        this._attributeMask = 0;
+        this.attributeBuffers = [];
+        this.attributeMask = 0;
 
         for (const attribute of primitive.attributes) {
             // tslint:disable-next-line:no-bitwise
-            this._attributeMask |= ATTRIB_MASK[attribute.name];
+            this.attributeMask |= ATTRIB_MASK[attribute.name];
             const renderAttribute = new RenderPrimitiveAttribute(attribute);
             let foundBuffer = false;
-            for (const attributeBuffer of this._attributeBuffers) {
-                if (attributeBuffer._buffer === attribute.buffer) {
-                    attributeBuffer._attributes.push(renderAttribute);
+            for (const attributeBuffer of this.attributeBuffers) {
+                if (attributeBuffer.buffer === attribute.buffer) {
+                    attributeBuffer.attributes.push(renderAttribute);
                     foundBuffer = true;
                     break;
                 }
             }
             if (!foundBuffer) {
                 const attributeBuffer = new RenderPrimitiveAttributeBuffer(attribute.buffer);
-                attributeBuffer._attributes.push(renderAttribute);
-                this._attributeBuffers.push(attributeBuffer);
+                attributeBuffer.attributes.push(renderAttribute);
+                this.attributeBuffers.push(attributeBuffer);
             }
         }
 
-        this._indexBuffer = null;
-        this._indexByteOffset = 0;
-        this._indexType = 0;
+        this.indexBuffer = null;
+        this.indexByteOffset = 0;
+        this.indexType = 0;
 
         if (primitive.indexBuffer) {
-            this._indexByteOffset = primitive.indexByteOffset;
-            this._indexType = primitive.indexType;
-            this._indexBuffer = primitive.indexBuffer;
+            this.indexByteOffset = primitive.indexByteOffset;
+            this.indexType = primitive.indexType;
+            this.indexBuffer = primitive.indexBuffer;
         }
 
         if (primitive.min) {
@@ -245,25 +241,25 @@ export class RenderPrimitive {
             this.max = null;
         }
 
-        if (this._material != null) {
+        if (this.material != null) {
             this.waitForComplete(); // To flip the complete flag.
         }
     }
 
     setRenderMaterial(material: RenderMaterial) {
-        this._material = material;
+        this.material = material;
         this.promise = null;
         this.complete = false;
 
-        if (this._material != null) {
+        if (this.material != null) {
             this.waitForComplete(); // To flip the complete flag.
         }
     }
 
     markActive(frameId: number) {
         if (this.complete && this.activeFrameId !== frameId) {
-            if (this._material) {
-                if (!this._material.markActive(frameId)) {
+            if (this.material) {
+                if (!this.material.markActive(frameId)) {
                     return;
                 }
             }
@@ -272,29 +268,29 @@ export class RenderPrimitive {
     }
 
     get samplers() {
-        return this._material._samplerDictionary;
+        return this.material.samplerDictionary;
     }
 
     get uniforms() {
-        return this._material._uniform_dictionary;
+        return this.material.uniformDictionary;
     }
 
     waitForComplete() {
         if (!this.promise) {
-            if (!this._material) {
+            if (!this.material) {
                 return Promise.reject('RenderPrimitive does not have a material');
             }
 
             const completionPromises = [];
 
-            for (const attributeBuffer of this._attributeBuffers) {
-                if (!attributeBuffer._buffer._buffer) {
-                    completionPromises.push(attributeBuffer._buffer.promise);
+            for (const attributeBuffer of this.attributeBuffers) {
+                if (!attributeBuffer.buffer.buffer) {
+                    completionPromises.push(attributeBuffer.buffer.promise);
                 }
             }
 
-            if (this._indexBuffer && !this._indexBuffer._buffer) {
-                completionPromises.push(this._indexBuffer.promise);
+            if (this.indexBuffer && !this.indexBuffer.buffer) {
+                completionPromises.push(this.indexBuffer.promise);
             }
 
             this.promise = Promise.all(completionPromises).then(() => {
@@ -356,7 +352,7 @@ class RenderMaterialSampler {
         this.index = index;
     }
 
-    set texture(value) {
+    set texture(value: Texture) {
         this.renderTexture = this.renderer._getRenderTexture(value);
     }
 }
@@ -393,10 +389,10 @@ class RenderMaterial {
     program: Program;
     state: number;
     activeFrameId: number;
-    _completeForActiveFrame: boolean;
-    _samplerDictionary;
+    completeForActiveFrame: boolean;
+    samplerDictionary;
     samplers: RenderMaterialSampler[];
-    _uniform_dictionary;
+    uniformDictionary;
     uniforms: RenderMaterialUniform[];
     firstBind: boolean;
     renderOrder: number;
@@ -405,22 +401,22 @@ class RenderMaterial {
         this.program = program;
         this.state = material.state.state;
         this.activeFrameId = 0;
-        this._completeForActiveFrame = false;
+        this.completeForActiveFrame = false;
 
-        this._samplerDictionary = {};
+        this.samplerDictionary = {};
         this.samplers = [];
         for (let i = 0; i < material.samplers.length; ++i) {
             const renderSampler = new RenderMaterialSampler(renderer, material.samplers[i], i);
             this.samplers.push(renderSampler);
-            this._samplerDictionary[renderSampler.uniformName] = renderSampler;
+            this.samplerDictionary[renderSampler.uniformName] = renderSampler;
         }
 
-        this._uniform_dictionary = {};
+        this.uniformDictionary = {};
         this.uniforms = [];
         for (const uniform of material.uniforms) {
             const renderUniform = new RenderMaterialUniform(uniform);
             this.uniforms.push(renderUniform);
-            this._uniform_dictionary[renderUniform.uniformName] = renderUniform;
+            this.uniformDictionary[renderUniform.uniformName] = renderUniform;
         }
 
         this.firstBind = true;
@@ -483,18 +479,18 @@ class RenderMaterial {
     markActive(frameId: number) {
         if (this.activeFrameId !== frameId) {
             this.activeFrameId = frameId;
-            this._completeForActiveFrame = true;
+            this.completeForActiveFrame = true;
             for (const sampler of this.samplers) {
                 if (sampler.renderTexture) {
                     if (!sampler.renderTexture.complete) {
-                        this._completeForActiveFrame = false;
+                        this.completeForActiveFrame = false;
                         break;
                     }
                     sampler.renderTexture.markActive(frameId);
                 }
             }
         }
-        return this._completeForActiveFrame;
+        return this.completeForActiveFrame;
     }
 
     // Material State fetchers
@@ -565,32 +561,32 @@ class RenderMaterial {
 export class Renderer {
     gl: WebGLRenderingContext;
     frameId: number;
-    _programCache;
-    _textureCache;
-    _renderPrimitives;
-    _cameraPositions;
-    _vaoExt;
-    _defaultFragPrecision;
-    _depthMaskNeedsReset: boolean;
-    _colorMaskNeedsReset: boolean;
+    programCache;
+    textureCache;
+    renderPrimitives: RenderPrimitive[][];
+    cameraPositions;
+    vaoExt: OES_vertex_array_object;
+    defaultFragPrecision: string;
+    depthMaskNeedsReset: boolean;
+    colorMaskNeedsReset: boolean;
     _globalLightColor;
     _globalLightDir;
 
     constructor(gl: WebGLRenderingContext) {
         this.gl = gl;
         this.frameId = 0;
-        this._programCache = {};
-        this._textureCache = {};
-        this._renderPrimitives = Array(RENDER_ORDER.DEFAULT);
-        this._cameraPositions = [];
+        this.programCache = {};
+        this.textureCache = {};
+        this.renderPrimitives = Array(RENDER_ORDER.DEFAULT);
+        this.cameraPositions = [];
 
-        this._vaoExt = gl.getExtension('OES_vertex_array_object');
+        this.vaoExt = gl.getExtension('OES_vertex_array_object');
 
         const fragHighPrecision = gl.getShaderPrecisionFormat(gl.FRAGMENT_SHADER, gl.HIGH_FLOAT);
-        this._defaultFragPrecision = fragHighPrecision.precision > 0 ? 'highp' : 'mediump';
+        this.defaultFragPrecision = fragHighPrecision.precision > 0 ? 'highp' : 'mediump';
 
-        this._depthMaskNeedsReset = false;
-        this._colorMaskNeedsReset = false;
+        this.depthMaskNeedsReset = false;
+        this.colorMaskNeedsReset = false;
 
         this._globalLightColor = vec3.clone(DEF_LIGHT_COLOR);
         this._globalLightDir = vec3.clone(DEF_LIGHT_DIR);
@@ -617,10 +613,10 @@ export class Renderer {
         const glBuffer = gl.createBuffer();
 
         if (data instanceof Promise) {
-            const renderBuffer = new RenderBuffer(target, usage, data.then((data) => {
+            const renderBuffer = new RenderBuffer(target, usage, data.then((d) => {
                 gl.bindBuffer(target, glBuffer);
-                gl.bufferData(target, data, usage);
-                renderBuffer.length = data.byteLength;
+                gl.bufferData(target, d, usage);
+                renderBuffer.length = d.byteLength;
                 return glBuffer;
             }));
             return renderBuffer;
@@ -632,13 +628,13 @@ export class Renderer {
     }
 
     updateRenderBuffer(buffer: RenderBuffer, data, offset = 0) {
-        if (buffer._buffer) {
+        if (buffer.buffer) {
             const gl = this.gl;
-            gl.bindBuffer(buffer._target, buffer._buffer);
+            gl.bindBuffer(buffer.target, buffer.buffer);
             if (offset === 0 && buffer.length === data.byteLength) {
-                gl.bufferData(buffer._target, data, buffer._usage);
+                gl.bufferData(buffer.target, data, buffer.usage);
             } else {
-                gl.bufferSubData(buffer._target, offset, data);
+                gl.bufferSubData(buffer.target, offset, data);
             }
         } else {
             buffer.waitForComplete().then((buff) => {
@@ -654,11 +650,11 @@ export class Renderer {
         const renderMaterial = new RenderMaterial(this, material, program);
         renderPrimitive.setRenderMaterial(renderMaterial);
 
-        if (!this._renderPrimitives[renderMaterial.renderOrder]) {
-            this._renderPrimitives[renderMaterial.renderOrder] = [];
+        if (!this.renderPrimitives[renderMaterial.renderOrder]) {
+            this.renderPrimitives[renderMaterial.renderOrder] = [];
         }
 
-        this._renderPrimitives[renderMaterial.renderOrder].push(renderPrimitive);
+        this.renderPrimitives[renderMaterial.renderOrder].push(renderPrimitive);
 
         return renderPrimitive;
     }
@@ -688,35 +684,35 @@ export class Renderer {
 
         // Get the positions of the 'camera' for each view matrix.
         for (let i = 0; i < views.length; ++i) {
-            if (this._cameraPositions.length <= i) {
-                this._cameraPositions.push(vec3.create());
+            if (this.cameraPositions.length <= i) {
+                this.cameraPositions.push(vec3.create());
             }
             const p = views[i].viewTransform.position;
-            this._cameraPositions[i][0] = p.x;
-            this._cameraPositions[i][1] = p.y;
-            this._cameraPositions[i][2] = p.z;
+            this.cameraPositions[i][0] = p.x;
+            this.cameraPositions[i][1] = p.y;
+            this.cameraPositions[i][2] = p.z;
 
             /*mat4.invert(inverseMatrix, views[i].viewMatrix);
-            let cameraPosition = this._cameraPositions[i];
+            let cameraPosition = this.cameraPositions[i];
             vec3.set(cameraPosition, 0, 0, 0);
             vec3.transformMat4(cameraPosition, cameraPosition, inverseMatrix);*/
         }
 
         // Draw each set of render primitives in order
-        for (const renderPrimitives of this._renderPrimitives) {
+        for (const renderPrimitives of this.renderPrimitives) {
             if (renderPrimitives && renderPrimitives.length) {
                 this._drawRenderPrimitiveSet(views, renderPrimitives);
             }
         }
 
-        if (this._vaoExt) {
-            this._vaoExt.bindVertexArrayOES(null);
+        if (this.vaoExt) {
+            this.vaoExt.bindVertexArrayOES(null);
         }
 
-        if (this._depthMaskNeedsReset) {
+        if (this.depthMaskNeedsReset) {
             gl.depthMask(true);
         }
-        if (this._colorMaskNeedsReset) {
+        if (this.colorMaskNeedsReset) {
             gl.colorMask(true, true, true, true);
         }
     }
@@ -737,8 +733,8 @@ export class Renderer {
             // Bind the primitive material's program if it's different than the one we
             // were using for the previous primitive.
             // TODO: The ording of this could be more efficient.
-            if (program !== primitive._material.program) {
-                program = primitive._material.program;
+            if (program !== primitive.material.program) {
+                program = primitive.material.program;
                 program.use();
 
                 if (program.uniform.LIGHT_DIRECTION) {
@@ -752,29 +748,29 @@ export class Renderer {
                 if (views.length === 1) {
                     gl.uniformMatrix4fv(program.uniform.PROJECTION_MATRIX, false, views[0].projectionMatrix);
                     gl.uniformMatrix4fv(program.uniform.VIEW_MATRIX, false, views[0].viewMatrix);
-                    gl.uniform3fv(program.uniform.CAMERA_POSITION, this._cameraPositions[0]);
+                    gl.uniform3fv(program.uniform.CAMERA_POSITION, this.cameraPositions[0]);
                     gl.uniform1i(program.uniform.EYE_INDEX, views[0].eyeIndex);
                 }
             }
 
-            if (material !== primitive._material) {
-                this._bindMaterialState(primitive._material, material);
-                primitive._material.bind(gl);
-                // primitive._material.bind(gl, program, material);
-                material = primitive._material;
+            if (material !== primitive.material) {
+                this._bindMaterialState(primitive.material, material);
+                primitive.material.bind(gl);
+                // primitive.material.bind(gl, program, material);
+                material = primitive.material;
             }
 
-            if (this._vaoExt) {
-                if (primitive._vao) {
-                    this._vaoExt.bindVertexArrayOES(primitive._vao);
+            if (this.vaoExt) {
+                if (primitive.vao) {
+                    this.vaoExt.bindVertexArrayOES(primitive.vao);
                 } else {
-                    primitive._vao = this._vaoExt.createVertexArrayOES();
-                    this._vaoExt.bindVertexArrayOES(primitive._vao);
+                    primitive.vao = this.vaoExt.createVertexArrayOES();
+                    this.vaoExt.bindVertexArrayOES(primitive.vao);
                     this._bindPrimitive(primitive, undefined);
                 }
             } else {
                 this._bindPrimitive(primitive, attribMask);
-                attribMask = primitive._attributeMask;
+                attribMask = primitive.attributeMask;
             }
 
             for (let i = 0; i < views.length; ++i) {
@@ -786,22 +782,22 @@ export class Renderer {
                     }
                     gl.uniformMatrix4fv(program.uniform.PROJECTION_MATRIX, false, view.projectionMatrix);
                     gl.uniformMatrix4fv(program.uniform.VIEW_MATRIX, false, view.viewMatrix);
-                    gl.uniform3fv(program.uniform.CAMERA_POSITION, this._cameraPositions[i]);
+                    gl.uniform3fv(program.uniform.CAMERA_POSITION, this.cameraPositions[i]);
                     gl.uniform1i(program.uniform.EYE_INDEX, view.eyeIndex);
                 }
 
-                for (const instance of primitive._instances) {
+                for (const instance of primitive.instances) {
                     if (instance.activeFrameId !== this.frameId) {
                         continue;
                     }
 
                     gl.uniformMatrix4fv(program.uniform.MODEL_MATRIX, false, instance.worldMatrix);
 
-                    if (primitive._indexBuffer) {
-                        gl.drawElements(primitive._mode, primitive._elementCount,
-                            primitive._indexType, primitive._indexByteOffset);
+                    if (primitive.indexBuffer) {
+                        gl.drawElements(primitive.mode, primitive.elementCount,
+                            primitive.indexType, primitive.indexByteOffset);
                     } else {
-                        gl.drawArrays(primitive._mode, 0, primitive._elementCount);
+                        gl.drawArrays(primitive.mode, 0, primitive.elementCount);
                     }
                 }
             }
@@ -818,19 +814,19 @@ export class Renderer {
             throw new Error('Texure does not have a valid key');
         }
 
-        if (key in this._textureCache) {
-            return this._textureCache[key];
+        if (key in this.textureCache) {
+            return this.textureCache[key];
         } else {
             const gl = this.gl;
             const textureHandle = gl.createTexture();
 
             const renderTexture = new RenderTexture(textureHandle);
-            this._textureCache[key] = renderTexture;
+            this.textureCache[key] = renderTexture;
 
             if (texture instanceof DataTexture) {
                 gl.bindTexture(gl.TEXTURE_2D, textureHandle);
                 gl.texImage2D(gl.TEXTURE_2D, 0, texture.format, texture.width, texture.height,
-                    0, texture.format, texture._type, texture.data);
+                    0, texture.format, texture.type, texture.data);
                 this._setSamplerParameters(texture);
                 renderTexture.complete = true;
             } else if (texture instanceof ImageUrlTexture) {
@@ -919,8 +915,8 @@ export class Renderer {
         const defines = material.getProgramDefines(renderPrimitive);
         const key = this._getProgramKey(materialName, defines);
 
-        if (key in this._programCache) {
-            return this._programCache[key];
+        if (key in this.programCache) {
+            return this.programCache[key];
         } else {
             const multiview = false; // Handle this dynamically later
             let fullVertexSource = vertexSource;
@@ -928,13 +924,13 @@ export class Renderer {
                 VERTEX_SHADER_SINGLE_ENTRY;
 
             const precisionMatch = fragmentSource.match(PRECISION_REGEX);
-            const fragPrecisionHeader = precisionMatch ? '' : `precision ${this._defaultFragPrecision} float;\n`;
+            const fragPrecisionHeader = precisionMatch ? '' : `precision ${this.defaultFragPrecision} float;\n`;
 
             let fullFragmentSource = fragPrecisionHeader + fragmentSource;
             fullFragmentSource += FRAGMENT_SHADER_ENTRY;
 
             const program = new Program(this.gl, fullVertexSource, fullFragmentSource, ATTRIB, defines);
-            this._programCache[key] = program;
+            this.programCache[key] = program;
 
             program.onNextUse((prog: Program) => {
                 // Bind the samplers to the right texture index. This is constant for
@@ -952,14 +948,14 @@ export class Renderer {
         }
     }
 
-    _bindPrimitive(primitive, attribMask) {
+    _bindPrimitive(primitive: RenderPrimitive, attribMask) {
         const gl = this.gl;
 
         // If the active attributes have changed then update the active set.
-        if (attribMask !== primitive._attributeMask) {
+        if (attribMask !== primitive.attributeMask) {
             for (const attrib in ATTRIB) {
                 // tslint:disable-next-line:no-bitwise
-                if (primitive._attributeMask & ATTRIB_MASK[attrib]) {
+                if (primitive.attributeMask & ATTRIB_MASK[attrib]) {
                     gl.enableVertexAttribArray(ATTRIB[attrib]);
                 } else {
                     gl.disableVertexAttribArray(ATTRIB[attrib]);
@@ -968,17 +964,17 @@ export class Renderer {
         }
 
         // Bind the primitive attributes and indices.
-        for (const attributeBuffer of primitive._attributeBuffers) {
-            gl.bindBuffer(gl.ARRAY_BUFFER, attributeBuffer._buffer._buffer);
-            for (const attrib of attributeBuffer._attributes) {
+        for (const attributeBuffer of primitive.attributeBuffers) {
+            gl.bindBuffer(gl.ARRAY_BUFFER, attributeBuffer.buffer.buffer);
+            for (const attrib of attributeBuffer.attributes) {
                 gl.vertexAttribPointer(
-                    attrib._attrib_index, attrib._componentCount, attrib._componentType,
-                    attrib._normalized, attrib._stride, attrib._byteOffset);
+                    attrib.attribIndex, attrib.componentCount, attrib.componentType,
+                    attrib.normalized, attrib.stride, attrib.byteOffset);
             }
         }
 
-        if (primitive._indexBuffer) {
-            gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, primitive._indexBuffer._buffer);
+        if (primitive.indexBuffer) {
+            gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, primitive.indexBuffer.buffer);
         } else {
             gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null);
         }
@@ -1007,14 +1003,14 @@ export class Renderer {
             const colorMaskChange = (state & CAP.COLOR_MASK) - (prevState & CAP.COLOR_MASK);
             if (colorMaskChange) {
                 const mask = colorMaskChange > 1;
-                this._colorMaskNeedsReset = !mask;
+                this.colorMaskNeedsReset = !mask;
                 gl.colorMask(mask, mask, mask, mask);
             }
 
             // tslint:disable-next-line:no-bitwise
             const depthMaskChange = (state & CAP.DEPTH_MASK) - (prevState & CAP.DEPTH_MASK);
             if (depthMaskChange) {
-                this._depthMaskNeedsReset = !(depthMaskChange > 1);
+                this.depthMaskNeedsReset = !(depthMaskChange > 1);
                 gl.depthMask(depthMaskChange > 1);
             }
 

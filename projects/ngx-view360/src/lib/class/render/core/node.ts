@@ -22,7 +22,7 @@ export class Node {
     dirtyWorldMatrix: boolean;
     _worldMatrix;
     activeFrameId: number;
-    _hoverFrameId: number;
+    hoverFrameId: number;
     renderPrimitives: RenderPrimitive[];
     renderer: Renderer;
     _selectHandler;
@@ -45,7 +45,7 @@ export class Node {
         this._worldMatrix = null;
 
         this.activeFrameId = -1;
-        this._hoverFrameId = -1;
+        this.hoverFrameId = -1;
         this.renderPrimitives = null;
         this.renderer = null;
 
@@ -317,25 +317,25 @@ export class Node {
         } else {
             this.renderPrimitives.push(primitive);
         }
-        primitive._instances.push(this);
+        primitive.instances.push(this);
     }
 
     /*removeRenderPrimitive(primitive: RenderPrimitive) {
-        if (!this._renderPrimitives) {
+        if (!this.renderPrimitives) {
             return;
         }
 
-        let index = this._renderPrimitives._instances.indexOf(primitive);
+        let index = this.renderPrimitives.instances.indexOf(primitive);
         if (index > -1) {
-            this._renderPrimitives._instances.splice(index, 1);
+            this.renderPrimitives.instances.splice(index, 1);
 
-            index = primitive._instances.indexOf(this);
+            index = primitive.instances.indexOf(this);
             if (index > -1) {
-                primitive._instances.splice(index, 1);
+                primitive.instances.splice(index, 1);
             }
 
-            if (!this._renderPrimitives.length) {
-                this._renderPrimitives = null;
+            if (!this.renderPrimitives.length) {
+                this.renderPrimitives = null;
             }
         }
     }*/
@@ -343,9 +343,9 @@ export class Node {
     clearRenderPrimitives() {
         if (this.renderPrimitives) {
             for (const primitive of this.renderPrimitives) {
-                const index = primitive._instances.indexOf(this);
+                const index = primitive.instances.indexOf(this);
                 if (index > -1) {
-                    primitive._instances.splice(index, 1);
+                    primitive.instances.splice(index, 1);
                 }
             }
             this.renderPrimitives = null;

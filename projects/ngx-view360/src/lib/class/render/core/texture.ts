@@ -16,22 +16,16 @@ export class TextureSampler {
 export class Texture {
     sampler: TextureSampler;
     mipmap: boolean;
+    width: number;
+    height: number;
+    format: number;
     constructor() {
         this.sampler = new TextureSampler();
         this.mipmap = true;
+        this.width = 0;
+        this.height = 0;
+        this.format = GL.RGBA;
         // TODO: Anisotropy
-    }
-
-    get format() {
-        return GL.RGBA;
-    }
-
-    get width() {
-        return 0;
-    }
-
-    get height() {
-        return 0;
     }
 
     get textureKey() {
@@ -68,23 +62,14 @@ export class ImageTexture extends Texture {
         if (window.createImageBitmap) {
             return window.createImageBitmap(this.img).then((imgBitmap) => {
                 this.imgBitmap = imgBitmap;
+                this.height = this.img.height;
+                this.width = this.img.width;
                 return Promise.resolve(this);
             });
         }
+        this.width = this.img.width;
+        this.height = this.img.height;
         return Promise.resolve(this);
-    }
-
-    get format() {
-        // TODO: Can be RGB in some cases.
-        return GL.RGBA;
-    }
-
-    get width() {
-        return this.img.width;
-    }
-
-    get height() {
-        return this.img.height;
     }
 
     waitForComplete() {
@@ -113,38 +98,26 @@ let nextDataTextureIndex = 0;
 
 export class DataTexture extends Texture {
     data;
-    _width: number;
-    _height: number;
-    _format;
-    _type;
-    _key: string;
+    width: number;
+    height: number;
+    format: number;
+    type: number;
+    key: string;
 
     constructor(data, width: number, height: number, format = GL.RGBA, type = GL.UNSIGNED_BYTE) {
         super();
 
         this.data = data;
-        this._width = width;
-        this._height = height;
-        this._format = format;
-        this._type = type;
-        this._key = `DATA_${nextDataTextureIndex}`;
+        this.width = width;
+        this.height = height;
+        this.format = format;
+        this.type = type;
+        this.key = `DATA_${nextDataTextureIndex}`;
         nextDataTextureIndex++;
     }
 
-    get format() {
-        return this._format;
-    }
-
-    get width() {
-        return this._width;
-    }
-
-    get height() {
-        return this._height;
-    }
-
     get textureKey() {
-        return this._key;
+        return this.key;
     }
 }
 
@@ -155,7 +128,7 @@ export class ColorTexture extends DataTexture {
         super(colorData, 1, 1);
 
         this.mipmap = false;
-        this._key = `COLOR_${colorData[0]}_${colorData[1]}_${colorData[2]}_${colorData[3]}`;
+        this.key = `COLOR_${colorData[0]}_${colorData[1]}_${colorData[2]}_${colorData[3]}`;
     }
 }
 
@@ -167,6 +140,9 @@ export class VideoTexture extends Texture {
 
         this.video = video;
 
+        this.width = this.video.videoWidth;
+        this.height = this.video.videoHeight;
+
         if (video.readyState >= 2) {
             this.promise = Promise.resolve(this);
         } else if (video.error) {
@@ -177,19 +153,6 @@ export class VideoTexture extends Texture {
                 video.addEventListener('error', reject);
             });
         }
-    }
-
-    get format() {
-        // TODO: Can be RGB in some cases.
-        return GL.RGBA;
-    }
-
-    get width() {
-        return this.video.videoWidth;
-    }
-
-    get height() {
-        return this.video.videoHeight;
     }
 
     waitForComplete() {

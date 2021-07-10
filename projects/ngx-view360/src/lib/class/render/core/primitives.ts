@@ -3,14 +3,14 @@ import { RenderBuffer } from './renderer';
 
 export class PrimitiveAttribute {
     name: string;
-    buffer;
+    buffer: RenderBuffer;
     componentCount: number;
     componentType: number;
     stride: number;
     byteOffset: number;
     normalized: boolean;
 
-    constructor(name: string, buffer, componentCount: number, componentType: number, stride: number, byteOffset: number) {
+    constructor(name: string, buffer: RenderBuffer, componentCount: number, componentType: number, stride: number, byteOffset: number) {
         this.name = name;
         this.buffer = buffer;
         this.componentCount = componentCount || 3;

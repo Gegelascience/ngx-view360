@@ -81,10 +81,10 @@ export class Scene extends Node {
                 // Render a cursor at the intersection point.
                 this.inputRenderer.addCursor(hitResult.intersection);
 
-                if (hitResult.node._hoverFrameId !== lastHoverFrame) {
+                if (hitResult.node.hoverFrameId !== lastHoverFrame) {
                     hitResult.node.onHoverStart();
                 }
-                hitResult.node._hoverFrameId = this.hoverFrame;
+                hitResult.node.hoverFrameId = this.hoverFrame;
                 newHoveredNodes.push(hitResult.node);
             } else {
                 // Statically render the cursor 1 meters down the ray since we didn't
@@ -114,7 +114,7 @@ export class Scene extends Node {
         }
 
         for (const hoverNode of this.hoveredNodes) {
-            if (hoverNode._hoverFrameId !== this.hoverFrame) {
+            if (hoverNode.hoverFrameId !== this.hoverFrame) {
                 hoverNode.onHoverEnd();
             }
         }
