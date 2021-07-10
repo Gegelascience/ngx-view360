@@ -60,7 +60,7 @@ export class VrButtonComponent implements OnChanges {
 
   }
 
-  getBorderRadius(height, corners) {
+  getBorderRadius(height: number, corners) {
     let borderRadius;
     if (corners === 'round') {
       borderRadius = height / 2;
@@ -83,7 +83,7 @@ export class VrButtonComponent implements OnChanges {
     }
   }
 
-  setDisabledAttribute(disabled) {
+  setDisabledAttribute(disabled: boolean) {
     if (disabled) {
       this.renderer.setAttribute(this.buttonEl.nativeElement, 'disabled', 'true');
       this.renderer.setStyle(this.buttonEl.nativeElement, 'opacity', 0.5);
@@ -110,7 +110,7 @@ export class VrButtonComponent implements OnChanges {
     this.setDisabledAttribute(false);
   }
 
-  setTitle(title) {
+  setTitle(title: string) {
     this.renderer.setAttribute(this.buttonEl.nativeElement, 'title', title);
     return this;
   }

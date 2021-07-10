@@ -60,8 +60,8 @@ export class NgxView360Component implements OnInit, OnChanges {
   };
 
   primaryTouch;
-  prevTouchX;
-  prevTouchY;
+  prevTouchX: number;
+  prevTouchY: number;
 
 
   constructor() { }
@@ -184,6 +184,7 @@ export class NgxView360Component implements OnInit, OnChanges {
     session.requestAnimationFrame(this.onXRFrame);
     const glLayer = session.renderState.baseLayer;
     this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, glLayer.framebuffer);
+    // tslint:disable-next-line:no-bitwise
     this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
     if (pose) {
       const views = [];
@@ -204,6 +205,7 @@ export class NgxView360Component implements OnInit, OnChanges {
 
   mouseMove(event) {
     // Only rotate when the left button is pressed
+    // tslint:disable-next-line:no-bitwise
     if (event.buttons & 1) {
       this.inlineViewerHelper.rotateView(event.movementX, event.movementY);
     }

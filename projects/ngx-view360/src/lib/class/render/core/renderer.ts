@@ -54,6 +54,7 @@ void main() {
 `;
 
 function isPowerOfTwo(n) {
+    // tslint:disable-next-line:no-bitwise
     return (n & (n - 1)) === 0;
 }
 

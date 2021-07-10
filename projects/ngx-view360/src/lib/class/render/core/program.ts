@@ -1,29 +1,31 @@
 export class Program {
-    _gl;
-    program;
+    gl: WebGLRenderingContext;
+    program: WebGLProgram;
     attrib;
     uniform;
     defines;
-    _firstUse: boolean;
+    firstUse: boolean;
     _nextUseCallbacks;
-    _vertShader;
-    _fragShader;
+    _vertShader: WebGLShader;
+    _fragShader: WebGLShader;
 
-    constructor(gl, vertSrc, fragSrc, attribMap, defines) {
-        this._gl = gl;
+    constructor(gl: WebGLRenderingContext, vertSrc, fragSrc, attribMap, defines) {
+        this.gl = gl;
         this.program = gl.createProgram();
         this.attrib = null;
         this.uniform = null;
         this.defines = {};
 
-        this._firstUse = true;
+        this.firstUse = true;
         this._nextUseCallbacks = [];
 
         let definesString = '';
         if (defines) {
             for (const define in defines) {
-                this.defines[define] = defines[define];
-                definesString += `#define ${define} ${defines[define]}\n`;
+                if (define) {
+                    this.defines[define] = defines[define];
+                    definesString += `#define ${define} ${defines[define]}\n`;
+                }
             }
         }
 
@@ -40,8 +42,10 @@ export class Program {
         if (attribMap) {
             this.attrib = {};
             for (const attribName in attribMap) {
-                gl.bindAttribLocation(this.program, attribMap[attribName], attribName);
-                this.attrib[attribName] = attribMap[attribName];
+                if (attribName) {
+                    gl.bindAttribLocation(this.program, attribMap[attribName], attribName);
+                    this.attrib[attribName] = attribMap[attribName];
+                }
             }
         }
 
@@ -53,12 +57,12 @@ export class Program {
     }
 
     use() {
-        const gl = this._gl;
+        const gl = this.gl;
 
         // If this is the first time the program has been used do all the error checking and
         // attrib/uniform querying needed.
-        if (this._firstUse) {
-            this._firstUse = false;
+        if (this.firstUse) {
+            this.firstUse = false;
             if (!gl.getProgramParameter(this.program, gl.LINK_STATUS)) {
                 if (!gl.getShaderParameter(this._vertShader, gl.COMPILE_STATUS)) {
                     console.error('Vertex shader compile error: ' + gl.getShaderInfoLog(this._vertShader));

@@ -60,12 +60,18 @@ class SkyboxMaterial extends Material {
     }
 }
 
+interface SkyBoxOptions {
+    url: string;
+    displayMode?: string;
+    rotationY?: number;
+}
+
 export class SkyboxNode extends Node {
     url: string;
     displayMode: string;
     rotationY: number;
 
-    constructor(options) {
+    constructor(options: SkyBoxOptions) {
         super();
 
         this.url = options.url;
