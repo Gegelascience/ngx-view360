@@ -1,4 +1,5 @@
 import { vec3 } from 'gl-matrix';
+import { RenderBuffer } from './renderer';
 
 export class PrimitiveAttribute {
     name: string;
@@ -21,16 +22,16 @@ export class PrimitiveAttribute {
 }
 
 export class Primitive {
-    attributes;
+    attributes: PrimitiveAttribute[];
     elementCount: number;
     mode: number;
-    indexBuffer;
+    indexBuffer: RenderBuffer;
     indexByteOffset: number;
     indexType: number;
-    min;
-    max;
+    min: vec3;
+    max: vec3;
 
-    constructor(attributes, elementCount: number, mode: number) {
+    constructor(attributes: PrimitiveAttribute[], elementCount: number, mode: number) {
         this.attributes = attributes || [];
         this.elementCount = elementCount || 0;
         this.mode = mode || 4; // gl.TRIANGLES;
@@ -41,13 +42,13 @@ export class Primitive {
         this.max = null;
     }
 
-    setIndexBuffer(indexBuffer, byteOffset: number, indexType: number) {
+    setIndexBuffer(indexBuffer: RenderBuffer, byteOffset: number, indexType: number) {
         this.indexBuffer = indexBuffer;
         this.indexByteOffset = byteOffset || 0;
         this.indexType = indexType || 5123; // gl.UNSIGNED_SHORT;
     }
 
-    setBounds(min, max) {
+    setBounds(min: vec3, max: vec3) {
         this.min = vec3.clone(min);
         this.max = vec3.clone(max);
     }

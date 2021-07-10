@@ -164,6 +164,7 @@ export class Scene extends Node {
         gl.bindFramebuffer(gl.FRAMEBUFFER, layer.framebuffer);
 
         if (this.clear) {
+            // tslint:disable-next-line:no-bitwise
             gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
         }
 

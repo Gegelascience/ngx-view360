@@ -1,7 +1,7 @@
-import { CAP, MAT_STATE, RENDER_ORDER, stateToBlendFunc } from './material';
+import { CAP, Material, MAT_STATE, RENDER_ORDER, stateToBlendFunc } from './material';
 import { Node } from './node';
 import { Program } from './program';
-import { DataTexture, ImageUrlTexture } from './texture';
+import { DataTexture, ImageUrlTexture, Texture } from './texture';
 import { mat4, vec3 } from 'gl-matrix';
 import { Primitive } from './primitives';
 
@@ -124,13 +124,13 @@ export class RenderView {
     }
 }
 
-class RenderBuffer {
-    _target;
+export class RenderBuffer {
+    _target: number;
     _usage;
     _length: number;
     _buffer;
     promise: Promise<any>;
-    constructor(target, usage, buffer, length = 0) {
+    constructor(target: number, usage, buffer, length = 0) {
         this._target = target;
         this._usage = usage;
         this._length = length;
@@ -171,7 +171,7 @@ class RenderPrimitiveAttribute {
 
 class RenderPrimitiveAttributeBuffer {
     _buffer;
-    _attributes;
+    _attributes: RenderPrimitiveAttribute[];
     constructor(buffer) {
         this._buffer = buffer;
         this._attributes = [];
@@ -180,14 +180,14 @@ class RenderPrimitiveAttributeBuffer {
 
 class RenderPrimitive {
     _activeFrameId: number;
-    _instances;
-    _material;
+    _instances: Node[];
+    _material: RenderMaterial;
     _mode: number;
     _elementCount: number;
     promise: Promise<any>;
     _vao;
     complete: boolean;
-    _attributeBuffers;
+    _attributeBuffers: RenderPrimitiveAttributeBuffer[];
     _attributeMask;
     _indexBuffer;
     _indexByteOffset: number;
@@ -195,7 +195,7 @@ class RenderPrimitive {
     min;
     max;
 
-    constructor(primitive) {
+    constructor(primitive: Primitive) {
         this._activeFrameId = 0;
         this._instances = [];
         this._material = null;
@@ -213,11 +213,12 @@ class RenderPrimitive {
         this._attributeMask = 0;
 
         for (const attribute of primitive.attributes) {
+            // tslint:disable-next-line:no-bitwise
             this._attributeMask |= ATTRIB_MASK[attribute.name];
             const renderAttribute = new RenderPrimitiveAttribute(attribute);
             let foundBuffer = false;
             for (const attributeBuffer of this._attributeBuffers) {
-                if (attributeBuffer._buffer == attribute.buffer) {
+                if (attributeBuffer._buffer === attribute.buffer) {
                     attributeBuffer._attributes.push(renderAttribute);
                     foundBuffer = true;
                     break;
@@ -253,7 +254,7 @@ class RenderPrimitive {
         }
     }
 
-    setRenderMaterial(material) {
+    setRenderMaterial(material: RenderMaterial) {
         this._material = material;
         this.promise = null;
         this.complete = false;
@@ -333,6 +334,7 @@ export class RenderTexture {
 const inverseMatrix = mat4.create();
 
 function setCap(gl, glEnum, cap, prevState, state) {
+    // tslint:disable-next-line:no-bitwise
     const change = (state & cap) - (prevState & cap);
     if (!change) {
         return;
@@ -393,19 +395,19 @@ class RenderMaterialUniform {
 
 class RenderMaterial {
     _program: Program;
-    _state;
+    state: number;
     _activeFrameId: number;
     _completeForActiveFrame: boolean;
     _samplerDictionary;
-    _samplers;
+    _samplers: RenderMaterialSampler[];
     _uniform_dictionary;
-    _uniforms;
-    _firstBind: boolean;
+    _uniforms: RenderMaterialUniform[];
+    firstBind: boolean;
     _renderOrder;
 
-    constructor(renderer, material, program: Program) {
+    constructor(renderer: Renderer, material: Material, program: Program) {
         this._program = program;
-        this._state = material.state._state;
+        this.state = material.state.state;
         this._activeFrameId = 0;
         this._completeForActiveFrame = false;
 
@@ -425,11 +427,12 @@ class RenderMaterial {
             this._uniform_dictionary[renderUniform._uniformName] = renderUniform;
         }
 
-        this._firstBind = true;
+        this.firstBind = true;
 
         this._renderOrder = material.renderOrder;
         if (this._renderOrder === RENDER_ORDER.DEFAULT) {
-            if (this._state & CAP.BLEND) {
+            // tslint:disable-next-line:no-bitwise
+            if (this.state & CAP.BLEND) {
                 this._renderOrder = RENDER_ORDER.TRANSPARENT;
             } else {
                 this._renderOrder = RENDER_ORDER.OPAQUE;
@@ -437,10 +440,10 @@ class RenderMaterial {
         }
     }
 
-    bind(gl) {
+    bind(gl: WebGLRenderingContext) {
         // First time we do a binding, cache the uniform locations and remove
         // unused uniforms from the list.
-        if (this._firstBind) {
+        if (this.firstBind) {
             for (let i = 0; i < this._samplers.length;) {
                 const sampler = this._samplers[i];
                 if (!this._program.uniform[sampler._uniformName]) {
@@ -459,7 +462,7 @@ class RenderMaterial {
                 }
                 ++i;
             }
-            this._firstBind = false;
+            this.firstBind = false;
         }
 
         for (const sampler of this._samplers) {
@@ -501,58 +504,71 @@ class RenderMaterial {
 
     // Material State fetchers
     get cullFace() {
-        return !!(this._state & CAP.CULL_FACE);
+        // tslint:disable-next-line:no-bitwise
+        return !!(this.state & CAP.CULL_FACE);
     }
     get blend() {
-        return !!(this._state & CAP.BLEND);
+        // tslint:disable-next-line:no-bitwise
+        return !!(this.state & CAP.BLEND);
     }
     get depthTest() {
-        return !!(this._state & CAP.DEPTH_TEST);
+        // tslint:disable-next-line:no-bitwise
+        return !!(this.state & CAP.DEPTH_TEST);
     }
     get stencilTest() {
-        return !!(this._state & CAP.STENCIL_TEST);
+        // tslint:disable-next-line:no-bitwise
+        return !!(this.state & CAP.STENCIL_TEST);
     }
     get colorMask() {
-        return !!(this._state & CAP.COLOR_MASK);
+        // tslint:disable-next-line:no-bitwise
+        return !!(this.state & CAP.COLOR_MASK);
     }
     get depthMask() {
-        return !!(this._state & CAP.DEPTH_MASK);
+        // tslint:disable-next-line:no-bitwise
+        return !!(this.state & CAP.DEPTH_MASK);
     }
     get stencilMask() {
-        return !!(this._state & CAP.STENCIL_MASK);
+        // tslint:disable-next-line:no-bitwise
+        return !!(this.state & CAP.STENCIL_MASK);
     }
     get depthFunc() {
-        return ((this._state & MAT_STATE.DEPTH_FUNC_RANGE) >> MAT_STATE.DEPTH_FUNC_SHIFT) + GL.NEVER;
+        // tslint:disable-next-line:no-bitwise
+        return ((this.state & MAT_STATE.DEPTH_FUNC_RANGE) >> MAT_STATE.DEPTH_FUNC_SHIFT) + GL.NEVER;
     }
     get blendFuncSrc() {
-        return stateToBlendFunc(this._state, MAT_STATE.BLEND_SRC_RANGE, MAT_STATE.BLEND_SRC_SHIFT);
+        return stateToBlendFunc(this.state, MAT_STATE.BLEND_SRC_RANGE, MAT_STATE.BLEND_SRC_SHIFT);
     }
     get blendFuncDst() {
-        return stateToBlendFunc(this._state, MAT_STATE.BLEND_DST_RANGE, MAT_STATE.BLEND_DST_SHIFT);
+        return stateToBlendFunc(this.state, MAT_STATE.BLEND_DST_RANGE, MAT_STATE.BLEND_DST_SHIFT);
     }
 
     // Only really for use from the renderer
-    _capsDiff(otherState) {
-        return (otherState & MAT_STATE.CAPS_RANGE) ^ (this._state & MAT_STATE.CAPS_RANGE);
+    _capsDiff(otherState: number) {
+        // tslint:disable-next-line:no-bitwise
+        return (otherState & MAT_STATE.CAPS_RANGE) ^ (this.state & MAT_STATE.CAPS_RANGE);
     }
 
-    _blendDiff(otherState) {
-        if (!(this._state & CAP.BLEND)) {
+    _blendDiff(otherState: number) {
+        // tslint:disable-next-line:no-bitwise
+        if (!(this.state & CAP.BLEND)) {
             return 0;
         }
-        return (otherState & MAT_STATE.BLEND_FUNC_RANGE) ^ (this._state & MAT_STATE.BLEND_FUNC_RANGE);
+        // tslint:disable-next-line:no-bitwise
+        return (otherState & MAT_STATE.BLEND_FUNC_RANGE) ^ (this.state & MAT_STATE.BLEND_FUNC_RANGE);
     }
 
-    _depthFuncDiff(otherState) {
-        if (!(this._state & CAP.DEPTH_TEST)) {
+    _depthFuncDiff(otherState: number) {
+        // tslint:disable-next-line:no-bitwise
+        if (!(this.state & CAP.DEPTH_TEST)) {
             return 0;
         }
-        return (otherState & MAT_STATE.DEPTH_FUNC_RANGE) ^ (this._state & MAT_STATE.DEPTH_FUNC_RANGE);
+        // tslint:disable-next-line:no-bitwise
+        return (otherState & MAT_STATE.DEPTH_FUNC_RANGE) ^ (this.state & MAT_STATE.DEPTH_FUNC_RANGE);
     }
 }
 
 export class Renderer {
-    _gl;
+    gl: WebGLRenderingContext;
     _frameId: number;
     _programCache;
     _textureCache;
@@ -565,8 +581,8 @@ export class Renderer {
     _globalLightColor;
     _globalLightDir;
 
-    constructor(gl) {
-        this._gl = gl;
+    constructor(gl: WebGLRenderingContext) {
+        this.gl = gl;
         this._frameId = 0;
         this._programCache = {};
         this._textureCache = {};
@@ -585,10 +601,6 @@ export class Renderer {
         this._globalLightDir = vec3.clone(DEF_LIGHT_DIR);
     }
 
-    get gl() {
-        return this._gl;
-    }
-
     set globalLightColor(value) {
         vec3.copy(this._globalLightColor, value);
     }
@@ -605,8 +617,8 @@ export class Renderer {
         return vec3.clone(this._globalLightDir);
     }
 
-    createRenderBuffer(target, data, usage = GL.STATIC_DRAW) {
-        const gl = this._gl;
+    createRenderBuffer(target: number, data, usage = GL.STATIC_DRAW) {
+        const gl = this.gl;
         const glBuffer = gl.createBuffer();
 
         if (data instanceof Promise) {
@@ -624,11 +636,11 @@ export class Renderer {
         }
     }
 
-    updateRenderBuffer(buffer, data, offset = 0) {
+    updateRenderBuffer(buffer: RenderBuffer, data, offset = 0) {
         if (buffer._buffer) {
-            const gl = this._gl;
+            const gl = this.gl;
             gl.bindBuffer(buffer._target, buffer._buffer);
-            if (offset == 0 && buffer._length == data.byteLength) {
+            if (offset === 0 && buffer._length === data.byteLength) {
                 gl.bufferData(buffer._target, data, buffer._usage);
             } else {
                 gl.bufferSubData(buffer._target, offset, data);
@@ -640,7 +652,7 @@ export class Renderer {
         }
     }
 
-    createRenderPrimitive(primitive, material) {
+    createRenderPrimitive(primitive: Primitive, material: Material) {
         const renderPrimitive = new RenderPrimitive(primitive);
 
         const program = this._getMaterialProgram(material, renderPrimitive);
@@ -656,18 +668,18 @@ export class Renderer {
         return renderPrimitive;
     }
 
-    createMesh(primitive, material) {
+    createMesh(primitive: Primitive, material: Material) {
         const meshNode = new Node();
         meshNode.addRenderPrimitive(this.createRenderPrimitive(primitive, material));
         return meshNode;
     }
 
-    drawViews(views, rootNode) {
+    drawViews(views: RenderView[], rootNode: Node) {
         if (!rootNode) {
             return;
         }
 
-        const gl = this._gl;
+        const gl = this.gl;
         this._frameId++;
 
         rootNode.markActive(this._frameId);
@@ -676,7 +688,7 @@ export class Renderer {
         // setting the viewport once.
         if (views.length === 1 && views[0].viewport) {
             const vp = views[0].viewport;
-            this._gl.viewport(vp.x, vp.y, vp.width, vp.height);
+            this.gl.viewport(vp.x, vp.y, vp.width, vp.height);
         }
 
         // Get the positions of the 'camera' for each view matrix.
@@ -714,8 +726,8 @@ export class Renderer {
         }
     }
 
-    _drawRenderPrimitiveSet(views, renderPrimitives) {
-        const gl = this._gl;
+    _drawRenderPrimitiveSet(views: RenderView[], renderPrimitives: RenderPrimitive[]) {
+        const gl = this.gl;
         let program = null;
         let material = null;
         let attribMask = 0;
@@ -752,7 +764,8 @@ export class Renderer {
 
             if (material !== primitive._material) {
                 this._bindMaterialState(primitive._material, material);
-                primitive._material.bind(gl, program, material);
+                primitive._material.bind(gl);
+                // primitive._material.bind(gl, program, material);
                 material = primitive._material;
             }
 
@@ -813,7 +826,7 @@ export class Renderer {
         if (key in this._textureCache) {
             return this._textureCache[key];
         } else {
-            const gl = this._gl;
+            const gl = this.gl;
             const textureHandle = gl.createTexture();
 
             const renderTexture = new RenderTexture(textureHandle);
@@ -851,8 +864,8 @@ export class Renderer {
         }
     }
 
-    _setSamplerParameters(texture) {
-        const gl = this._gl;
+    _setSamplerParameters(texture: Texture) {
+        const gl = this.gl;
 
         const sampler = texture.sampler;
         const powerOfTwo = isPowerOfTwo(texture.width) && isPowerOfTwo(texture.height);
@@ -875,13 +888,15 @@ export class Renderer {
         let key = `${name}:`;
 
         for (const define in defines) {
-            key += `${define}=${defines[define]},`;
+            if (define) {
+                key += `${define}=${defines[define]},`;
+            }
         }
 
         return key;
     }
 
-    _getMaterialProgram(material, renderPrimitive) {
+    _getMaterialProgram(material: Material, renderPrimitive: RenderPrimitive) {
         const materialName = material.materialName;
         const vertexSource = material.vertexSource;
         const fragmentSource = material.fragmentSource;
@@ -914,17 +929,17 @@ export class Renderer {
             let fullFragmentSource = fragPrecisionHeader + fragmentSource;
             fullFragmentSource += FRAGMENT_SHADER_ENTRY;
 
-            const program = new Program(this._gl, fullVertexSource, fullFragmentSource, ATTRIB, defines);
+            const program = new Program(this.gl, fullVertexSource, fullFragmentSource, ATTRIB, defines);
             this._programCache[key] = program;
 
-            program.onNextUse((program) => {
+            program.onNextUse((program: Program) => {
                 // Bind the samplers to the right texture index. This is constant for
                 // the lifetime of the program.
                 for (let i = 0; i < material._samplers.length; ++i) {
                     const sampler = material._samplers[i];
                     const uniform = program.uniform[sampler._uniformName];
                     if (uniform) {
-                        this._gl.uniform1i(uniform, i);
+                        this.gl.uniform1i(uniform, i);
                     }
                 }
             });
@@ -934,11 +949,12 @@ export class Renderer {
     }
 
     _bindPrimitive(primitive, attribMask) {
-        const gl = this._gl;
+        const gl = this.gl;
 
         // If the active attributes have changed then update the active set.
         if (attribMask !== primitive._attributeMask) {
             for (const attrib in ATTRIB) {
+                // tslint:disable-next-line:no-bitwise
                 if (primitive._attributeMask & ATTRIB_MASK[attrib]) {
                     gl.enableVertexAttribArray(ATTRIB[attrib]);
                 } else {
@@ -964,11 +980,12 @@ export class Renderer {
         }
     }
 
-    _bindMaterialState(material, prevMaterial = null) {
-        const gl = this._gl;
+    _bindMaterialState(material: RenderMaterial, prevMaterial = null) {
+        const gl = this.gl;
 
-        const state = material._state;
-        const prevState = prevMaterial ? prevMaterial._state : ~state;
+        const state = material.state;
+        // tslint:disable-next-line:no-bitwise
+        const prevState = prevMaterial ? prevMaterial.state : ~state;
 
         // Return early if both materials use identical state
         if (state === prevState) {
@@ -982,6 +999,7 @@ export class Renderer {
             setCap(gl, gl.DEPTH_TEST, CAP.DEPTH_TEST, prevState, state);
             setCap(gl, gl.STENCIL_TEST, CAP.STENCIL_TEST, prevState, state);
 
+            // tslint:disable-next-line:no-bitwise
             const colorMaskChange = (state & CAP.COLOR_MASK) - (prevState & CAP.COLOR_MASK);
             if (colorMaskChange) {
                 const mask = colorMaskChange > 1;
@@ -989,15 +1007,17 @@ export class Renderer {
                 gl.colorMask(mask, mask, mask, mask);
             }
 
+            // tslint:disable-next-line:no-bitwise
             const depthMaskChange = (state & CAP.DEPTH_MASK) - (prevState & CAP.DEPTH_MASK);
             if (depthMaskChange) {
                 this._depthMaskNeedsReset = !(depthMaskChange > 1);
                 gl.depthMask(depthMaskChange > 1);
             }
 
+            // tslint:disable-next-line:no-bitwise
             const stencilMaskChange = (state & CAP.STENCIL_MASK) - (prevState & CAP.STENCIL_MASK);
             if (stencilMaskChange) {
-                gl.stencilMask(stencilMaskChange > 1);
+                gl.stencilMask(Number(stencilMaskChange > 1));
             }
         }
 

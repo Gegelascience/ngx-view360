@@ -5,11 +5,11 @@ export class Program {
     uniform;
     defines;
     firstUse: boolean;
-    _nextUseCallbacks;
-    _vertShader: WebGLShader;
-    _fragShader: WebGLShader;
+    nextUseCallbacks: any[];
+    vertShader: WebGLShader;
+    fragShader: WebGLShader;
 
-    constructor(gl: WebGLRenderingContext, vertSrc, fragSrc, attribMap, defines) {
+    constructor(gl: WebGLRenderingContext, vertSrc: string, fragSrc: string, attribMap, defines) {
         this.gl = gl;
         this.program = gl.createProgram();
         this.attrib = null;
@@ -17,7 +17,7 @@ export class Program {
         this.defines = {};
 
         this.firstUse = true;
-        this._nextUseCallbacks = [];
+        this.nextUseCallbacks = [];
 
         let definesString = '';
         if (defines) {
@@ -29,15 +29,15 @@ export class Program {
             }
         }
 
-        this._vertShader = gl.createShader(gl.VERTEX_SHADER);
-        gl.attachShader(this.program, this._vertShader);
-        gl.shaderSource(this._vertShader, definesString + vertSrc);
-        gl.compileShader(this._vertShader);
+        this.vertShader = gl.createShader(gl.VERTEX_SHADER);
+        gl.attachShader(this.program, this.vertShader);
+        gl.shaderSource(this.vertShader, definesString + vertSrc);
+        gl.compileShader(this.vertShader);
 
-        this._fragShader = gl.createShader(gl.FRAGMENT_SHADER);
-        gl.attachShader(this.program, this._fragShader);
-        gl.shaderSource(this._fragShader, definesString + fragSrc);
-        gl.compileShader(this._fragShader);
+        this.fragShader = gl.createShader(gl.FRAGMENT_SHADER);
+        gl.attachShader(this.program, this.fragShader);
+        gl.shaderSource(this.fragShader, definesString + fragSrc);
+        gl.compileShader(this.fragShader);
 
         if (attribMap) {
             this.attrib = {};
@@ -53,7 +53,7 @@ export class Program {
     }
 
     onNextUse(callback) {
-        this._nextUseCallbacks.push(callback);
+        this.nextUseCallbacks.push(callback);
     }
 
     use() {
@@ -64,10 +64,10 @@ export class Program {
         if (this.firstUse) {
             this.firstUse = false;
             if (!gl.getProgramParameter(this.program, gl.LINK_STATUS)) {
-                if (!gl.getShaderParameter(this._vertShader, gl.COMPILE_STATUS)) {
-                    console.error('Vertex shader compile error: ' + gl.getShaderInfoLog(this._vertShader));
-                } else if (!gl.getShaderParameter(this._fragShader, gl.COMPILE_STATUS)) {
-                    console.error('Fragment shader compile error: ' + gl.getShaderInfoLog(this._fragShader));
+                if (!gl.getShaderParameter(this.vertShader, gl.COMPILE_STATUS)) {
+                    console.error('Vertex shader compile error: ' + gl.getShaderInfoLog(this.vertShader));
+                } else if (!gl.getShaderParameter(this.fragShader, gl.COMPILE_STATUS)) {
+                    console.error('Fragment shader compile error: ' + gl.getShaderInfoLog(this.fragShader));
                 } else {
                     console.error('Program link error: ' + gl.getProgramInfoLog(this.program));
                 }
@@ -92,17 +92,17 @@ export class Program {
                     this.uniform[uniformName] = gl.getUniformLocation(this.program, uniformName);
                 }
             }
-            gl.deleteShader(this._vertShader);
-            gl.deleteShader(this._fragShader);
+            gl.deleteShader(this.vertShader);
+            gl.deleteShader(this.fragShader);
         }
 
         gl.useProgram(this.program);
 
-        if (this._nextUseCallbacks.length) {
-            for (const callback of this._nextUseCallbacks) {
+        if (this.nextUseCallbacks.length) {
+            for (const callback of this.nextUseCallbacks) {
                 callback(this);
             }
-            this._nextUseCallbacks = [];
+            this.nextUseCallbacks = [];
         }
     }
 }

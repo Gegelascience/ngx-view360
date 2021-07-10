@@ -292,7 +292,7 @@ export class InputRenderer extends Node {
     }
 
     _createLaserMesh() {
-        const gl = this._renderer._gl;
+        const gl = this._renderer.gl;
 
         const lr = LASER_DIAMETER * 0.5;
         const ll = LASER_LENGTH;
@@ -349,7 +349,7 @@ export class InputRenderer extends Node {
     }
 
     _createCursorMesh() {
-        const gl = this._renderer._gl;
+        const gl = this._renderer.gl;
 
         // Cursor is a circular white dot with a dark "shadow" skirt around the edge
         // that fades from black to transparent as it moves out from the center.

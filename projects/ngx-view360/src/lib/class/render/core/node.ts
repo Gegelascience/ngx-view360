@@ -357,7 +357,7 @@ export class Node {
 
     _hitTestSelectableNode(rigidTransform) {
         if (this._renderPrimitives) {
-            let localRay = null;
+            let localRay: Ray = null;
             for (const primitive of this._renderPrimitives) {
                 if (primitive.min) {
                     if (!localRay) {

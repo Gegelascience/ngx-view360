@@ -41,6 +41,7 @@ export const RENDER_ORDER = {
 };
 
 export function stateToBlendFunc(state, mask, shift) {
+    // tslint:disable-next-line:no-bitwise
     const value = (state & mask) >> shift;
     switch (value) {
         case 0:
@@ -52,9 +53,10 @@ export function stateToBlendFunc(state, mask, shift) {
 }
 
 export class MaterialState {
-    _state;
+    state: number;
     constructor() {
-        this._state = CAP.CULL_FACE |
+        // tslint:disable-next-line:no-bitwise
+        this.state = CAP.CULL_FACE |
             CAP.DEPTH_TEST |
             CAP.COLOR_MASK |
             CAP.DEPTH_MASK;
@@ -67,93 +69,117 @@ export class MaterialState {
     }
 
     get cullFace() {
-        return !!(this._state & CAP.CULL_FACE);
+        // tslint:disable-next-line:no-bitwise
+        return !!(this.state & CAP.CULL_FACE);
     }
     set cullFace(value) {
         if (value) {
-            this._state |= CAP.CULL_FACE;
+            // tslint:disable-next-line:no-bitwise
+            this.state |= CAP.CULL_FACE;
         } else {
-            this._state &= ~CAP.CULL_FACE;
+            // tslint:disable-next-line:no-bitwise
+            this.state &= ~CAP.CULL_FACE;
         }
     }
 
     get blend() {
-        return !!(this._state & CAP.BLEND);
+        // tslint:disable-next-line:no-bitwise
+        return !!(this.state & CAP.BLEND);
     }
     set blend(value) {
         if (value) {
-            this._state |= CAP.BLEND;
+            // tslint:disable-next-line:no-bitwise
+            this.state |= CAP.BLEND;
         } else {
-            this._state &= ~CAP.BLEND;
+            // tslint:disable-next-line:no-bitwise
+            this.state &= ~CAP.BLEND;
         }
     }
 
     get depthTest() {
-        return !!(this._state & CAP.DEPTH_TEST);
+        // tslint:disable-next-line:no-bitwise
+        return !!(this.state & CAP.DEPTH_TEST);
     }
     set depthTest(value) {
         if (value) {
-            this._state |= CAP.DEPTH_TEST;
+            // tslint:disable-next-line:no-bitwise
+            this.state |= CAP.DEPTH_TEST;
         } else {
-            this._state &= ~CAP.DEPTH_TEST;
+            // tslint:disable-next-line:no-bitwise
+            this.state &= ~CAP.DEPTH_TEST;
         }
     }
 
     get stencilTest() {
-        return !!(this._state & CAP.STENCIL_TEST);
+        // tslint:disable-next-line:no-bitwise
+        return !!(this.state & CAP.STENCIL_TEST);
     }
     set stencilTest(value) {
         if (value) {
-            this._state |= CAP.STENCIL_TEST;
+            // tslint:disable-next-line:no-bitwise
+            this.state |= CAP.STENCIL_TEST;
         } else {
-            this._state &= ~CAP.STENCIL_TEST;
+            // tslint:disable-next-line:no-bitwise
+            this.state &= ~CAP.STENCIL_TEST;
         }
     }
 
     get colorMask() {
-        return !!(this._state & CAP.COLOR_MASK);
+        // tslint:disable-next-line:no-bitwise
+        return !!(this.state & CAP.COLOR_MASK);
     }
     set colorMask(value) {
         if (value) {
-            this._state |= CAP.COLOR_MASK;
+            // tslint:disable-next-line:no-bitwise
+            this.state |= CAP.COLOR_MASK;
         } else {
-            this._state &= ~CAP.COLOR_MASK;
+            // tslint:disable-next-line:no-bitwise
+            this.state &= ~CAP.COLOR_MASK;
         }
     }
 
     get depthMask() {
-        return !!(this._state & CAP.DEPTH_MASK);
+        // tslint:disable-next-line:no-bitwise
+        return !!(this.state & CAP.DEPTH_MASK);
     }
     set depthMask(value) {
         if (value) {
-            this._state |= CAP.DEPTH_MASK;
+            // tslint:disable-next-line:no-bitwise
+            this.state |= CAP.DEPTH_MASK;
         } else {
-            this._state &= ~CAP.DEPTH_MASK;
+            // tslint:disable-next-line:no-bitwise
+            this.state &= ~CAP.DEPTH_MASK;
         }
     }
 
     get depthFunc() {
-        return ((this._state & MAT_STATE.DEPTH_FUNC_RANGE) >> MAT_STATE.DEPTH_FUNC_SHIFT) + GL.NEVER;
+        // tslint:disable-next-line:no-bitwise
+        return ((this.state & MAT_STATE.DEPTH_FUNC_RANGE) >> MAT_STATE.DEPTH_FUNC_SHIFT) + GL.NEVER;
     }
     set depthFunc(value) {
         value = value - GL.NEVER;
-        this._state &= ~MAT_STATE.DEPTH_FUNC_RANGE;
-        this._state |= (value << MAT_STATE.DEPTH_FUNC_SHIFT);
+        // tslint:disable-next-line:no-bitwise
+        this.state &= ~MAT_STATE.DEPTH_FUNC_RANGE;
+        // tslint:disable-next-line:no-bitwise
+        this.state |= (value << MAT_STATE.DEPTH_FUNC_SHIFT);
     }
 
     get stencilMask() {
-        return !!(this._state & CAP.STENCIL_MASK);
+        // tslint:disable-next-line:no-bitwise
+        return !!(this.state & CAP.STENCIL_MASK);
     }
     set stencilMask(value) {
         if (value) {
-            this._state |= CAP.STENCIL_MASK;
+            // tslint:disable-next-line:no-bitwise
+            this.state |= CAP.STENCIL_MASK;
         } else {
-            this._state &= ~CAP.STENCIL_MASK;
+            // tslint:disable-next-line:no-bitwise
+            this.state &= ~CAP.STENCIL_MASK;
         }
     }
 
     get blendFuncSrc() {
-        return stateToBlendFunc(this._state, MAT_STATE.BLEND_SRC_RANGE, MAT_STATE.BLEND_SRC_SHIFT);
+        return stateToBlendFunc(this.state, MAT_STATE.BLEND_SRC_RANGE, MAT_STATE.BLEND_SRC_SHIFT);
     }
     set blendFuncSrc(value) {
         switch (value) {
@@ -163,12 +189,14 @@ export class MaterialState {
             default:
                 value = (value - GL.SRC_COLOR) + 2;
         }
-        this._state &= ~MAT_STATE.BLEND_SRC_RANGE;
-        this._state |= (value << MAT_STATE.BLEND_SRC_SHIFT);
+        // tslint:disable-next-line:no-bitwise
+        this.state &= ~MAT_STATE.BLEND_SRC_RANGE;
+        // tslint:disable-next-line:no-bitwise
+        this.state |= (value << MAT_STATE.BLEND_SRC_SHIFT);
     }
 
     get blendFuncDst() {
-        return stateToBlendFunc(this._state, MAT_STATE.BLEND_DST_RANGE, MAT_STATE.BLEND_DST_SHIFT);
+        return stateToBlendFunc(this.state, MAT_STATE.BLEND_DST_RANGE, MAT_STATE.BLEND_DST_SHIFT);
     }
     set blendFuncDst(value) {
         switch (value) {
@@ -178,8 +206,10 @@ export class MaterialState {
             default:
                 value = (value - GL.SRC_COLOR) + 2;
         }
-        this._state &= ~MAT_STATE.BLEND_DST_RANGE;
-        this._state |= (value << MAT_STATE.BLEND_DST_SHIFT);
+        // tslint:disable-next-line:no-bitwise
+        this.state &= ~MAT_STATE.BLEND_DST_RANGE;
+        // tslint:disable-next-line:no-bitwise
+        this.state |= (value << MAT_STATE.BLEND_DST_SHIFT);
     }
 }
 
