@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 2.2.1
+
+### Changed
+* angular dependencies updated to angular 13
+
 ## 2.1.1
 
 ### Added

@@ -19,7 +19,8 @@ This library was generated with [Angular CLI](https://github.com/angular/angular
 NgxView360 | Angular
 ------------ | -------------
 2.0.0 | 8
-2.1.0 + | 9 
+2.1.0 + | 9-12 
+2.2.1  | 13 +
 
 ## Changelog
 
