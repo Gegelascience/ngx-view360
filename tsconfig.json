@@ -19,6 +19,10 @@
       "dom"
     ],
     "paths": {
+      "my-lib": [
+        "dist/my-lib/my-lib",
+        "dist/my-lib"
+      ],
       "ngx-view360": [
         "./dist/ngx-view360"
       ],
