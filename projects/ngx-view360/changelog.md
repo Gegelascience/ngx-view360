@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 2.2.2
+
+### Fix
+* fix bug scene dimensions in full screen
+
 ## 2.2.1
 
 ### Changed

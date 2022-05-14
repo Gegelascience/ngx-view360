@@ -563,9 +563,11 @@ export class Renderer {
     _colorMaskNeedsReset: boolean;
     _globalLightColor;
     _globalLightDir;
+    useGlDimensions:boolean
 
-    constructor(gl) {
+    constructor(gl,useGlDimensions=false) {
         this._gl = gl;
+        this.useGlDimensions = useGlDimensions;
         this._frameId = 0;
         this._programCache = {};
         this._textureCache = {};
@@ -675,7 +677,13 @@ export class Renderer {
         // setting the viewport once.
         if (views.length === 1 && views[0].viewport) {
             const vp = views[0].viewport;
-            this._gl.viewport(vp.x, vp.y, vp.width, vp.height);
+            console.log("final vp",vp)
+            if( !this.useGlDimensions){
+                this._gl.viewport(vp.x, vp.y, vp.width, vp.height);
+            } else {
+                this._gl.viewport(0, 0, this._gl.canvas.width, this._gl.canvas.height);
+            }
+            
         }
 
         // Get the positions of the 'camera' for each view matrix.

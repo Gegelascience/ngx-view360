@@ -109,7 +109,7 @@ export class NgxView360Component implements OnInit, OnChanges {
       xrCompatible: true
     }, this.webxrContainer.nativeElement);
     this.onResize();
-    this.scene.setRenderer(new Renderer(this.gl));
+    this.scene.setRenderer(new Renderer(this.gl, true));
   }
 
 
@@ -185,6 +185,10 @@ export class NgxView360Component implements OnInit, OnChanges {
     if (pose) {
       const views = [];
       for (const view of pose.views) {
+        console.log("view",view)
+        console.log("layer",glLayer)
+        const canvasWidth = this.gl.canvas.width;
+        const canvasHeight = this.gl.canvas.height;
         const renderView = new WebXRView(view, glLayer);
         // It's important to take into account which eye the view is
         // associated with in cases like this, since it informs which half
