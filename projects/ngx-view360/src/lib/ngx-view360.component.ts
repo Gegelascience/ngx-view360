@@ -185,8 +185,6 @@ export class NgxView360Component implements OnInit, OnChanges {
     if (pose) {
       const views = [];
       for (const view of pose.views) {
-        console.log("view",view)
-        console.log("layer",glLayer)
         const canvasWidth = this.gl.canvas.width;
         const canvasHeight = this.gl.canvas.height;
         const renderView = new WebXRView(view, glLayer);
