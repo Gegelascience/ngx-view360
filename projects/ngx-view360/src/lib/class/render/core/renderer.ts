@@ -677,7 +677,6 @@ export class Renderer {
         // setting the viewport once.
         if (views.length === 1 && views[0].viewport) {
             const vp = views[0].viewport;
-            console.log("final vp",vp)
             if( !this.useGlDimensions){
                 this._gl.viewport(vp.x, vp.y, vp.width, vp.height);
             } else {
