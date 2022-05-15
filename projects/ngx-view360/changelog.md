@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 2.2.3
+
+### Fix
+* forget delete log
+
 ## 2.2.2
 
 ### Fix
