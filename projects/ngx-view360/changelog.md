@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 2.2.4
+
+### Changed
+* angular dependencies updated to angular 14
+
 ## 2.2.3
 
 ### Fix
