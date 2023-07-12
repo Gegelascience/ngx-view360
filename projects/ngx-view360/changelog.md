@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 2.2.7
+
+### Changed
+* angular dependencies updated to angular 16
+
 ## 2.2.4
 
 ### Changed

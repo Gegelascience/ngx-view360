@@ -1,6 +1,6 @@
 {
   "name": "ngx-photos360webxr",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -8,30 +8,30 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "buildLib":"ng build NgxView360 --configuration production"
+    "buildLib": "ng build NgxView360 --configuration production"
   },
   "private": true,
   "dependencies": {
-    "@angular-devkit/schematics": "^14.1.3",
-    "@angular/animations": "^14.1.3",
-    "@angular/common": "^14.1.3",
-    "@angular/compiler": "^14.1.3",
-    "@angular/core": "^14.1.3",
-    "@angular/forms": "^14.1.3",
-    "@angular/platform-browser": "^14.1.3",
-    "@angular/platform-browser-dynamic": "^14.1.3",
-    "@angular/router": "^14.1.3",
+    "@angular-devkit/schematics": "^16.1.4",
+    "@angular/animations": "^16.1.4",
+    "@angular/common": "^16.1.4",
+    "@angular/compiler": "^16.1.4",
+    "@angular/core": "^16.1.4",
+    "@angular/forms": "^16.1.4",
+    "@angular/platform-browser": "^16.1.4",
+    "@angular/platform-browser-dynamic": "^16.1.4",
+    "@angular/router": "^16.1.4",
     "gl-matrix": "^3.1.0",
     "rxjs": "~7.5.0",
     "tslib": "^2.3.0",
     "webxr-polyfill": "^2.0.2",
-    "zone.js": "~0.11.4"
+    "zone.js": "~0.13.0"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "^14.1.3",
-    "@angular/cli": "^14.1.3",
-    "@angular/compiler-cli": "^14.1.3",
-    "@angular/language-service": "^14.1.3",
+    "@angular-devkit/build-angular": "^16.1.4",
+    "@angular/cli": "^16.1.4",
+    "@angular/compiler-cli": "^16.1.4",
+    "@angular/language-service": "^16.1.4",
     "@types/jasmine": "~3.10.0",
     "@types/node": "^12.11.1",
     "jasmine-core": "~4.0.0",
@@ -39,9 +39,9 @@
     "karma-chrome-launcher": "~3.1.0",
     "karma-jasmine": "~4.0.0",
     "karma-jasmine-html-reporter": "^1.7.0",
-    "ng-packagr": "^14.1.0",
+    "ng-packagr": "^16.1.0",
     "ts-node": "~7.0.0",
     "tslint": "~6.1.3",
-    "typescript": "~4.6.2"
+    "typescript": "~4.9.3"
   }
 }
