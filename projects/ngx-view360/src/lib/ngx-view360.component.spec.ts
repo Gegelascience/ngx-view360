@@ -1,6 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { NgxView360Component } from './ngx-view360.component';
+import { VrButtonComponent } from './components/vr-button/vr-button.component';
 
 describe('NgxView360Component', () => {
   let component: NgxView360Component;
@@ -8,7 +9,7 @@ describe('NgxView360Component', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ NgxView360Component ]
+      declarations: [ NgxView360Component,VrButtonComponent ]
     })
     .compileComponents();
   }));
